@@ -169,8 +169,6 @@ TonTon 擁有超過10年的研究與開發經驗，以圖像識別、自然語�
 - #GenAI #LargeLanguageModels #RAG #MultiAgentSystems
 
 ---
-
----
 layout: default
 title: Deep Learning 101, Taiwan’s pioneering and highest deep learning meetup, launched on 2016/11/11 @ 83F, Taipei 101
 ---
