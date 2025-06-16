@@ -169,59 +169,14 @@ TonTon 擁有超過10年的研究與開發經驗，以圖像識別、自然語�
 - #GenAI #LargeLanguageModels #RAG #MultiAgentSystems
 
 ---
-<p align="center">
-  <strong>The top private AI Meetup in Taiwan, launched on 2016/11/11 @ 83F, Taipei 101</strong>
-</p>
-<p align="center">
-  <strong>台灣曾經最高最早發起的深度學習社群 @ 83F, 台北101</strong>
-</p>  
-<p align="center">
-  <img src="https://github.com/Deep-Learning-101/.github/blob/main/images/DeepLearning101.JPG?raw=true" alt="Deep Learning 101" width="400">
-</p>
-<p align="center">
-  <a href="https://www.youtube.com/@DeepLearning101">YouTube</a> | 
-  <a href="https://www.facebook.com/groups/525579498272187/">台灣人工智慧社團 FB</a> | 
-  <a href="http://DeepLearning101.TWMAN.ORG">台灣人工智慧社團 網站</a> | 
-  <a href="https://huggingface.co/DeepLearning101">Hugging Face</a>
-</p>
-<p align="center">
-<a href="https://www.buymeacoffee.com/DeepLearning101" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-</p>
+layout: default
+title: Deep Learning 101, Taiwan’s pioneering and highest deep learning meetup, launched on 2016/11/11 @ 83F, Taipei 101
+---
+
+{% include header.html %}
 
 ---
 
-### [手把手帶你一起踩 AI 坑](https://blog.twman.org/p/deeplearning101.html)：https://www.twman.org/AI
-
-- **[避開 AI Agent 開發陷阱：常見問題、挑戰與解決方案](https://blog.twman.org/2025/03/AIAgent.html)**：  [探討多種 AI 代理人工具的應用經驗與挑戰，分享實用經驗與工具推薦。](https://deep-learning-101.github.io/agent)
-
-- **[白話文手把手帶你科普 GenAI](https://blog.twman.org/2024/08/LLM.html)**：[淺顯介紹生成式人工智慧核心概念，強調硬體資源和數據的重要性。](https://deep-learning-101.github.io/GenAI)
-
-- **[大型語言模型直接就打完收工？](https://blog.twman.org/2024/09/LLM.html)**：回顧 LLM 領域探索歷程，討論硬體升級對 AI 開發的重要性。
-
-- **[檢索增強生成(RAG)不是萬靈丹之優化挑戰技巧](https://blog.twman.org/2024/07/RAG.html)**：探討 RAG 技術應用與挑戰，提供實用經驗分享和工具建議。
-
-- **[大型語言模型 (LLM) 入門完整指南：原理、應用與未來](https://blog.twman.org/2024/02/LLM.html)**：探討多種 LLM 工具的應用與挑戰，強調硬體資源的重要性。
-
-- **[什麼是大語言模型，它是什麼？想要嗎？(Large Language Model，LLM)](https://blog.twman.org/2023/04/GPT.html)**：探討 LLM 的發展與應用，強調硬體資源在開發中的關鍵作用。
-
-- **[Diffusion Model 完全解析：從原理、應用到實作 (AI 圖像生成)](https://blog.twman.org/2024/11/diffusion.html)**：深入探討影像生成與分割技術的應用，強調硬體資源的重要性。
-
-- **[ASR/TTS 開發避坑指南：語音辨識與合成的常見挑戰與對策](https://blog.twman.org/2024/02/asr-tts.html)**：探討 ASR 和 TTS 技術應用中的問題，強調數據質量的重要性。
-
-- **[那些 NLP 踩的坑](https://blog.twman.org/2021/04/NLP.html)**：分享 NLP 領域的實踐經驗，強調數據質量對模型效果的影響。
-
-- **[那些語音處理踩的坑](https://blog.twman.org/2021/04/ASR.html)**：分享語音處理領域的實務經驗，強調資料品質對模型效果的影響。
-
-- **[手把手學深度學習安裝環境](https://blog.twman.org/2020/05/DeepLearning.html)**：詳細介紹在 Ubuntu 上安裝深度學習環境的步驟，分享實際操作經驗。
-
----
-
-### [Speech Processing (語音處理)](https://github.com/Deep-Learning-101/Speech-Processing-Paper)：**[針對訪談或對話進行分析與識別](https://www.twman.org/AI/ASR)**
-
-### [Natural Language Processing, NLP (自然語言處理)](https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper)：**[針對文檔進行分析與擷取](https://www.twman.org/AI/NLP)**
-
-### [大語言模型 (Large Language Model)](https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper#llm)
-
-### [Computer Vision (電腦視覺)](https://github.com/Deep-Learning-101/Computer-Vision-Paper)：**[針對物件或場景影像進行分析與偵測](https://www.twman.org/AI/CV)**  
+{% include ai-share.html %}
 
 ---
