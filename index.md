@@ -4,11 +4,15 @@
 
 ---
 
-TonTon is a seasoned professional with over a decade of expertise in Cyber-Security and Artificial Intelligence. His extensive skill set encompasses image recognition, natural language processing, speech processing, and cyber-security, with a focus on x86/Android malware analysis. His career includes the presentation of numerous research papers and patent applications at international cybersecurity conferences, including Defcon AI Village, OWASP AppSec USA, RuxCon, and HITCON. While managing a full-time career, he pursued and completed his Ph.D. in Computer Science and Information Engineering at National Cheng Kung University. His doctoral thesis, titled "Deep Learning-based Anomaly Analysis in Cyber Threats," explores novel approaches in the field. He is also the founder of Taiwan's pioneering artificial intelligence meetup, Deep Learning 101, dedicated to fostering innovation, knowledge-sharing and problem-solving in these dynamic fields.
+TonTon has over a decade of experience at the intersection of AI and cybersecurity, specializing in computer vision, natural language processing, speech processing, and x86/Android malware analysis. He has led the adoption of AI solutions and the deployment of cybersecurity R&D in the financial insurance and telecommunications sectors, strengthening operational intelligence and cyber resilience. He has also presented his work at international conferences such as DEFCON, OWASP AppSec USA, RuxCon, and HITCON, and authored multiple academic publications. 
+
+He earned his Ph.D. in Computer Science and Information Engineering from National Cheng Kung University, with a dissertation titled “Deep Learning-based Anomaly Analysis in Cyber Threats.” During his doctoral studies, he participated in Taiwan–France and Taiwan–UK collaborative research programs, conducting research at Inria (France) and the University of Essex (UK). He is the founder of Taiwan’s early AI communities, Deep Learning 101 and the Taiwan AI Society, fostering industry–academia collaboration and knowledge sharing in AI and cybersecurity.
 
 ---
 
-TonTon 擁有超過10年的研究與開發經驗，以圖像識別、自然語言處理、語音處理等在金融壽險、電信客服應用中推動人工智慧/深度學習技術落地，以及在x86/Android惡意程式分析等網路安全領域的應用整合為主要範疇；並曾先後任職於國家高速網路與計算中心、安碁資訊、以色列商Verint台灣、台灣雪豹科技及國泰金控數數發等單位。同時，他也多次在Defcon、OWASP AppSec USA、RuxCon和 HITCON等國際知名研討會發表專業的技術研究及多篇學術論文，並多次受邀至海內外大學和政府單位演講，並接受雜誌報導。他畢業於國立成功大學資訊工程學系，博士論文為「基於深度學習的網路威脅異常分析」；攻讀博士期間，參與台法聯合團隊交流計畫，赴法國國家信息與自動化研究所進行研究，及參與台英合作研究計畫，赴英國艾賽克斯大學進行研究。他還是台灣最早的人工智慧社群Deep Learning 101和台灣人工智慧社團的發起人，促進人工智慧及資安領域行業交流。
+TonTon 長期投入人工智慧與網路安全領域，擁有多年的研發與跨域整合經驗，專長涵蓋圖像識別、自然語言處理、語音處理，以及x86/Android惡意程式分析等AI與資安整合應用。他於金融壽險與電信等產業推動AI導入與資安研發落地，強化產業智慧化與資安韌性；並陸續於DEFCON、OWASP AppSec USA、RuxCon與HITCON等國際研討會發表技術研究，亦發表多篇學術論文。
+
+TonTon 畢業於國立成功大學資訊工程學系，博士論文主題為「基於深度學習的網路威脅異常分析」；期間參與「台法聯合團隊交流計畫」及「台灣與英國頂尖大學前期合作研究計畫」，先後赴法國國家信息與自動化研究所與英國艾賽克斯大學進行學術研究合作。他亦為台灣早期人工智慧社群Deep Learning 101與台灣人工智慧社團之發起人，推動AI與資安領域的產學交流與技術推廣。 
 
 ---
 
@@ -16,6 +20,7 @@ TonTon 擁有超過10年的研究與開發經驗，以圖像識別、自然語�
 
 - GitHub: [https://github.com/Deep-Learning-101 ](https://github.com/Deep-Learning-101 )
 - Hugging Face: [https://huggingface.co/DeepLearning101 ](https://huggingface.co/DeepLearning101 )
+- Deep Learning 101：[https://deep-learning-101.github.io/](https://deep-learning-101.github.io/)
 - 聯絡方式：TonTon (at) TWMAN.ORG
 
 > ✅ 感謝天、感謝地；新冠疫情期間，未接種任何疫苗，仍健康且未曾確診。
