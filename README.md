@@ -20,6 +20,7 @@ TonTon 畢業於國立成功大學資訊工程學系，博士論文主題為「�
 
 - GitHub: [https://github.com/Deep-Learning-101 ](https://github.com/Deep-Learning-101 )
 - Hugging Face: [https://huggingface.co/DeepLearning101 ](https://huggingface.co/DeepLearning101 )
+- Deep Learning 101：[https://deep-learning-101.github.io/](https://deep-learning-101.github.io/)
 - 聯絡方式：TonTon (at) TWMAN.ORG
 
 > ✅ 感謝天、感謝地；新冠疫情期間，未接種任何疫苗，仍健康且未曾確診。
