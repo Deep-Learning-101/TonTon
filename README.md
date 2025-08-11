@@ -2,8 +2,8 @@
   <strong><a href="https://www.twman.org" target="_blank">TonTon H.-D. Huang Ph.D.</a></strong><br>
   <strong><a href="https://twman.org" target="_blank">TonTon H.-D. Huang Ph.D.</a></strong><br>
   <strong><a href="https://deep-learning-101.github.io/" target="_blank">Deep Learning 101</a></strong><br>
-  <strong><a href="https://github.com/Deep-Learning-101" target="_blank">GitHub</a></strong><br>
   <strong><a href="https://huggingface.co/DeepLearning101" target="_blank">Hugging Face</a></strong><br>
+  <strong><a href="https://github.com/Deep-Learning-101" target="_blank">GitHub</a></strong><br>
 </p>
 
 ---
