@@ -1,4 +1,7 @@
-
+---
+layout: default
+title: TonTon Huang Ph.D., Deep Learning 101, Taiwan’s pioneering and highest deep learning meetup, launched on 2016/11/11 @ 83F, Taipei 101
+---
 
 >參考工具如下：  
 >- https://github.com/patched-codes/patchwork  
