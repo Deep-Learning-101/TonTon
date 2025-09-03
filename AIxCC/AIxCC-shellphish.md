@@ -8,10 +8,6 @@ title: TonTon Huang Ph.D., Deep Learning 101, Taiwan’s pioneering and highest 
 一個基於 CLI 的自動化框架，使用大型語言模型 (LLM) 來自動化開發工作流程，如代碼審查、漏洞修復、安全補丁和文檔生成等開發雜務。
 >- https://github.com/mrexodia/ida-pro-mcp  
 在 IDA Pro 上提供簡潔的 MCP 伺服器與外掛，支援從列舉函式、全域、字串，到反組譯/反編譯、交叉參照、原型/型別/命名批次調整與（選用）除錯控制等工具呼叫，便於「氛圍逆向」中以代理協同完成重複分析操作與產出報告。
->- https://github.com/rizinorg/cutter  
-以 rizin 為核心的跨平台自由開源逆向平台，提供現代化 GUI、除錯與外掛擴充（含社群提供的 Ghidra 反編譯整合等），支援多作業系統安裝與從原始碼建置，適合互動式分析與可視化工作流。
->- https://github.com/FunnyWolf/Viper  
-一個整合化的對手模擬與紅隊作戰平台，涵蓋 MITRE ATT&CK 各階段的行動，提供圖形化介面、Pivot Graph、上百個後滲透模組、內建防溯源與防禦繞過機制，並支援 Windows/Linux/macOS、Python 模組擴充與內建 LLM Agent 以及自動化流程，用於高效率的攻擊模擬與團隊協作。
 >- https://github.com/Wh0am123/MCP-Kali-Server  
 一個將 MCP 客戶端（如 Claude Desktop、5ire）橋接到 Kali/Linux 終端的輕量 API 伺服器，允許代理安全地執行 nmap、curl、ffuf 等終端工具以進行 AI 輔助滲透測試、CTF 挑戰與 HTB/THM 實作，並提供簡單的部署與客戶端配置流程以快速串接實戰工作流。
 
