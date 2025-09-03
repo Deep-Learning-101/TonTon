@@ -19,7 +19,7 @@
 > 翻譯整理自 [All You Need Is MCP - LLMs Solving a DEF CON CTF Finals Challenge](https://wilgibbs.com/blog/defcon-finals-mcp/)  
 > 同步匯整自 [https://github.com/shellphish/artiphishell](https://github.com/shellphish/artiphishell)  
 > [TonTon Huang Ph.D.](https://twman.org)  
-> 2025/09/04
+> 2025/09/03
 
 ## 目錄
 - [DEF CON CTF](#def-con-ctf)
