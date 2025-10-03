@@ -2,25 +2,28 @@ name: Generate sitemap
 
 on:
   push:
-    branches: [main]   # 或你的主要分支名稱
+    branches: [main]  # 請替換成你主要分支名稱
+
+permissions:
+  contents: write
 
 jobs:
   generate-sitemap:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Generate sitemap.xml
-      uses: cicirello/generate-sitemap@v1
-      with:
-        base-url-path: https://twman.org
-        # 可選用：https://your.custom.domain，如果你的 repo 針對自訂網域
+      - name: Generate sitemap.xml
+        uses: cicirello/generate-sitemap@v1
+        with:
+          base-url-path: https://twman.org
 
-    - name: Commit sitemap.xml
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "chore: update sitemap.xml"
-        github_token: ${{ secrets.sitemap }}
-        file_pattern: sitemap.xml
+      - name: Commit sitemap.xml
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update sitemap.xml"
+          file_pattern: sitemap.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.sitemap }}  # 你的 Personal Access Token Secret 名稱
