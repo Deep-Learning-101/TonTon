@@ -10,6 +10,148 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+
+  /* 容器樣式 - 這裡做了置中修改 */
+  .sidebar-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+
+    /* 置中關鍵設定 */
+    margin: 30px auto;      /* 上下30px，左右自動(置中) */
+    max-width: 800px;       /* 限制最大寬度，像是一張卡片 */
+    width: 95%;             /* 手機版左右留一點縫隙 */
+
+    border: 1px solid #eee;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .sidebar-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+
+  .sidebar-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #333;
+  }
+
+  /* 區塊樣式 */
+  .sidebar-section {
+    border-bottom: 1px solid #eee;
+  }
+  
+  .sidebar-section:last-child {
+    border-bottom: none;
+  }
+
+  /* 置頂區塊標題 */
+  .section-title {
+    padding: 12px 15px;
+    font-weight: bold;
+    color: #d63384; 
+    background: #fff0f6;
+    display: flex;
+    align-items: center;
+  }
+  
+  .section-title .icon {
+    margin-right: 8px;
+  }
+
+  /* 折疊區塊標題 */
+  .section-summary {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #444;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    transition: background 0.2s;
+  }
+  
+  .section-summary:hover {
+    background: #f8f9fa;
+    color: #007bff;
+  }
+  
+  .section-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .section-summary .arrow {
+    margin-left: auto;
+    font-size: 0.8em;
+    color: #999;
+    transition: transform 0.2s;
+  }
+
+  details[open] .arrow {
+    transform: rotate(180deg);
+  }
+
+  /* 內容區域 */
+  .section-content {
+    padding: 5px 10px 15px 10px;
+  }
+
+  /* 連結樣式 */
+  .sidebar-link {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #555;
+    border-radius: 6px;
+    font-size: 0.95em;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+    line-height: 1.4;
+    text-align: left; /* 連結內容保持靠左閱讀比較舒服 */
+  }
+
+  .sidebar-link:hover {
+    background-color: #f1f3f5;
+    color: #007bff;
+    transform: translateX(3px);
+  }
+
+  /* 重點文章樣式 */
+  .featured-link {
+    font-weight: 500;
+    color: #222;
+    border-left: 3px solid #d63384;
+    background: #fdfdfd;
+    margin-bottom: 8px;
+  }
+  
+  .featured-link:hover {
+    background: #fff0f6;
+    border-left-color: #a61e4d;
+  }
+
+  /* Badge 樣式 */
+  [class^="badge-"] {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+  }
+
+  .badge-strategy { background-color: #6610f2; }
+  .badge-report { background-color: #0d6efd; }
+  .badge-tech { background-color: #198754; }
+  .badge-warning { background-color: #fd7e14; }
+
         body {
             font-family: -apple-system, BlinkMacSystem-Font, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
             background-color: #f5f5f7;
@@ -214,59 +356,140 @@
 
         
         <div class="bento-box motion-div">
-            <i class="fas fa-feather-alt icon-large"></i>
-            <h2 class="bento-title-large">精選文章 (Featured Articles)</h2>
-            <div class="bento-text">
-                <details close>
-                    <summary class="bento-subtitle cursor-pointer">用 AI 懂 AI (Understanding AI with AI)</summary>
-                    <ul class="bento-list mt-4">
-                        <li><b><a href="https://deep-learning-101.github.io/Paper/Chain-of-Thought" target="_blank">Chain-of-Thought is not explainability</a></b></li>
-                        <li><b><a href="https://deep-learning-101.github.io/Paper/2506.21521_Potemkin-Understanding" target="_blank">arXiv 2506.21521 (Potemkin Understanding in Large Language Models)</a></b></li>
-                        <li><b><a href="https://deep-learning-101.github.io/Paper/2502.04644_Oxford_Agentic-Reasoning.html" target="_blank">arXiv 2502.04644 (Agentic Reasoning)</a></b></li>
-                        <li><b><a href="https://deep-learning-101.github.io/Blog/AIBeginner" target="_blank">AI新賽局：企業的入門策略指南</a></b></li>
-                        <li><b><a href="https://deep-learning-101.github.io/Blog/TW-LLM-Benchmark" target="_blank">臺灣大型語言模型性能評測與在地化策略分析報告</a></b></li>
-                        <li><b><a href="https://www.twman.org/AI/Finance" target="_blank">GenAI 與 LLM 在金融產業的應用分析</a></b></li>
-                        <li><b><a href="https://blog.twman.org/2025/03/AIAgent.html" target="_blank">避開 AI Agent 開發陷阱：常見問題、挑戰與解決方案</a></b></li>
-                    </ul>
-                </details>
-                <details>
-                     <summary class="bento-subtitle cursor-pointer">AI 技術 體驗/分享 (AI Tech Deep Dive)</summary>
-                     <ul class="bento-list mt-4">
-                        <li><b><a href="https://blog.twman.org/2024/08/LLM.html" target="_blank">白話文手把手帶你科普 GenAI</a></b></li>
-                        <li><b><a href="https://blog.twman.org/2024/09/LLM.html" target="_blank">大型語言模型直接就打完收工？</a></b></li>
-                        <li><b><a href="https://blog.twman.org/2024/07/RAG.html" target="_blank">檢索增強生成(RAG)不是萬靈丹之優化挑戰技巧</a></b></li>
-                     </ul>
-                </details>
-                 <details>
-                    <summary class="bento-subtitle cursor-pointer">AI 技術 開源/試用 (Open Source / Demos)</summary>
-                    <ul class="bento-list mt-4">
-                        <li><b><a href="https://deep-learning-101.github.io/Blog/Dify-Coze-n8n-AutoGen-LangChain" target="_blank">Dify、Coze、n8n、AutoGen、LangChain等熱門 Agent 框架</a></b>
-                        </li>
-                        <li><b><a href="https://deep-learning-101.github.io/Blog/vLLM-Ollama-SGLang-LLaMAcpp" target="_blank">vLLM、Ollama、SGLang、 LLaMA.cpp等四大主流熱門LLM服務框架</a></b>
-                        </li>
-                        <li><b><a href="https://deep-learning-101.github.io/gemini-fullstack-langgraph/FinGenAI" target="_blank">gemini-fullstack-langgraph體驗</a></b>
-                        </li>
-                        <li><b><a href="https://deep-learning-101.github.io/FinRobot/FinRobot-GOOGL" target="_blank">基於 AutoGen的FinRobot體驗</a></b>
-                        </li>
-                        <li><b><a href="https://deep-learning-101.github.io/Blog/Cloudflared-Tunnel" target="_blank">用 Cloudflared 實作 SSH / HTTP / RDP Tunnel</a></b>
-                        </li>
-                    </ul>
-                </details>
-                 <details>
-                    <summary class="bento-subtitle cursor-pointer">AI x Cyber-Security</summary>
-                    <ul class="bento-list mt-4">
-                        <li><b><a href="https://twman.org/Cyber/AIxCC-Atlanta.html">AIxCC，冠軍：亞特蘭大團隊 (Team-Atlanta/aixcc-afc-atlantis)</a></b></li>
-                        <li><b><a href="https://twman.org/Cyber/AIxCC-Buttercup.html">AIxCC，亞軍：Trail of Bits (AFC-Buttercup)</a></b>
-                        </li>
-                        <li><b><a href="https://twman.org/Cyber/AIxCC-shellphish.html">Shellphish，你所需要的只是 MCP - LLMs 解決 DEF CON CTF 決賽挑戰</a></b></li>
-                        <li><b><a href="https://twman.org/Cyber/LLM-Guard.html">AI 大模型安全護欄綜合報告：從核心技術架構到市場趨勢</a></b>
-                        </li>
-                        <li><b><a href="https://twman.org/Cyber/LLM-Offense.html">大型語言模型（LLM）安全攻防策略深度解析</a></b>
-                        </li>
-                    </ul>
-                </details>
-            </div>
-        </div>
+            <i class="fas fa-feather-alt icon-large">探索 AI 領域 🚀</i>
+    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px;">
+        <a href="https://deep-learning-101.github.io/Large-Language-Model" class="nav-btn" style="background: #007bff; color: white; padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 500; width: 100%; text-align: center; box-shadow: 0 2px 4px rgba(0,123,255,0.2); transition: transform 0.2s;">
+          🤖 大語言模型
+        </a>
+        <a href="https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper?tab=readme-ov-file#llm" target="_blank" style="font-size: 0.85em; color: #666; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 1.1em;">🔗</span> GitHub Papers
+        </a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px;">
+        <a href="https://deep-learning-101.github.io/Natural-Language-Processing" class="nav-btn" style="background: #28a745; color: white; padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 500; width: 100%; text-align: center; box-shadow: 0 2px 4px rgba(40,167,69,0.2); transition: transform 0.2s;">
+          📝 自然語言處理
+        </a>
+        <a href="https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper" target="_blank" style="font-size: 0.85em; color: #666; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 1.1em;">🔗</span> GitHub Papers
+        </a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px;">
+        <a href="https://deep-learning-101.github.io//Computer-Vision" class="nav-btn" style="background: #17a2b8; color: white; padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 500; width: 100%; text-align: center; box-shadow: 0 2px 4px rgba(23,162,184,0.2); transition: transform 0.2s;">
+          👁️ 電腦視覺
+        </a>
+        <a href="https://github.com/Deep-Learning-101/Computer-Vision-Paper" target="_blank" style="font-size: 0.85em; color: #666; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 1.1em;">🔗</span> GitHub Papers
+        </a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px;">
+        <a href="https://deep-learning-101.github.io/Speech-Processing" class="nav-btn" style="background: #6f42c1; color: white; padding: 8px 16px; border-radius: 50px; text-decoration: none; font-weight: 500; width: 100%; text-align: center; box-shadow: 0 2px 4px rgba(111,66,193,0.2); transition: transform 0.2s;">
+          🎤 語音處理
+        </a>
+        <a href="https://github.com/Deep-Learning-101/Speech-Processing-Paper" target="_blank" style="font-size: 0.85em; color: #666; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 1.1em;">🔗</span> GitHub Papers
+        </a>
+    </div>
+如果您想尋找更詳細的筆記 ☝️ GitHub Repository 👆 歡迎 Star ⭐
+<div class="sidebar-container">
+  <div class="sidebar-section featured-section">
+    <div class="section-title">
+      <span class="icon">🔥</span> 嚴選 (必讀)
+    </div>
+    <div class="section-content">
+
+      <a href="https://deep-learning-101.github.io/Blog/AIBeginner" class="sidebar-link featured-link">
+        <span class="badge-strategy">策略</span>
+        AI新賽局：企業的入門策略指南
+      </a>
+
+      <a href="https://deep-learning-101.github.io/Blog/TW-LLM-Benchmark" class="sidebar-link featured-link">
+        <span class="badge-report">評測</span>
+        臺灣 LLM 性能評測與在地化分析
+      </a>
+
+      <a href="https://deep-learning-101.github.io/RAG" class="sidebar-link featured-link">
+        <span class="badge-tech">實戰</span>
+        從零到一：打造高精準度 RAG 系統
+      </a>
+
+      <a href="https://deep-learning-101.github.io/agent" class="sidebar-link featured-link">
+        <span class="badge-warning">避坑</span>
+        避開 AI Agent 開發陷阱與解決方案
+      </a>
+
+      <a href="https://deep-learning-101.github.io/Blog/Cloudflared-Tunnel" class="sidebar-link featured-link">
+        <span class="badge-warning">手把手</span>
+        Cloudflared 實作內網穿透 (Tunnel)
+      </a>
+    </div>
+  </div>
+
+  <details class="sidebar-section">
+    <summary class="section-summary">
+      <span>🛠️ 實戰工具 & Agent 框架</span>
+      <span class="arrow">▼</span>
+    </summary>
+    <div class="section-content">
+      <a href="https://deep-learning-101.github.io/Blog/Dify-Coze-n8n-AutoGen-LangChain" class="sidebar-link">Dify, Coze, n8n, AutoGen 熱門框架比較</a>
+      <a href="https://deep-learning-101.github.io/Blog/vLLM-Ollama-SGLang-LLaMAcpp" class="sidebar-link">推論加速：vLLM, Ollama, SGLang</a>
+      <a href="https://deep-learning-101.github.io/gemini-fullstack-langgraph/FinGenAI" class="sidebar-link">Gemini + LangGraph 全端實戰</a>
+      <a href="https://deep-learning-101.github.io/FinRobot/FinRobot-GOOGL" class="sidebar-link">基於 AutoGen 的 FinRobot 體驗</a>
+    </div>
+  </details>
+
+  <details class="sidebar-section">
+    <summary class="section-summary">
+      <span>🛡️ AI 資安與 AIxCC 競賽</span>
+      <span class="arrow">▼</span>
+    </summary>
+    <div class="section-content">
+      <a href="https://deep-learning-101.github.io/cyber/AIxCC-Atlanta" class="sidebar-link">🏆 冠軍團隊：亞特蘭大 (Team-Atlanta) 解析</a>
+      <a href="https://deep-learning-101.github.io/cyber/AIxCC-Buttercup" class="sidebar-link">🥈 亞軍團隊：Trail of Bits 解析</a>
+      <a href="https://deep-learning-101.github.io/cyber/AIxCC-shellphish" class="sidebar-link">🐚 Shellphish：用 LLMs 解決 CTF 挑戰</a>
+      <a href="https://deep-learning-101.github.io/cyber/LLM-Guard" class="sidebar-link">🛡️ AI 大模型安全護欄綜合報告</a>
+      <a href="https://deep-learning-101.github.io/cyber/LLM-Offense" class="sidebar-link">⚔️ LLM 安全攻防策略深度解析</a>
+    </div>
+  </details>
+
+  <details class="sidebar-section">
+    <summary class="section-summary">
+      <span>📝 論文快遞 & 產業趨勢</span>
+      <span class="arrow">▼</span>
+    </summary>
+    <div class="section-content">
+      <a href="https://deep-learning-101.github.io/Paper/Chain-of-Thought" class="sidebar-link">CoT (思维鏈) is not explainability</a>
+      <a href="https://deep-learning-101.github.io/Paper/2506.21521_Potemkin-Understanding" class="sidebar-link">arXiv: Potemkin Understanding in LLMs</a>
+      <a href="https://deep-learning-101.github.io/Paper/2502.04644_Oxford_Agentic-Reasoning.html" class="sidebar-link">arXiv: Agentic Reasoning</a>
+      <a href="https://deep-learning-101.github.io/Blog/AIFinTech" class="sidebar-link">💰 GenAI 在金融產業的應用分析</a>
+      <a href="https://deep-learning-101.github.io/Blog/robot" class="sidebar-link">🤖 2025 趨勢：AI Robot 陪伴型機器人</a>
+    </div>
+  </details>
+
+  <details class="sidebar-section">
+    <summary class="section-summary">
+      <span>🚧 踩坑指南 & 科普入門</span>
+      <span class="arrow">▼</span>
+    </summary>
+    <div class="section-content">
+      <a href="https://deep-learning-101.github.io/GenAI" class="sidebar-link">🎓 白話文科普 GenAI (硬體/數據)</a>
+      <a href="https://deep-learning-101.github.io/1010LLM" class="sidebar-link">🛑 LLM 打完收工？硬體升級重要性</a>
+      <a href="https://deep-learning-101.github.io/0204LLM" class="sidebar-link">📘 LLM 入門完整指南：原理與應用</a>
+      <a href="https://deep-learning-101.github.io/diffusion" class="sidebar-link">🎨 Diffusion Model 圖像生成解析</a>
+      <a href="https://deep-learning-101.github.io/GPU" class="sidebar-link">💻 訓練微調 VRAM 估算指南</a>
+      <a href="https://deep-learning-101.github.io/asr-tts" class="sidebar-link">🎙️ ASR/TTS 語音開發避坑</a>
+      <a href="https://deep-learning-101.github.io/nlp" class="sidebar-link">📝 NLP 自然語言開發避坑</a>
+      <a href="https://deep-learning-101.github.io/101" class="sidebar-link">🐧 Ubuntu 深度學習環境安裝教學</a>
+    </div>
+  </details>
+
+</div>
+
+</div>
+</div>
 
         <h2 class="bento-title-large text-center my-12"><i class="fas fa-briefcase"></i> 工作經歷 & <i class="fas fa-graduation-cap"></i> 學術/教育背景 </h2>
         <h2 class="bento-title-large text-center my-12">Work Experience & Acacemic / Education </h2>
