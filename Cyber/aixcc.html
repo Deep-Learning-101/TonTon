@@ -179,43 +179,7 @@
 <body>
     <div id="app" class="content-wrapper">
 
-        <div class="top-info-box">
-            <h1 class="top-info-title">Deep Learning 101</h1>
-            <div class="top-info-text">
-                <p>
-                  <strong>Deep Learning 101, Taiwan’s pioneering and highest deep learning meetup, launched on 2016/11/11 @ 83F, Taipei 101</strong>
-                </p>
-                <p>
-                AI是一條孤獨且充滿惶恐及未知的旅程，花俏絢麗的收費課程或活動絕非通往成功的捷徑。<br>
-                衷心感謝當時來自不同單位的AI同好參與者實名分享的寶貴經驗；如欲移除資訊還請告知。<br>
-                由 <a href="https://twman.org/" target="_blank" rel="noopener noreferrer">TonTon Huang Ph.D.</a> 發起，及其當時任職公司(台灣雪豹科技)無償贊助場地及茶水點心。<br>
-                Deep Learning 101 創立初衷，是為了普及與分享深度學習及AI領域的尖端知識，深信AI的價值在於解決真實世界的商業問題。<br>
-                </p>
-                <p>
-                    <a href="https://www.youtube.com/@TaiwanDeepLearningMeetup" target="_blank" rel="noopener noreferrer">去 YouTube 訂閱</a> |
-                    <a href="https://www.facebook.com/groups/525579498272187/" target="_blank" rel="noopener noreferrer">Facebook</a> |
-                    <a href="https://deep-learning-101.github.io/" target="_blank" rel="noopener noreferrer">回 GitHub Pages</a> |
-                    <a href="https://github.com/Deep-Learning-101" target="_blank" rel="noopener noreferrer">到 GitHub 點星</a> |
-                    <a href="http://DeepLearning101.TWMAN.ORG" target="_blank" rel="noopener noreferrer">網站</a> |
-                    <a href="https://huggingface.co/DeepLearning101" target="_blank" rel="noopener noreferrer">到 Hugging Face Space 按愛心</a>
-                </p>
-                 <table>
-                  <tr>
-                    <th align="center"><a href="https://deep-learning-101.github.io/Large-Language-Model">大語言模型</a></th>
-                    <th align="center"><a href="https://deep-learning-101.github.io/Speech-Processing">語音處理</a></th>
-                    <th align="center"><a href="https://deep-learning-101.github.io/Natural-Language-Processing">自然語言處理</a></th>
-                    <th align="center"><a href="https://deep-learning-101.github.io/Computer-Vision">電腦視覺</a></th>
-                  </tr>
-                  <tr>
-                    <td><a href="https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper?tab=readme-ov-file#llm">Large Language Model</a></td>
-                    <td><a href="https://github.com/Deep-Learning-101/Speech-Processing-Paper">Speech Processing</a></td>
-                    <td><a href="https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper">Natural Language Processing, NLP</a></td>
-                    <td><a href="https://github.com/Deep-Learning-101/Computer-Vision-Paper">Computer Vision</a></td>
-                  </tr>
-                </table>
-            </div>
-        </div>
-
+        <div id="header-placeholder"></div>
 
         <header class="text-center my-12">
             <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-400">
@@ -224,16 +188,20 @@
             美國 DARPA 透過 AIxCC 比賽，旨在將漏洞「找洞＋修補」轉為 AI 驅動自動化，解放關鍵基礎設施 (醫療、供水、能源等) 免於技術債拖累。這延續 Cyber Grand Challenge (CGC) 和 CHESS 計畫，但本次成果全面開源，比賽結束當天 4/7 系統釋出，其餘數週內跟進，藉國家資源活絡資安生態。
         </header>
 
+        <div class="bento-box motion-div">
+            <i class="fas fa-feather-alt icon-large"></i>
+            <h2 class="bento-title-large">精選文章 (Featured Articles)</h2>
+            <div id="ai-share-placeholder"></div>
+        </div>
+
         <div class="grid-container">
             <div class="bento-box col-span-lg-3" style="display: flex; flex-direction: column; align-items: center;">
                 <div style="text-align: center;">
                     🎵 不聽可惜的 NotebookLM Podcast @ Google 🎵<br>
                     <audio controls style="width: 400px; height: 30px; margin-top: 20px;"><source src="../notebooklm-mp3/AIxCC.mp3" type="audio/mpeg"></audio>
                 </div>
-            <!-- 包住兩個影片的 flex 容器 -->
-             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-                <!-- 第 1 個影片 -->
-                 <iframe width="400" height="225" src="https://www.youtube.com/embed/46zw8aBKKGc" frameborder="0" allow="accelerometer; autoplay; lipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+                <iframe width="400" height="225" src="https://www.youtube.com/embed/46zw8aBKKGc" frameborder="0" allow="accelerometer; autoplay; lipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
             </div>
         </div>
@@ -427,6 +395,7 @@
         </div>
 
     </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const { animate, inView } = motion;
@@ -452,6 +421,25 @@
                 );
             }, { once: true, amount: 0.1 });
         });
+    });
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 為了相容不同層級的目錄結構，我們設計了自動容錯的 fetch 機制
+        // 如果同目錄下找不到檔案，就會自動去上一層 (../) 尋找
+        
+        // 1. 載入頂部 Header
+        fetch('header.html')
+            .then(res => res.ok ? res.text() : fetch('../header.html').then(r => r.text()))
+            .then(html => document.getElementById('header-placeholder').innerHTML = html)
+            .catch(err => console.error('無法載入 header.html:', err));
+
+        // 2. 載入精選文章 (ai-share)
+        fetch('ai-share.html')
+            .then(res => res.ok ? res.text() : fetch('../ai-share.html').then(r => r.text()))
+            .then(html => document.getElementById('ai-share-placeholder').innerHTML = html)
+            .catch(err => console.error('無法載入 ai-share.html:', err));
     });
     </script>
 </body>
