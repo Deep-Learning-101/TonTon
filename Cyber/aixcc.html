@@ -428,15 +428,15 @@
     document.addEventListener("DOMContentLoaded", () => {
         // 為了相容不同層級的目錄結構，我們設計了自動容錯的 fetch 機制
         // 如果同目錄下找不到檔案，就會自動去上一層 (../) 尋找
-        
+
         // 1. 載入頂部 Header
-        fetch('header.html')
+        fetch('../includes/header.html')
             .then(res => res.ok ? res.text() : fetch('../includes/header.html').then(r => r.text()))
             .then(html => document.getElementById('header-placeholder').innerHTML = html)
             .catch(err => console.error('無法載入 header.html:', err));
 
         // 2. 載入精選文章 (ai-share)
-        fetch('ai-share.html')
+        fetch('../includes/ai-share.html')
             .then(res => res.ok ? res.text() : fetch('../includes/ai-share.html').then(r => r.text()))
             .then(html => document.getElementById('ai-share-placeholder').innerHTML = html)
             .catch(err => console.error('無法載入 ai-share.html:', err));
