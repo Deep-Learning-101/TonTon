@@ -431,13 +431,13 @@
         
         // 1. 載入頂部 Header
         fetch('header.html')
-            .then(res => res.ok ? res.text() : fetch('../header.html').then(r => r.text()))
+            .then(res => res.ok ? res.text() : fetch('../includes/header.html').then(r => r.text()))
             .then(html => document.getElementById('header-placeholder').innerHTML = html)
             .catch(err => console.error('無法載入 header.html:', err));
 
         // 2. 載入精選文章 (ai-share)
         fetch('ai-share.html')
-            .then(res => res.ok ? res.text() : fetch('../ai-share.html').then(r => r.text()))
+            .then(res => res.ok ? res.text() : fetch('../includes/ai-share.html').then(r => r.text()))
             .then(html => document.getElementById('ai-share-placeholder').innerHTML = html)
             .catch(err => console.error('無法載入 ai-share.html:', err));
     });
