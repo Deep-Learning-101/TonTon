@@ -653,17 +653,17 @@ Content-Type: application/json
     document.addEventListener("DOMContentLoaded", () => {
         // 定義各種可能存放模組的路徑 (程式會自動由左至右嘗試，找到為止)
         const headerPaths = [
-            '../header.html',        // 假設子頁面在 Cyber 資料夾，模組在外層
+        '../_includes/header.html',// 假設放在 includes 資料夾
+        '../header.html',        // 假設子頁面在 Cyber 資料夾，模組在外層
             'header.html',           // 假設模組跟子頁面在同一層
-            '/header.html',          // 絕對路徑
-            '../includes/header.html'// 假設放在 includes 資料夾
+            '/header.html'          // 絕對路徑
         ];
-        
+
         const aiSharePaths = [
-            '../ai-share.html', 
-            'ai-share.html', 
-            '/ai-share.html', 
-            '../includes/ai-share.html'
+            '../_includes/ai-share.html',
+            '../ai-share.html',
+            'ai-share.html',
+            '/ai-share.html'
         ];
 
         // 自動尋路的異步函數
