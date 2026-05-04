@@ -471,50 +471,36 @@
 
 </section>
 
-<section class="mb-12 p-8 bg-gray-50 rounded-lg">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        <a href="https://blog.twman.org/search/label/USA" target="_blank"
-        title="TonTon Huang's Research and Travel in USA"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           🇺🇸 美國足跡
-        </a>
-        <a href="https://blog.twman.org/search/label/TW2UK" target="_blank"
-        title="TonTon Huang's Research and Travel in UK"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           🇬🇧 英國足跡
-        </a>
-        <a href="https://blog.twman.org/search/label/Paris" target="_blank"
-        title="TonTon Huang's Research and Travel in Paris"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           🇫🇷 法國足跡
-        </a>
-        <a href="https://blog.twman.org/search/label/Singapore" target="_blank"
-        title="TonTon Huang's Research and Travel in Singapore"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           🇸🇬 新加坡足跡
-        </a>
+<div class="bento-box motion-div">
+    <div class="flex items-center gap-3 mb-6">
+        <i class="fas fa-images text-3xl text-blue-600"></i>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-800">
+            技術實力與解決方案 <span class="text-slate-400 font-light mx-2">|</span> 
+            <span class="text-lg md:text-xl text-slate-500 font-medium">Core Competence</span>
+        </h2>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        <a href="https://blog.twman.org/2013/12/Computer.html" target="_blank"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           我的最愛 - 我的電腦 和 硬碟
-        </a>
-        <a href="https://blog.twman.org/2012/09/DIO.html" target="_blank"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           我的最愛 - DIO 二期可動鼓煞
-        </a>
-        <a href="https://blog.twman.org/2017/01/SLI.html" target="_blank"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           [開箱] GTX1080 XTREME
-        </a>
-        <a href="https://blog.twman.org/2018/05/NVIDIA.html" target="_blank"
-           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
-           [開箱] NVIDIA TITAN V + XP
-        </a>
+
+    <!-- 預設顯示的第一張圖片 (建議放「全棧技術實力與解決方案的堅實基礎」那張) -->
+    <div class="mb-4">
+        <img src="./img/TonTon-001.jpg" alt="全棧技術實力" class="w-full h-auto rounded-lg shadow-sm border border-slate-200">
     </div>
-</section>
 
-
+    <!-- 展開/收起 區塊 -->
+    <details class="group/early" close>
+        <!-- 按鈕本體 -->
+        <summary class="flex items-center justify-center p-3 text-sm font-medium text-slate-500 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors border border-dashed border-slate-300">
+            <span class="group-open/early:hidden">顯示完整 Case Studies 與前瞻研究 ▼</span>
+            <span class="hidden group-open/early:inline">收起簡報 ▲</span>
+        </summary>
+        
+        <!-- 摺疊的內容：第二張以後的圖片放這裡 -->
+        <div class="mt-4 space-y-4">
+            <img src="./img/TonTon-002.jpg" alt="Case Studies I" class="w-full h-auto rounded-lg shadow-sm border border-slate-200">
+            <img src="./img/TonTon-003.jpg" alt="Case Studies II" class="w-full h-auto rounded-lg shadow-sm border border-slate-200">
+            <img src="./img/TonTon-004.jpg" alt="前瞻研究發表" class="w-full h-auto rounded-lg shadow-sm border border-slate-200">
+        </div>
+    </details>
+</div>
 
         <h2 class="bento-title-large text-center my-12"><i class="fas fa-briefcase"></i> 工作經歷 & <i class="fas fa-graduation-cap"></i> 學術/教育背景 </h2>
         <h2 class="bento-title-large text-center my-12">Work Experience & Acacemic / Education </h2>
@@ -800,6 +786,49 @@
                 <span class="tag">NLP</span> <span class="tag">OCR</span> <span class="tag">Speech Recognition</span> <span class="tag">NER</span>
             </div>
         </div>
+
+<section class="mb-12 p-8 bg-gray-50 rounded-lg">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        <a href="https://blog.twman.org/search/label/USA" target="_blank"
+        title="TonTon Huang's Research and Travel in USA"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           🇺🇸 美國足跡
+        </a>
+        <a href="https://blog.twman.org/search/label/TW2UK" target="_blank"
+        title="TonTon Huang's Research and Travel in UK"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           🇬🇧 英國足跡
+        </a>
+        <a href="https://blog.twman.org/search/label/Paris" target="_blank"
+        title="TonTon Huang's Research and Travel in Paris"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           🇫🇷 法國足跡
+        </a>
+        <a href="https://blog.twman.org/search/label/Singapore" target="_blank"
+        title="TonTon Huang's Research and Travel in Singapore"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           🇸🇬 新加坡足跡
+        </a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        <a href="https://blog.twman.org/2013/12/Computer.html" target="_blank"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           我的最愛 - 我的電腦 和 硬碟
+        </a>
+        <a href="https://blog.twman.org/2012/09/DIO.html" target="_blank"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           我的最愛 - DIO 二期可動鼓煞
+        </a>
+        <a href="https://blog.twman.org/2017/01/SLI.html" target="_blank"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           [開箱] GTX1080 XTREME
+        </a>
+        <a href="https://blog.twman.org/2018/05/NVIDIA.html" target="_blank"
+           class="text-center px-4 py-3 bg-blue-50 text-blue-700 text-base font-medium rounded-lg border border-blue-200 hover:bg-blue-100 hover:shadow-sm transition-all">
+           [開箱] NVIDIA TITAN V + XP
+        </a>
+    </div>
+</section>
 
         <div class="bento-box motion-div">
             <a href="https://www.cmcm.com/" target="_blank"><img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/leopard-mobile-cheetah-mobile.avif" width="200" height="auto" class="mb-4"></img></a>
