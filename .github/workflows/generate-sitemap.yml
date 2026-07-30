@@ -23,6 +23,14 @@ jobs:
         with:
           fetch-depth: 0        # 取得完整歷史，避免 non-fast-forward
           persist-credentials: true
+          clean: true
+
+      - name: Ensure latest remote is present
+        run: |
+          # 取得並同步遠端 main，確保工作目錄乾淨且與 origin/main 一致
+          git fetch origin main --prune
+          git checkout main
+          git reset --hard origin/main
 
       - name: Generate sitemap.xml
         uses: cicirello/generate-sitemap@v1
@@ -34,26 +42,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Ensure latest remote is present
-        run: |
-          # 取得並同步遠端 main，避免 push 時 non-fast-forward
-          git fetch origin main --prune
-          git checkout main
-          git pull --rebase origin main
-        # persist-credentials: true from checkout 保證使用 GITHUB_TOKEN 進行 auth
-
       - name: Commit and push sitemap if changed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 如果 sitemap.xml 存在且有變更就 commit + push
           if [ -f sitemap.xml ]; then
-            # 檢查是否有任何變更
             if git status --porcelain | grep -q .; then
               git add sitemap.xml
-              # 若沒有變更會讓 commit 失敗，使用 || true 避免 action 直接失敗
               git commit -m "chore: update sitemap.xml" || echo "No commit needed"
-              # push（使用已存在的 credentials）
               git push origin main
             else
               echo "No changes to commit"
