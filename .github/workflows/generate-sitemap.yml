@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Generate sitemap.xml
         uses: cicirello/generate-sitemap@v1
@@ -26,4 +28,4 @@ jobs:
           commit_message: "chore: update sitemap.xml"
           file_pattern: sitemap.xml
         env:
-          GITHUB_TOKEN: ${{ secrets.sitemap }}  # 你的 Personal Access Token Secret 名稱
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用內建 token，避免外部 PAT 問題
