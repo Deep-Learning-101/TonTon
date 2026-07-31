@@ -243,10 +243,11 @@
     </script>
 </head>
 <body>
-    <div id="app" class="content-wrapper">
+<div id="include-nav-pages"></div>
+<div id="app" class="content-wrapper">
 
         <!-- header.html inlined -->
-        <div style="height: 20px;"></div>
+        <!-- <div style="height: 20px;"></div>
         <div class="top-fixed-navbar">
           <div class="nav-links-grid">
             <a href="https://www.youtube.com/@DeepLearning101" target="_blank" class="nav-pill"><span>📺</span> YouTube 訂閱</a>
@@ -256,7 +257,7 @@
             <a href="https://huggingface.co/DeepLearning101" target="_blank" class="nav-pill"><span>🤗</span> HF Space</a>
             <a href="https://github.com/Deep-Learning-101" target="_blank" class="nav-pill"><span>⭐</span> GitHub 點星</a>
           </div>
-        </div>
+        </div> -->
         <header class="hero-header-wrapper">
           <h1 class="hero-title">Deep Learning 101, Taiwan's pioneering and highest deep learning meetup, launched on 2016/11/11 @ 83F, Taipei 101</h1>
           💼 從頂層 AI 戰略到地端 GPU 部署企業方案： 卡在開源模型效能低落？不知道如何為企業私有雲架設高併發的推論伺服器？提供 FDE (Forward Deployed Engineering) 級別的 AI 落地顧問與架構建置以及企業級的 LLM 架構健檢與地端部署服務。
@@ -576,6 +577,30 @@
     });
     </script>
 
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script><script>
+async function includeHTML(url, containerId) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const html = await res.text();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(s => document.head.appendChild(s.cloneNode(true)));
+        temp.querySelectorAll('style').forEach(s => s.remove());
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            if (oldScript.src) { newScript.src = oldScript.src; newScript.type = oldScript.type || 'text/javascript'; }
+            else { newScript.textContent = oldScript.textContent; }
+            Array.from(oldScript.attributes).forEach(attr => { if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value); });
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('includeHTML failed:', url, e); }
+}
+includeHTML('../_includes/nav-pages.html', 'include-nav-pages');
+</script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
