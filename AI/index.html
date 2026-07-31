@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI 技術全景摘要 | LLM・RAG・Agent・語音・NLP 核心知識地圖 | Deep Learning 101</title>
+    <meta name="description" content="匯整 Deep Learning 101 所有 AI 核心主題：LLM 入門、RAG 系統、AI Agent、語音處理、NLP、GPU 硬體、企業 AI 策略、Claude Code 等實戰指南與踩坑摘要。">
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .top-info-box {
+            background-color: #e9e9ed;
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+        .top-info-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 0.5rem;
+        }
+        .top-info-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .top-info-text p { margin-bottom: 0.75rem; }
+        .top-info-text a { color: #0071e3; font-weight: 500; text-decoration: none; }
+        .top-info-text a:hover { text-decoration: underline; }
+        .bento-box {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        .bento-title-large {
+            font-size: 2.2rem;
+            line-height: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1d1d1f;
+        }
+        .bento-subtitle {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0071e3;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .bento-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #333333;
+        }
+        .bento-text strong, .bento-text b { font-weight: 600; color: #1d1d1f; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-list { list-style-type: none; padding-left: 0.5rem; }
+        .bento-list li { margin-bottom: 0.75rem; padding-left: 1.75rem; position: relative; }
+        .bento-list li::before {
+            content: "\f111";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #0071e3;
+            font-size: 0.5rem;
+            position: absolute;
+            left: 0.25rem;
+            top: 0.5em;
+        }
+        .icon-large { font-size: 2.5rem; margin-bottom: 1rem; color: #0071e3; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3730a3;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        /* Article card grid */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+        .article-card {
+            background: #f5f5f7;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e5e5ea;
+            transition: all 0.3s ease;
+        }
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+            border-color: #0071e3;
+            background: #fff;
+        }
+        .article-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .article-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        .article-card-desc {
+            font-size: 0.88rem;
+            color: #555;
+            line-height: 1.65;
+            flex-grow: 1;
+            margin-bottom: 0.75rem;
+        }
+        .article-card-tags { font-size: 0.78rem; color: #0071e3; font-weight: 600; }
+        /* Section label */
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #0071e3, #34aadc);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+        /* Pitfall highlight box */
+        .pitfall-box {
+            border-left: 4px solid #ff9f0a;
+            background: #fff9f0;
+            padding: 1rem 1.25rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .pitfall-box strong { color: #b45309; }
+        /* Tip highlight box */
+        .tip-box {
+            border-left: 4px solid #30d158;
+            background: #f0faf4;
+            padding: 1rem 1.25rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: #333;
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://deep-learning-101.github.io/AI"
+      },
+      "headline": "AI 技術全景摘要：LLM・RAG・Agent・語音・NLP 核心知識地圖",
+      "description": "匯整 Deep Learning 101 所有 AI 核心主題的關鍵摘要，涵蓋 LLM 入門、RAG、AI Agent、語音處理、NLP、GPU 硬體規劃、企業 AI 策略等實戰踩坑指南。",
+      "image": "https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "TonTon Huang Ph.D.",
+        "url": "https://twman.org"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Deep Learning 101, Taiwan",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg"
+        }
+      },
+      "keywords": "LLM, RAG, AI Agent, ASR, TTS, NLP, GPU, Deep Learning, Claude Code, 企業 AI, 台灣 LLM, Cloudflare Tunnel"
+    }
+    </script>
+</head>
+<body>
+    <div id="app" class="content-wrapper">
+
+        <!-- ① header.html 嵌入點 -->
+        <div id="include-header"></div>
+
+        <header class="text-center my-12">
+            <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400">
+                🤖 AI 技術全景：核心知識地圖
+            </h1>
+        </header>
+
+        <!-- ② ai-share.html 嵌入點 -->
+        <div id="include-aishare"></div>
+
+        <!-- 作者資訊 -->
+        <div class="bento-box motion-div">
+            <div class="bento-text">
+                <p><strong>作者</strong>：<a href="https://twman.org" target="_blank" rel="noopener noreferrer">TonTon Huang Ph.D.</a> ｜ <a href="https://deep-learning-101.github.io" target="_blank">Deep Learning 101</a></p>
+                <p>本頁匯整了作者在 <a href="https://blog.twman.org" target="_blank">blog.twman.org</a> 與 <a href="https://deep-learning-101.github.io" target="_blank">deep-learning-101.github.io</a> 發表的 AI 技術文章關鍵摘要，涵蓋從入門到企業部署的完整知識路徑。每個區塊均附有原文連結，適合做為 AI 學習地圖與快速查詢入口。</p>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 1: LLM 與硬體基礎                              -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-brain icon-large mr-4 text-blue-500"></i>一、LLM 入門與硬體基礎</h2>
+            <div class="bento-text">
+                <p>從零開始理解大型語言模型的原理、部署與硬體需求。這四篇文章構成了學習 LLM 的完整基礎路徑。</p>
+            </div>
+            <div class="article-grid">
+                <a href="https://deep-learning-101.github.io/0204LLM" target="_blank" class="article-card">
+                    <div class="article-card-icon">📘</div>
+                    <div class="article-card-title">大型語言模型 (LLM) 入門完整指南</div>
+                    <div class="article-card-desc">從多代理系統（AutoGen、Dify、RAGFlow）到本地端 Ollama 部署，涵蓋 OCR 文件解析、AI 客服自動化、多模態工地分析等真實落地案例。強調地面層執行重於炒作，並深入分析本地 vs 雲端 API 的成本取捨。</div>
+                    <div class="article-card-tags">#多代理 #本地部署 #RAGFlow #Ollama #實戰踩坑</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/1010LLM" target="_blank" class="article-card">
+                    <div class="article-card-icon">🛑</div>
+                    <div class="article-card-title">踩完所有坑，LLM 就打完收工了嗎？</div>
+                    <div class="article-card-desc">十年深度學習從業回顧（2016 起），從 Kaldi ASR 到現代 Whisper、AutoGen、GraphRAG 的演進歷程。ChatGPT 的崛起自動化了大量原本需要數年苦工的任務，但也揭示了「技術迭代速度要求持續學習」的殘酷現實。</div>
+                    <div class="article-card-tags">#十年回顧 #LLM演進 #GraphRAG #持續學習</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/GPU" target="_blank" class="article-card">
+                    <div class="article-card-icon">💻</div>
+                    <div class="article-card-title">LLM VRAM 估算指南：從預訓練到推論</div>
+                    <div class="article-card-desc">詳解 LLM 在預訓練、SFT 微調、推論三階段的 VRAM 需求公式（FP16 = 每 10 億參數 2GB）。介紹 LoRA/QLoRA 如何將微調 VRAM 壓縮至接近推論水準，並分析 Gemini 3.0 時代 Context Window 取代參數量成為核心瓶頸的趨勢。</div>
+                    <div class="article-card-tags">#VRAM估算 #LoRA #QLoRA #硬體規劃 #FP16</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/101" target="_blank" class="article-card">
+                    <div class="article-card-icon">🐧</div>
+                    <div class="article-card-title">手把手建置深度學習開發環境</div>
+                    <div class="article-card-desc">從 GPU 選型、Ubuntu 安裝、NVIDIA Driver/CUDA/cuDNN 到 Docker/NVIDIA-Docker 容器化的完整教學。記錄作者從 2016 年 GTX 960 到 2024 年 RTX 6000 Ada、A100 的硬體升級歷程。清潔容器化環境是省去未來無數除錯時間的關鍵投資。</div>
+                    <div class="article-card-tags">#Ubuntu #CUDA #Docker #環境建置 #GPU選型</div>
+                </a>
+            </div>
+            <div class="pitfall-box" style="margin-top: 1.5rem;">
+                <strong>⚠️ 關鍵認知：</strong>在 LLM 時代，VRAM 容量而非計算速度才是硬體規劃的核心限制。全量微調一個 70B 模型需要超過 1TB 的 VRAM，而 QLoRA 可將需求壓縮到消費級 GPU 可接受的範圍。
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 2: RAG 與 AI Agent                             -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-robot icon-large mr-4 text-purple-500"></i>二、RAG 系統與 AI Agent</h2>
+            <div class="bento-text">
+                <p>企業 AI 落地的兩大核心技術路徑：知識庫問答（RAG）與自動化代理（Agent）。兩者都有大量常見的「看起來能跑、實際不堪用」的陷阱。</p>
+            </div>
+            <div class="article-grid">
+                <a href="https://deep-learning-101.github.io/RAG" target="_blank" class="article-card">
+                    <div class="article-card-icon">🔍</div>
+                    <div class="article-card-title">從零到一：打造高精準度 RAG 系統實戰指南</div>
+                    <div class="article-card-desc">完整涵蓋文件切塊策略、Embedding 模型選型（Qwen3-Embedding-8B vs BGE-M3 vs Gemini Embedding 實測比較）、Hybrid Search（向量 + BM25）、Reranking，以及針對表格與複雜版面的 Visual RAG 架構。強調「單純向量搜尋結果極差」，結合切塊紀律＋混合檢索＋重排序才能將幻覺率壓至 5% 以下。</div>
+                    <div class="article-card-tags">#RAG #HybridSearch #Reranking #VisualRAG #Embedding選型</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/agent" target="_blank" class="article-card">
+                    <div class="article-card-icon">🤖</div>
+                    <div class="article-card-title">AI Agent 開發必看：5 大實戰陷阱與底層架構解決方案</div>
+                    <div class="article-card-desc">對比單一 AI Agent 與多代理 Agentic AI 系統，比較 LangGraph、AutoGen、CrewAI、MCP（模型上下文協定）框架。點出五大企業失敗模式（邏輯無限迴圈、API 費用失控等）並提供 OWASP Agentic Security 威脅因應。核心結論：穩健的 Agent 需要狀態機機制、Human-in-the-loop 護欄與 MCP 整合。</div>
+                    <div class="article-card-tags">#AIAgent #LangGraph #MCP #AgenticAI #OWASP</div>
+                </a>
+            </div>
+            <div class="tip-box" style="margin-top: 1.5rem;">
+                <strong>✅ 實戰建議：</strong>RAG 不是萬能藥，Visual RAG（直接向量化頁面截圖）是解決含大量表格與版面複雜 PDF 的最佳方案。Agent 開發則務必設計「費用熔斷」與「最大步驟數」等護欄，避免無限遞迴消耗。
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 3: 語音處理與 NLP                              -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-microphone-alt icon-large mr-4 text-green-500"></i>三、語音處理與自然語言處理</h2>
+            <div class="bento-text">
+                <p>多年實戰累積的中文語音與 NLP 踩坑指南。中文環境的特殊性（繁體資料稀少、語境模糊、多說話者問題）使得直接套用英文方案往往失敗。</p>
+            </div>
+            <div class="article-grid">
+                <a href="https://deep-learning-101.github.io/asr-tts" target="_blank" class="article-card">
+                    <div class="article-card-icon">🎙️</div>
+                    <div class="article-card-title">ASR/TTS 開發避坑指南</div>
+                    <div class="article-card-desc">聚焦 OpenAI Whisper 在中文環境的限制（標點不穩定、推論速度慢），推薦 faster-whisper、WhisperX 與阿里巴巴 FunASR（60,000 小時中文訓練）。涵蓋音訊前處理工具鏈（UVR5 人聲分離、Denoiser、Audio-Slicer）與 ASR 錯誤糾正（pycorrector、FastCorrect）。生產級語音系統需要模型＋降噪前處理＋後處理糾錯三位一體。</div>
+                    <div class="article-card-tags">#Whisper #FunASR #TTS #語音降噪 #中文ASR</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/nlp" target="_blank" class="article-card">
+                    <div class="article-card-icon">📝</div>
+                    <div class="article-card-title">那些自然語言處理 (NLP) 踩的坑</div>
+                    <div class="article-card-desc">中文 NLP 實踐者必讀：繁體中文高品質資料集稀缺、缺乏繁中 SQuAD 等級的機器閱讀理解資料、ASR 輸出文字糾錯、類別不平衡的文本分類、中文 NER 斷詞邊界模糊。解決方案涵蓋 BERT 微調、PyCorrector、Seq2Seq、加權損失函數、CRF+BERT for NER。</div>
+                    <div class="article-card-tags">#NLP #BERT #NER #文本糾錯 #繁體中文</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/speech" target="_blank" class="article-card">
+                    <div class="article-card-icon">🔊</div>
+                    <div class="article-card-title">那些語音處理 (Speech Processing) 踩的坑</div>
+                    <div class="article-card-desc">五大語音處理挑戰：聲紋識別（VoxCeleb2、d-vector/x-vector）、Kaldi 中文 ASR（AISHELL 語料）、語音增強/降噪（DCCRN、Deep Complex U-Net）、說話者分離（雞尾酒會問題），以及流式推論的模型壓縮。真實部署需要強力前處理＋輕量模型＋多說話者分離的整合方案。</div>
+                    <div class="article-card-tags">#聲紋識別 #Kaldi #語音降噪 #說話者分離 #模型壓縮</div>
+                </a>
+            </div>
+            <div class="pitfall-box" style="margin-top: 1.5rem;">
+                <strong>⚠️ 繁體中文天坑：</strong>資料品質與在地化標注才是中文 NLP/語音專案的真正天花板。英文套件直接移植繁中環境幾乎必定失敗，需針對在地資料進行標注與微調。
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 4: 企業 AI 策略與評測                          -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-chart-line icon-large mr-4 text-orange-500"></i>四、企業 AI 策略與台灣 LLM 評測</h2>
+            <div class="bento-text">
+                <p>面向企業決策者的 AI 導入指南，以及針對繁體中文、台灣在地知識的 LLM 評測報告。</p>
+            </div>
+            <div class="article-grid">
+                <a href="https://deep-learning-101.github.io/Blog/AIBeginner" target="_blank" class="article-card">
+                    <div class="article-card-icon">🏢</div>
+                    <div class="article-card-title">企業 AI 導入完整指南 2026：10 大致命錯誤</div>
+                    <div class="article-card-desc">為企業決策者量身打造，歸納十大失敗模式（架構漂移、幻覺風險、IP 法律責任、ROI 不明確等），並提供從 POC 到規模化的路線圖，強調嚴格資料治理與安全護欄。收錄台灣上市公司（金融、製造、電信）在 2024-2025 年的 GenAI 真實部署案例對照表。</div>
+                    <div class="article-card-tags">#企業AI #ROI #資料治理 #10大失敗 #POC</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/Blog/TW-LLM-Benchmark" target="_blank" class="article-card">
+                    <div class="article-card-icon">📊</div>
+                    <div class="article-card-title">臺灣大型語言模型性能評測與在地化策略</div>
+                    <div class="article-card-desc">比較台灣在地化 LLM（Llama-3-Taiwan、TAIDE、Breeze2）與國際模型在繁體中文基準（TMLU、TMMLU+、TW Legal Eval、Truthful QA）的表現，並評估 RAG 場景的 Embedding 模型（Qwen3-Embedding、Gemini Embedding）與 Reranker。結論：針對台灣法律、金融、醫療知識優化的模型，在在地 RAG 場景中顯著優於通用模型。</div>
+                    <div class="article-card-tags">#TAIDE #TMMLU #繁體中文評測 #RAG選模 #台灣LLM</div>
+                </a>
+            </div>
+            <div class="tip-box" style="margin-top: 1.5rem;">
+                <strong>✅ 選模策略：</strong>若 RAG 知識庫涉及大量繁體中文法律、財報或醫療文件，優先考慮在地化微調模型（如 TAIDE）搭配 Qwen3-Embedding 作為 Embedding，效果遠超通用英文模型。
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 5: 工具與實戰生態                              -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-tools icon-large mr-4 text-cyan-500"></i>五、工具與實戰生態</h2>
+            <div class="bento-text">
+                <p>兩個讓 AI 開發更高效、更安全的實戰工具指南：Claude Code 作為下一代 AI 編碼代理，以及 Cloudflare Tunnel 作為零信任內網穿透方案。</p>
+            </div>
+            <div class="article-grid">
+                <a href="https://deep-learning-101.github.io/Blog/ClaudeCode" target="_blank" class="article-card">
+                    <div class="article-card-icon">⌨️</div>
+                    <div class="article-card-title">Claude Code 完全整合指南 2026</div>
+                    <div class="article-card-desc">深度介紹 Claude Code 作為終端機原生 AI Agent 的核心機制：CLAUDE.md 專案記憶、Plan Mode、context 管理、Skills 四層工程學科架構，以及 free-claude-code 本地閘道與 cc-connect 整合。Claude Code 與 Copilot/Cursor 的根本差異在於它理解整個專案系統，能自主執行跨檔案任務。附有大型 Repo 企業部署常見失敗模式的反模式對照表。</div>
+                    <div class="article-card-tags">#ClaudeCode #CLAUDE.md #PlanMode #Skills #企業部署</div>
+                </a>
+                <a href="https://deep-learning-101.github.io/Blog/Cloudflared-Tunnel" target="_blank" class="article-card">
+                    <div class="article-card-icon">🌐</div>
+                    <div class="article-card-title">Cloudflare Tunnel：免公網 IP 架設內網穿透</div>
+                    <div class="article-card-desc">3 分鐘實作 Cloudflare Zero Trust Tunnel，讓 SSH、HTTP、RDP 服務無需公網 IP 或開防火牆埠口即可安全暴露。涵蓋 cloudflared 系統服務自動啟動，以及 Windows 機器無固定外部 IP 時的反向 SSH Tunnel 方案。核心應用場景：為企業內部的 RAG 系統、LLM API 設置身份驗證與稽核存取控制。</div>
+                    <div class="article-card-tags">#Cloudflare #ZeroTrust #內網穿透 #安全存取 #SSH</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 6: 快速導覽地圖                                -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-map-marked-alt icon-large mr-4 text-indigo-500"></i>六、學習路徑建議</h2>
+            <div class="bento-text">
+                <h3 class="bento-subtitle">🆕 AI 新手入門路徑</h3>
+                <ul class="bento-list">
+                    <li><strong>Step 1：</strong>先讀 <a href="https://deep-learning-101.github.io/Blog/AIBeginner" target="_blank">企業 AI 入門指南</a>，建立正確的 AI 導入心態與避雷意識。</li>
+                    <li><strong>Step 2：</strong>讀 <a href="https://deep-learning-101.github.io/0204LLM" target="_blank">LLM 入門完整指南</a>，了解 LLM 的核心概念與工具生態。</li>
+                    <li><strong>Step 3：</strong>讀 <a href="https://deep-learning-101.github.io/101" target="_blank">深度學習環境建置</a>，搭好本地開發環境。</li>
+                    <li><strong>Step 4：</strong>讀 <a href="https://deep-learning-101.github.io/GPU" target="_blank">VRAM 估算指南</a>，在購買 GPU 或規劃雲端預算前必讀。</li>
+                </ul>
+                <h3 class="bento-subtitle">🏗️ 企業 AI 落地路徑</h3>
+                <ul class="bento-list">
+                    <li><strong>知識庫問答：</strong><a href="https://deep-learning-101.github.io/RAG" target="_blank">高精準度 RAG 系統</a> → <a href="https://deep-learning-101.github.io/Blog/TW-LLM-Benchmark" target="_blank">台灣 LLM 評測</a>（選型參考）</li>
+                    <li><strong>自動化流程：</strong><a href="https://deep-learning-101.github.io/agent" target="_blank">AI Agent 陷阱與解法</a>（務必先讀再動手）</li>
+                    <li><strong>安全暴露服務：</strong><a href="https://deep-learning-101.github.io/Blog/Cloudflared-Tunnel" target="_blank">Cloudflare Tunnel</a>（零信任存取控制）</li>
+                    <li><strong>提升開發效率：</strong><a href="https://deep-learning-101.github.io/Blog/ClaudeCode" target="_blank">Claude Code 整合指南</a></li>
+                </ul>
+                <h3 class="bento-subtitle">🎙️ 語音／NLP 專項路徑</h3>
+                <ul class="bento-list">
+                    <li><strong>語音辨識/合成：</strong><a href="https://deep-learning-101.github.io/asr-tts" target="_blank">ASR/TTS 避坑指南</a> → <a href="https://deep-learning-101.github.io/speech" target="_blank">語音處理踩坑全記錄</a></li>
+                    <li><strong>自然語言處理：</strong><a href="https://deep-learning-101.github.io/nlp" target="_blank">NLP 踩坑指南</a>（中文特有難點）</li>
+                    <li><strong>十年回顧總結：</strong><a href="https://deep-learning-101.github.io/1010LLM" target="_blank">LLM 打完收工？</a>（技術演進的大視角）</li>
+                </ul>
+            </div>
+        </div>
+
+    </div><!-- /.content-wrapper -->
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Include 機制：用 fetch() 嵌入 header.html 與 ai-share.html  -->
+    <!-- 只需更新 header.html 或 ai-share.html，本頁自動反映變更    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script>
+    async function includeHTML(url, containerId) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
+            const html = await res.text();
+
+            // 用臨時節點解析 HTML，分離 <style> 與其他內容
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+
+            // 將 <style> 移至 <head>，確保樣式套用在全頁
+            temp.querySelectorAll('style').forEach(function(style) {
+                document.head.appendChild(style.cloneNode(true));
+            });
+            // 移除已移至 head 的 style 節點
+            temp.querySelectorAll('style').forEach(function(style) {
+                style.remove();
+            });
+
+            // 將剩餘 HTML 注入目標容器
+            const container = document.getElementById(containerId);
+            container.innerHTML = temp.innerHTML;
+
+            // 重新執行 inline scripts（innerHTML 注入的 script 不會自動執行）
+            container.querySelectorAll('script').forEach(function(oldScript) {
+                var newScript = document.createElement('script');
+                Array.from(oldScript.attributes).forEach(function(attr) {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                if (!oldScript.src) {
+                    newScript.textContent = oldScript.textContent;
+                }
+                oldScript.replaceWith(newScript);
+            });
+        } catch (e) {
+            console.warn('[includeHTML] 無法載入 ' + url + '：', e.message);
+        }
+    }
+
+    // 嵌入共用元件
+    includeHTML('header.html',   'include-header');
+    includeHTML('ai-share.html', 'include-aishare');
+    </script>
+
+    <!-- Framer Motion 入場動畫 -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var motionLib = typeof motion !== 'undefined' ? motion : null;
+        if (!motionLib) return;
+        var animate = motionLib.animate;
+        var inView  = motionLib.inView;
+
+        inView('header', function() {
+            animate('header h1', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, ease: 'easeOut', delay: 0.2 });
+        });
+
+        document.querySelectorAll('.motion-div').forEach(function(div) {
+            inView(div, function() {
+                animate(div,
+                    { opacity: [0, 1], y: [30, 0], scale: [0.98, 1] },
+                    { duration: 0.65, delay: 0.1, ease: 'easeOut' }
+                );
+            }, { once: true, amount: 0.1 });
+        });
+    });
+    </script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

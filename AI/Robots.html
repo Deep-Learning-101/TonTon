@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI 陪伴機器人：2025 趨勢分析 | 技術突破、市場潛力與未來展望 | Deep Learning 101</title>
+    <meta name="description" content="一份針對 AI 陪伴型機器人的深度趨勢分析報告，內容涵蓋技術突破、市場潛力、應用場景、技術挑戰，並包含 ASR、TTS、LLM 等關鍵技術與競品價格分析。">
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .bento-box {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        .bento-title-large {
+            font-size: 2.2rem;
+            line-height: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1d1d1f;
+        }
+        .bento-subtitle {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0071e3;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .bento-text {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #333333;
+        }
+        .bento-text strong, .bento-text b { font-weight: 600; color: #1d1d1f; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-list { list-style-type: none; padding-left: 0.5rem; }
+        .bento-list li { margin-bottom: 0.75rem; padding-left: 1.75rem; position: relative; }
+        .bento-list li::before {
+            content: "\f111";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #0071e3;
+            font-size: 0.5rem;
+            position: absolute;
+            left: 0.25rem;
+            top: 0.5em;
+        }
+        .icon-large { font-size: 2.5rem; margin-bottom: 1rem; color: #0071e3; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3730a3;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        /* Scrollable table wrapper */
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .bento-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            min-width: 600px;
+            font-size: 0.9rem;
+        }
+        .bento-box th, .bento-box td {
+            border: 1px solid #e0e0e0;
+            padding: 0.65rem 0.9rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .bento-box th { background-color: #f5f5f7; font-weight: 600; }
+        .bento-box td a { color: #0071e3; text-decoration: none; }
+        .bento-box td a:hover { text-decoration: underline; }
+        /* Competitor card grid */
+        .competitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+        .competitor-card {
+            background: #f5f5f7;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid #e5e5ea;
+            transition: all 0.3s ease;
+        }
+        .competitor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+            border-color: #0071e3;
+            background: #fff;
+        }
+        .competitor-name { font-weight: 700; font-size: 1.05rem; color: #1d1d1f; margin-bottom: 0.4rem; }
+        .competitor-maker { font-size: 0.82rem; color: #888; margin-bottom: 0.75rem; }
+        .competitor-desc { font-size: 0.9rem; color: #444; line-height: 1.65; }
+        .competitor-price {
+            display: inline-block;
+            margin-top: 0.75rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.2rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        /* Video row */
+        .video-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 16 / 9;
+            flex: 1 1 280px;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border: none;
+            border-radius: 0.75rem;
+        }
+        /* Tip / pitfall boxes */
+        .tip-box {
+            border-left: 4px solid #30d158;
+            background: #f0faf4;
+            padding: 1rem 1.25rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .pitfall-box {
+            border-left: 4px solid #ff9f0a;
+            background: #fff9f0;
+            padding: 1rem 1.25rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .pitfall-box strong { color: #b45309; }
+        /* Audio podcast bar */
+        .podcast-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, #f3e8ff, #dbeafe);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .podcast-bar span { font-weight: 600; font-size: 0.95rem; color: #3730a3; }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://deep-learning-101.github.io/robot"
+      },
+      "headline": "AI 陪伴機器人：2025 趨勢分析技術突破、市場潛力與未來展望",
+      "description": "一份針對 AI 陪伴型機器人的深度趨勢分析報告，內容涵蓋技術突破、市場潛力、應用場景、技術挑戰，並包含 ASR、TTS、LLM 等關鍵技術與競品價格分析。",
+      "image": "https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "TonTon Huang Ph.D.",
+        "url": "https://twman.org/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Deep Learning 101, Taiwan",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg"
+        }
+      },
+      "datePublished": "2025-06-21",
+      "dateModified": "2025-06-21",
+      "keywords": "AI Companion Robot, Service Robot, CES 2025, ASR, TTS, LLM, 陪伴機器人, 服務型機器人"
+    }
+    </script>
+</head>
+<body>
+    <div id="app" class="content-wrapper">
+
+        <!-- ① header.html 嵌入點 -->
+        <div id="include-header"></div>
+
+        <header class="text-center my-12">
+            <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-400">
+                <a href="https://www.twman.org/AI/Robots" target="_blank" rel="noopener noreferrer">
+                    🤖 AI 陪伴機器人：2025 趨勢分析
+                </a>
+            </h1>
+            <p class="mt-4 text-lg text-gray-500">技術突破、市場潛力與未來展望</p>
+        </header>
+
+        <!-- ② ai-share.html 嵌入點 -->
+        <div id="include-aishare"></div>
+
+        <!-- 作者資訊 + Podcast -->
+        <div class="bento-box motion-div">
+            <div class="bento-text">
+                <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank" rel="noopener noreferrer">TonTon Huang Ph.D.</a> ｜ <strong>更新日期</strong>：2025 年 06 月 21 日</p>
+            </div>
+            <div class="podcast-bar">
+                <span>🎵 不聽可惜的 NotebookLM Podcast @ Google</span>
+                <audio controls style="height:32px; flex: 1 1 200px;">
+                    <source src="../notebooklm-mp3/robot.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="video-row">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/oiIgoll_nNM"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/3-ID0vf8Hyk"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 1: 概覽 & 服務型機器人興起                     -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-chart-line icon-large mr-4 text-violet-500"></i>一、市場概覽與服務型機器人興起</h2>
+            <div class="bento-text">
+                <p>隨著人工智慧 (AI) 技術的快速發展，AI 陪伴型機器人逐漸成為熱門話題，並在 CES 2025 中展現出強勁的發展勢頭。本報告分析 AI 陪伴型機器人的發展趨勢、應用場景、技術挑戰，並探討相關的 ASR、TTS、LLM 等關鍵技術，以及競品的價格分析。</p>
+
+                <h3 class="bento-subtitle">服務型機器人市場快速增長</h3>
+                <p>根據國際機器人聯盟 (IFR) 的數據，服務型機器人市場（普渡、<a href="https://tw.orionstar.com/" target="_blank">獵戶星空</a>、擎朗智能、凌群電腦、緯創資通）正在快速增長，預計到 2027 年將迎來爆發性成長。推動趨勢的核心因素是<strong>雲端技術</strong>帶來的靈活性、可擴充性與低進入門檻，有助於降低開發和部署成本，加速普及應用。</p>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 2: CES 2025                                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-star icon-large mr-4 text-yellow-500"></i>二、CES 2025 亮相機器人</h2>
+            <div class="bento-text">
+                <p>CES 2025 中，AI 陪伴型機器人成為焦點之一，多家廠商展示最新技術發展，涵蓋擬寵物行為、療癒互動、模組化設計等多元方向。</p>
+                <ul class="bento-list">
+                    <li><strong>Ropet（萌友智能）</strong>：AI 寵物玩具，可模仿真實寵物搖尾巴、舔手等行為；在 Kickstarter 上眾籌超百萬，已售出超 900 台。</li>
+                    <li><strong>Mirumi（Yukai Engineering）</strong>：樹懶寶寶機器人，動作緩慢、表情呆萌，舒緩壓力與焦慮；預計中年啟動募資，售價 70–100 美元。</li>
+                    <li><strong>Ai Me（TCL）</strong>：「世界上第一款模組化 AI 伴侶機器人」概念款，背靠 TCL 品牌技術實力，詳細功能與定價待公布。</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>✅ 趨勢觀察：</strong>AI 陪伴型機器人需要具備<strong>持續學習</strong>能力，從與使用者互動中學習，並根據新資訊和經驗調整行為與反應，才能隨時間變得更智慧。
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 3: 技術挑戰                                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-flask icon-large mr-4 text-red-500"></i>三、技術挑戰</h2>
+            <div class="bento-text">
+                <p>儘管 AI 陪伴型機器人發展迅速，仍面臨以下核心技術挑戰：</p>
+                <ul class="bento-list">
+                    <li><strong>自然的情感互動</strong>：如何讓機器人更自然地識別人類情緒並做出適當反應（語氣、表情、肢體語言），是首要挑戰。</li>
+                    <li><strong>安全性</strong>：涵蓋物理安全（避免碰撞或跌倒）與資訊安全（保護使用者隱私資料）兩個層面。</li>
+                    <li><strong>成本</strong>：目前成本仍然較高，降低開發與部署成本是推動普及的關鍵因素。</li>
+                    <li><strong>表情控制</strong>：需採用高精度執行器，結合語音、視覺與情感交互技術，讓表情更自然生動。</li>
+                    <li><strong>泛化能力</strong>：機器人需能適應不同環境和任務，這將成為未來的核心競爭力。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 4: 應用場景                                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-th-large icon-large mr-4 text-blue-500"></i>四、應用場景</h2>
+            <div class="bento-text">
+                <p>AI 陪伴型機器人具有廣泛的應用場景，覆蓋從居家到醫療、教育到娛樂的完整生活層面：</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                <div style="background: #f0f7ff; border-radius: 1rem; padding: 1.25rem; border: 1px solid #bfdbfe;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏠</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">居家陪伴</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">為老年人、獨居者和兒童提供陪伴和情感支持，提醒吃藥、聊天、玩遊戲，幫助保持活躍的生活方式。</div>
+                </div>
+                <div style="background: #f0fdf4; border-radius: 1rem; padding: 1.25rem; border: 1px solid #bbf7d0;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏥</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">醫療照護</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">協助老年人和殘疾人士進行復健、提醒服藥、監測健康狀況，減輕醫療人員工作負擔。</div>
+                </div>
+                <div style="background: #fffbeb; border-radius: 1rem; padding: 1.25rem; border: 1px solid #fde68a;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎓</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">教育娛樂</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">為兒童提供教育和娛樂內容，講故事、教唱歌、玩遊戲，寓教於樂激發學習興趣。</div>
+                </div>
+                <div style="background: #fdf4ff; border-radius: 1rem; padding: 1.25rem; border: 1px solid #e9d5ff;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧠</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">心理治療</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">協助心理疾病患者進行治療，提供情感支持與心理疏導，創造安全私密的治療環境。</div>
+                </div>
+                <div style="background: #fff1f2; border-radius: 1rem; padding: 1.25rem; border: 1px solid #fecdd3;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💕</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">虛擬伴侶</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">如 Gatebox 的二次元虛擬伴侶，為單身用戶提供情感寄托與日常互動。</div>
+                </div>
+                <div style="background: #f0fdfa; border-radius: 1rem; padding: 1.25rem; border: 1px solid #99f6e4;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💊</div>
+                    <div style="font-weight: 700; margin-bottom: 0.4rem; color: #1d1d1f;">醫療保健</div>
+                    <div style="font-size: 0.9rem; color: #555; line-height: 1.6;">提供健康諮詢、提醒服藥、監測健康狀況，幫助使用者更好地管理自身健康。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 5: 競品分析                                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-trophy icon-large mr-4 text-orange-500"></i>五、競品分析</h2>
+            <div class="bento-text">
+                <p>市面上已有多款 AI 陪伴型機器人產品，以下分析市場現有或 CES 2025 發表的主要競品優缺點：</p>
+            </div>
+            <div class="competitor-grid">
+                <div class="competitor-card">
+                    <div class="competitor-name">Ropet</div>
+                    <div class="competitor-maker">萌友智能 (CES 2025)</div>
+                    <div class="competitor-desc">AI 寵物機器人，模仿真實寵物行為（搖尾巴、舔手）。Kickstarter 籌款超百萬，已售出超 900 台。外型可愛、互動性強。</div>
+                    <span class="competitor-price">💰 價格待公開</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">Mirumi</div>
+                    <div class="competitor-maker">Yukai Engineering (CES 2025)</div>
+                    <div class="competitor-desc">樹懶寶寶機器人，動作緩慢、表情呆萌，舒緩壓力與焦慮，提供療癒陪伴體驗。</div>
+                    <span class="competitor-price">💰 約 70–100 美元</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">Ai Me</div>
+                    <div class="competitor-maker">TCL (CES 2025)</div>
+                    <div class="competitor-desc">「世界上第一款模組化 AI 伴侶機器人」，可識別物體，有類似翅膀的機械部分進行互動。背靠 TCL 品牌。</div>
+                    <span class="competitor-price">💰 概念款，待定</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">BubblePal</div>
+                    <div class="competitor-maker">躍然創新</div>
+                    <div class="competitor-desc">針對毛絨玩具設計的外置 AI 掛件，將普通毛絨玩具變成 AI 陪伴玩具，為兒童提供互動式陪伴體驗。</div>
+                    <span class="competitor-price">💰 人民幣 399 元</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">LOVOT</div>
+                    <div class="competitor-maker">Groove X（日本）</div>
+                    <div class="competitor-desc">情感互動陪伴機器人，擁有豐富感測器，可對觸摸和聲音做出反應。互動性強，情感表達豐富。續航時間較短。</div>
+                    <span class="competitor-price">💰 約 3,000 美元</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">Moflin</div>
+                    <div class="competitor-maker">Vanguard Industries × CASIO</div>
+                    <div class="competitor-desc">AI 毛絨寵物玩具，可透過 AI 學習並適應使用者行為。觸感柔軟。CASIO 提供「Club Moflin」訂閱維修服務（年 6,600 日元）。</div>
+                    <span class="competitor-price">💰 59,400 日元（約 12,735 台幣）</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">湯姆貓 AI 童伴</div>
+                    <div class="competitor-maker">金科文化</div>
+                    <div class="competitor-desc">以「會說話的湯姆貓」IP 為基礎，主打語音互動和教育娛樂功能，IP 知名度高，吸引兒童興趣。</div>
+                    <span class="competitor-price">💰 人民幣 1,499–1,999 元</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">FoloToy（Fofo）</div>
+                    <div class="competitor-maker">深圳市萌想科技</div>
+                    <div class="competitor-desc">情感支持型 AI 陪伴機器人，支援自然語言互動，可播放音樂、講故事和提供提醒，全球銷售量合計已超千件。</div>
+                    <span class="competitor-price">💰 千元內；電路板套件百元左右</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">喜羊羊超能鈴鐺娃娃</div>
+                    <div class="competitor-maker">奧飛娛樂</div>
+                    <div class="competitor-desc">《喜羊羊與灰太狼》首款 AI 智慧產品，結合知名 IP，為大電影《守護》限定限量珍藏款，預售已售逾百件。</div>
+                    <span class="competitor-price">💰 人民幣 799 元</span>
+                </div>
+                <div class="competitor-card">
+                    <div class="competitor-name">顯眼包</div>
+                    <div class="competitor-maker">字節跳動（豆包大模型）</div>
+                    <div class="competitor-desc">中秋節贈禮玩具，結合豆包大模型，字節跳動自己不會做消費機器人產品，但與汽車、手機等消費品有大量豆包合作。</div>
+                    <span class="competitor-price">💰 非量產商品</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 6: LLM API 價格比較                            -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-dollar-sign icon-large mr-4 text-green-500"></i>六、LLM API 平台價格比較</h2>
+            <div class="bento-text">
+                <p>大型語言模型 API 平台價格比較（約 2025/04）。選型時除費用外，亦需考量上下文窗口大小、多模態能力與速率限制。</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>平台</th>
+                            <th>模型</th>
+                            <th>輸入費用 (USD/1M Tokens)</th>
+                            <th>輸出費用 (USD/1M Tokens)</th>
+                            <th>上下文窗口</th>
+                            <th>免費層級</th>
+                            <th>多模態</th>
+                            <th>說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>OpenAI</strong></td>
+                            <td>o1</td>
+                            <td>$15.00</td>
+                            <td>$60.00</td>
+                            <td>200k</td>
+                            <td>❌</td>
+                            <td>✅ 文字＋圖像</td>
+                            <td>Frontier 模型，支援 Vision / Tools / 結構化輸出</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OpenAI</strong></td>
+                            <td>o3-mini</td>
+                            <td>$1.10</td>
+                            <td>$4.40</td>
+                            <td>200k</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>成本效益模型，適合編碼與數學</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google</strong></td>
+                            <td>Gemini 2.5 Pro (Preview)</td>
+                            <td>$1.25（≤200k）/ $2.50（>200k）</td>
+                            <td>$10.00（≤200k）/ $15.00（>200k）</td>
+                            <td>&gt;200k</td>
+                            <td>✅</td>
+                            <td>✅ 文字＋圖像</td>
+                            <td>高階推理力，企業級用途</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google</strong></td>
+                            <td>Gemini 2.0 Flash</td>
+                            <td>$0.10（圖文影）/ $0.70（音訊）</td>
+                            <td>$0.40</td>
+                            <td>1M</td>
+                            <td>✅ (15 RPM)</td>
+                            <td>✅ 全模態</td>
+                            <td>多模態支援，企業級速率與穩定性</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google</strong></td>
+                            <td>Gemini 2.0 Flash Lite</td>
+                            <td>$0.075</td>
+                            <td>$0.30</td>
+                            <td>1M</td>
+                            <td>✅ (30 RPM)</td>
+                            <td>✅ 全模態</td>
+                            <td>超高速率、經濟型多模態模型</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DeepSeek</strong></td>
+                            <td>deepseek-chat (V3)</td>
+                            <td>$0.27</td>
+                            <td>$1.10</td>
+                            <td>64K</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>標準價，推理速度佳</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DeepSeek</strong></td>
+                            <td>deepseek-reasoner (R1)</td>
+                            <td>$0.55</td>
+                            <td>$2.19</td>
+                            <td>64K</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>高階邏輯推理與數據分析</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Qwen</strong></td>
+                            <td>Qwen-Max</td>
+                            <td>$1.60</td>
+                            <td>$6.40</td>
+                            <td>~32K</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>強推理型，偏向高品質產出</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Qwen</strong></td>
+                            <td>Qwen-Plus</td>
+                            <td>$0.40</td>
+                            <td>$1.20</td>
+                            <td>~131K</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>均衡型，支援較長上下文</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Grok</strong></td>
+                            <td>grok-3</td>
+                            <td>$3.00</td>
+                            <td>$15.00</td>
+                            <td>131k</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                            <td>支援思考模式、有限搜尋功能</td>
+                        </tr>
+                        <tr>
+                            <td><strong>百度</strong></td>
+                            <td>文心一言 (ERNIE Bot)</td>
+                            <td>免費</td>
+                            <td>免費</td>
+                            <td>不公開</td>
+                            <td>✅</td>
+                            <td>✅ 圖像/語音</td>
+                            <td>支援中文語境與多模態任務</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 7: 語音平台價格比較                            -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-microphone-alt icon-large mr-4 text-cyan-500"></i>七、語音識別／合成平台價格比較</h2>
+            <div class="bento-text">
+                <p>語音服務選型參考（約 2025/04）。陪伴機器人對延遲敏感，建議優先評估本地部署（Whisper）vs 雲端 API 的成本與延遲取捨。</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名稱</th>
+                            <th>功能</th>
+                            <th>說明 / 估算費用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="https://github.com/openai/whisper" target="_blank"><strong>Whisper（開源）</strong></a></td>
+                            <td>語音識別、翻譯</td>
+                            <td>本地部署，無 API 費用；每分鐘 150 字 × 10 分鐘 = 1,500 字</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://speech.fish.audio/zh/" target="_blank"><strong>Fish Audio</strong></a></td>
+                            <td>語音識別、語音合成</td>
+                            <td>TTS：英文 $0.0225、中文 $0.0675；ASR：30 分鐘 = $0.18</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://deepgram.com/pricing" target="_blank"><strong>Deepgram</strong></a></td>
+                            <td>語音識別</td>
+                            <td>TTS：英文 $0.02025、中文 $0.06075；ASR：30 分鐘 = $0.147</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://azure.microsoft.com/zh-tw/pricing/details/cognitive-services/speech-services/" target="_blank"><strong>Microsoft Azure</strong></a></td>
+                            <td>語音合成</td>
+                            <td>TTS：英文 $0.036、中文 $0.108；ASR：即時轉錄 $1/小時，超額 $0.8/小時</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://aws.amazon.com/tw/polly/pricing" target="_blank"><strong>Amazon Polly</strong></a></td>
+                            <td>語音合成</td>
+                            <td>TTS：英文 $0.024、中文 $0.072</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://cloud.google.com/text-to-speech/pricing" target="_blank"><strong>Google WaveNet</strong></a></td>
+                            <td>語音合成</td>
+                            <td>TTS：英文 $0.024、中文 $0.072</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pitfall-box">
+                <strong>⚠️ 中文加價注意：</strong>中文語音服務普遍比英文貴約 3 倍。高頻互動場景（如陪伴機器人每天數小時通話）建議評估本地端 Whisper + FunASR 方案，長期成本遠低於雲端 API。
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 8: 技術分析                                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-cogs icon-large mr-4 text-indigo-500"></i>八、技術分析：核心技術棧</h2>
+            <div class="bento-text">
+                <h3 class="bento-subtitle">LLM 賦能對話（以 Gemini 2.0 為例）</h3>
+                <p>大型語言模型如 Gemini 2.0，賦予 AI 陪伴型機器人更強大的語言理解和生成能力：</p>
+                <ul class="bento-list">
+                    <li><strong>強大的理解能力</strong>：能夠理解複雜的語句和上下文，更準確地掌握使用者意圖。</li>
+                    <li><strong>流暢的對話生成</strong>：生成自然流暢的對話，更接近人類的交流方式。</li>
+                    <li><strong>多模態理解</strong>：能夠處理文本、圖像、音訊等多種模態資訊，提供更豐富的互動體驗。</li>
+                </ul>
+
+                <h3 class="bento-subtitle">關鍵開源框架</h3>
+                <ul class="bento-list">
+                    <li><strong><a href="https://github.com/TEN-framework/ten-framework" target="_blank">Ten-Agent</a></strong>：開源對話代理框架，可快速構建和管理 AI 陪伴型機器人的對話系統（聊天機器人、語音助手等）。</li>
+                    <li><strong>LiveKit</strong>：開源 WebRTC 平台，用於構建即時音視頻通訊應用（視訊通話、直播），讓機器人支援視訊互動和遠端監控。</li>
+                    <li><strong>Pipecat</strong>：開源數據管道工具，處理和分析語音/文本等大量數據，協助機器人進行數據收集、分析並優化學習決策能力。</li>
+                    <li><strong>Dify</strong>：開源 AI 應用開發平台，快速構建和部署 AI 應用，加速陪伴機器人的開發和部署流程。</li>
+                </ul>
+
+                <h3 class="bento-subtitle">硬體建議（智慧音箱 / 嵌入式應用）</h3>
+                <ul class="bento-list">
+                    <li><strong>樹莓派</strong>：作為核心處理器，運行語音辨識、語音合成和 LLM 模型。</li>
+                    <li><strong>麥克風陣列</strong>：提高語音辨識準確度，抑制噪音與回音。</li>
+                    <li><strong>高品質揚聲器</strong>：提供清晰、自然的語音輸出體驗。</li>
+                    <li><strong>觸控螢幕</strong>：用於播放影片、互動操作等。</li>
+                    <li><strong>網路攝影機</strong>：支援視訊通話、人臉辨識等互動功能。</li>
+                    <li><strong>客製化外觀</strong>：可透過 3D 列印或特殊材質打造專屬形象。</li>
+                </ul>
+            </div>
+
+            <!-- Additional videos -->
+            <div class="video-row" style="margin-top: 1.5rem;">
+                <div class="video-wrap" style="max-width: 280px;">
+                    <iframe src="https://www.youtube.com/embed/HdtJQAgFcGo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-wrap" style="max-width: 280px;">
+                    <iframe src="https://www.youtube.com/embed/KgKcODixBUo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Section 9: 結論與建議                                  -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="bento-box motion-div">
+            <h2 class="bento-title-large"><i class="fas fa-lightbulb icon-large mr-4 text-yellow-500"></i>九、結論與建議</h2>
+            <div class="bento-text">
+                <p>AI 陪伴型機器人市場發展迅速，預計到 2027 年將迎來爆發性成長。隨著 AI 技術進一步發展，AI 陪伴型機器人將更加智慧化、個性化和人性化。</p>
+                <p>全球人口高齡化和少子化現象日益嚴重，AI 陪伴型機器人可以協助解決老年人照護和兒童陪伴等社會問題，同時在娛樂產業和醫療保健領域扮演重要角色。</p>
+
+                <h3 class="bento-subtitle">核心挑戰回顧</h3>
+                <ul class="bento-list">
+                    <li>如何讓機器人更自然地理解和回應人類的情感</li>
+                    <li>如何提高機器人的安全性（物理 + 資訊安全）</li>
+                    <li>如何降低機器人的成本以加速普及</li>
+                    <li><strong>泛化能力</strong>將成為未來的核心競爭力</li>
+                </ul>
+
+                <h3 class="bento-subtitle">發展建議</h3>
+                <ul class="bento-list">
+                    <li>加強情感計算和自然語言處理等技術的研發，提高機器人與人類的互動體驗。</li>
+                    <li>關注降低機器人的開發和部署成本，推動從小眾到大眾市場的跨越。</li>
+                    <li>開拓更多應用場景，尤其是醫療照護、教育娛樂等高需求領域。</li>
+                    <li>加強數據安全和隱私保護，確保使用者的資訊安全。</li>
+                    <li>鼓勵開發針對不同人群（失智長者、青少年、兒童）做專門功能和外型客製化。</li>
+                </ul>
+
+                <div class="tip-box" style="margin-top: 1.5rem;">
+                    <strong>🔮 未來展望：</strong>專家預測，到了 2030 年，AI 將更深入地融入人類社會，成為人類的夥伴和助手。AI 陪伴型機器人的發展，將為人類社會帶來深遠的影響。
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /.content-wrapper -->
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- Include 機制：用 fetch() 嵌入 header.html 與 ai-share.html  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script>
+    async function includeHTML(url, containerId) {
+        try {
+            var res = await fetch(url);
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
+            var html = await res.text();
+            var temp = document.createElement('div');
+            temp.innerHTML = html;
+            temp.querySelectorAll('style').forEach(function(style) {
+                document.head.appendChild(style.cloneNode(true));
+            });
+            temp.querySelectorAll('style').forEach(function(style) {
+                style.remove();
+            });
+            var container = document.getElementById(containerId);
+            container.innerHTML = temp.innerHTML;
+            container.querySelectorAll('script').forEach(function(oldScript) {
+                var newScript = document.createElement('script');
+                Array.from(oldScript.attributes).forEach(function(attr) {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                if (!oldScript.src) newScript.textContent = oldScript.textContent;
+                oldScript.replaceWith(newScript);
+            });
+        } catch (e) {
+            console.warn('[includeHTML] 無法載入 ' + url + '：', e.message);
+        }
+    }
+    includeHTML('header.html',   'include-header');
+    includeHTML('ai-share.html', 'include-aishare');
+    </script>
+
+    <!-- Framer Motion 入場動畫 -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var motionLib = typeof motion !== 'undefined' ? motion : null;
+        if (!motionLib) return;
+        var animate = motionLib.animate;
+        var inView  = motionLib.inView;
+        inView('header', function() {
+            animate('header h1', { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, ease: 'easeOut', delay: 0.2 });
+        });
+        document.querySelectorAll('.motion-div').forEach(function(div) {
+            inView(div, function() {
+                animate(div,
+                    { opacity: [0, 1], y: [30, 0], scale: [0.98, 1] },
+                    { duration: 0.65, delay: 0.1, ease: 'easeOut' }
+                );
+            }, { once: true, amount: 0.1 });
+        });
+    });
+    </script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>
