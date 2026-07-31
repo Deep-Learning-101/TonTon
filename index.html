@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TonTon H.-D. Huang Ph.D. | AI × Cyber-Security | 企業 AI 落地顧問與架構師 | Deep Learning 101 | 痛痛</title>
 
-    <meta name="description" content="Resume of TonTon H.-D. Huang Ph.D. Expert in Generative AI (GenAI), Deep Learning, LLM, RAG, and AI Governance. Over 10 years of experience in AI transformation and cybersecurity.">
-    <meta name="keywords" content="TonTon Huang, Deep Learning, GenAI, LLM, RAG, AI Governance, Cybersecurity, Ph.D., Resume, AI Consultant">
-    <meta name="description" content="四大 (Big 4) 顧問戰略視野 ✕ FDE 硬核部署 ✕ AI 資安防禦。TonTon Huang Ph.D. 專為企業提供地端 LLM 算力健檢、RAG 知識庫概念驗證 (POC)、AI Agent 自動化與 ISO 42001 AI 治理落地服務。">
-    <meta name="keywords" content="TonTon Huang, 企業 AI 顧問, RAG 落地 POC, 地端 LLM 部署, AI 資安, LLM-Guard, FDE, AI 總架構師, Deep Learning 101">
+    <meta name="description" content="四大 (Big 4) 顧問戰略視野 ✕ FDE 硬核部署 ✕ AI 資安防禦。TonTon Huang Ph.D. 專為企業提供地端 LLM 算力健檢、RAG 知識庫概念驗證 (POC)、AI Agent 自動化與 ISO 42001 AI 治理落地服務。Expert in GenAI, LLM, RAG, Cybersecurity.">
+    <meta name="keywords" content="TonTon Huang, 企業 AI 顧問, RAG 落地 POC, 地端 LLM 部署, AI 資安, LLM-Guard, FDE, AI 總架構師, Deep Learning 101, GenAI, Cybersecurity, Ph.D.">
     <meta property="og:title" content="TonTon H.-D. Huang Ph.D. - AI Expert">
     <meta property="og:description" content="Specializing in GenAI, Deep Learning, and AI Security.">
     <meta property="og:image" content="https://www.twman.org/images/your-profile-pic.jpg">
@@ -307,9 +305,9 @@
   ],
   "description": "TonTon H.-D. Huang Ph.D. is an Enterprise AI Architect bridging Big 4 strategic consulting and FDE hardcore engineering. Specializing in secure LLM deployment, RAG POC, and AI cybersecurity for digital transformation. (具備前四大顧問戰略視野與 FDE 實戰經驗，專精於企業級 AI 落地、RAG 知識庫建置與大模型資訊安全防禦)",
   "sameAs": [
-    "https://deep-learning-101.github.io/TonTon.html",  // 指向你的分身頁面
-    "https://deep-learning-101.github.io/",             // 指向你創辦的社群
-    "https://www.linkedin.com/in/tontonhuang/",         // 如果有 LinkedIn 建議加上
+    "https://deep-learning-101.github.io/TonTon.html",
+    "https://deep-learning-101.github.io/",
+    "https://www.linkedin.com/in/tontonhuang/",
     "https://blog.twman.org/",
     "https://www.twman.org/"
   ]
@@ -365,7 +363,8 @@
 </script>
 </head>
 <body>
-    <div id="app" class="content-wrapper">
+<div id="include-nav-pages"></div>
+<div id="app" class="content-wrapper">
 
 <header class="block my-12 font-sans w-full max-w-7xl mx-auto px-4 md:px-6">
     
@@ -1768,5 +1767,32 @@
         });
     });
     </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const html = await res.text();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(s => document.head.appendChild(s.cloneNode(true)));
+        temp.querySelectorAll('style').forEach(s => s.remove());
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            if (oldScript.src) { newScript.src = oldScript.src; newScript.type = oldScript.type || 'text/javascript'; }
+            else { newScript.textContent = oldScript.textContent; }
+            Array.from(oldScript.attributes).forEach(attr => { if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value); });
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('includeHTML failed:', url, e); }
+}
+includeHTML('_includes/nav-pages.html', 'include-nav-pages');
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>

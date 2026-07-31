@@ -217,6 +217,10 @@
 
         <!-- ① header.html 嵌入點 -->
         <div id="include-header"></div>
+<div id="include-nav-pages"></div>
+
+        <!-- ② profile-hero 嵌入點 -->
+        <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
 
         <header class="text-center my-12">
             <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-400">
@@ -724,8 +728,10 @@
             console.warn('[includeHTML] 無法載入 ' + url + '：', e.message);
         }
     }
-    includeHTML('header.html',   'include-header');
-    includeHTML('ai-share.html', 'include-aishare');
+    includeHTML('../_includes/header.html',   'include-header');
+    includeHTML('../_includes/nav-pages.html', 'include-nav-pages');
+    includeHTML('../_includes/profile-hero.html', 'include-profile-hero');
+    includeHTML('../_includes/ai-share.html', 'include-aishare');
     </script>
 
     <!-- Framer Motion 入場動畫 -->

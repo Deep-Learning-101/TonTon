@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research | TonTon H.-D. Huang Ph.D. | AI × Cyber-Security | Deep Learning 101</title>
+    <meta name="description" content="TonTon H.-D. Huang Ph.D. 學術研究頁面：博士論文、學術發表（IEEE Big Data、Soft Computing、arXiv）、ScholarGPS 排名、歷年演講經歷，以及國際訪問學者紀錄。">
+    <meta name="keywords" content="TonTon Huang, NCKU, PhD, Research, Publications, IEEE, Malware Detection, Deep Learning, NLP, Cybersecurity, ScholarGPS, Google Scholar">
+    <meta property="og:title" content="Research — TonTon H.-D. Huang Ph.D.">
+    <meta property="og:description" content="學術研究 | 博士論文 | 學術發表 | 演講經歷 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/TonTon_QQ-202602.png">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .bento-box {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        .bento-title-large { font-size: 2.2rem; line-height: 2.8rem; font-weight: 700; margin-bottom: 1.5rem; color: #1d1d1f; }
+        .bento-subtitle { font-size: 1.25rem; font-weight: 600; color: #0071e3; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-list { list-style-type: none; padding-left: 0.5rem; }
+        .bento-list li { margin-bottom: 0.75rem; padding-left: 1.75rem; position: relative; }
+        .bento-list li::before {
+            content: "\f111"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            color: #0071e3; font-size: 0.5rem; position: absolute; left: 0.25rem; top: 0.5em;
+        }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .meta-info { color: #6b7280; font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .tag {
+            display: inline-block; background-color: #e0e7ff; color: #3730a3;
+            padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem;
+            font-weight: 500; margin-right: 0.5rem; margin-bottom: 0.5rem;
+        }
+        /* 研究專長卡片 */
+        .expertise-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .expertise-card {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+            padding: 1.25rem; transition: all 0.2s;
+        }
+        .expertise-card:hover { border-color: #0071e3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,113,227,0.1); }
+        .expertise-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .expertise-card h4 { font-weight: 700; color: #1d1d1f; margin-bottom: 0.25rem; font-size: 0.95rem; }
+        .expertise-card p { font-size: 0.82rem; color: #555; line-height: 1.5; }
+        /* modern-link-grid */
+        .modern-link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
+        .modern-link {
+            display: flex; align-items: center; padding: 8px 12px; text-decoration: none !important;
+            color: #555 !important; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s ease;
+        }
+        .modern-link:hover { background: #f4f6f8; color: #007bff !important; transform: translateX(3px); }
+        .modern-details { border-bottom: 1px solid #eaeaea; }
+        .modern-details:last-child { border-bottom: none; }
+        .modern-summary {
+            padding: 12px 20px; cursor: pointer; font-weight: 600; color: #333; font-size: 0.95rem;
+            list-style: none; display: flex; align-items: center; justify-content: space-between; transition: background 0.2s;
+        }
+        .modern-summary:hover { background: #fafafa; color: #007bff; }
+        .modern-summary::-webkit-details-marker { display: none; }
+        .modern-summary .arrow { font-size: 0.75rem; color: #aaa; transition: transform 0.3s ease; }
+        details[open].modern-details .arrow { transform: rotate(180deg); }
+        details[open].modern-details .modern-summary { border-bottom: 1px solid #eaeaea; background: #fafafa; }
+        .modern-details-content { padding: 12px 20px; }
+    </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "TonTon H.-D. Huang Ph.D.",
+  "alternateName": ["TonTon", "痛痛"],
+  "url": "https://twman.org",
+  "jobTitle": "Enterprise AI Architect & Consultant",
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "National Cheng Kung University",
+      "degree": "Ph.D. in Computer Science & Information Engineering"
+    }
+  ],
+  "knowsAbout": [
+    "Enterprise AI Strategy",
+    "Retrieval-Augmented Generation (RAG)",
+    "Large Language Models (LLM)",
+    "AI Cybersecurity",
+    "Deep Learning",
+    "Natural Language Processing",
+    "Malware Detection"
+  ],
+  "sameAs": [
+    "https://deep-learning-101.github.io/TonTon.html",
+    "https://deep-learning-101.github.io/",
+    "https://www.linkedin.com/in/tontonhuang/",
+    "https://blog.twman.org/",
+    "https://www.twman.org/"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "企業導入 RAG 知識庫，如何避免機密資料外洩？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "必須採用「100% 地端部署 (On-Premise)」搭配開源模型。並於檢索層導入 LLM-Guard 零信任邊界防禦與 PII 去識別化技術，確保資料絕對不出內網。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "地端部署大型語言模型 (LLM) 該如何估算 GPU VRAM 規格？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "VRAM 需求取決於「模型參數大小」、「併發人數」與「推論框架 (如 vLLM/SGLang)」。一般 8B 模型搭配 vLLM PagedAttention，單張 24GB 顯卡即可滿足中小型企業基礎併發。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "生成式 AI 的幻覺 (Hallucination) 問題能解決嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "無法 100% 根除，但透過高精度的 RAG 檢索增強生成、Chunking 策略優化與 Prompt 護欄，實務上可將企業客服或智庫的 AI 幻覺率壓低至商用標準的 5% 以下。"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div id="include-header"></div>
+<div id="include-nav-pages"></div>
+
+<div id="app" class="content-wrapper">
+
+<div id="include-profile-hero"></div>
+
+<!-- ===== 頁面標題 ===== -->
+<h2 class="bento-title-large text-center my-8">
+  <i class="fas fa-graduation-cap text-blue-600"></i> 學術研究 &amp; 教育背景
+</h2>
+<p class="text-center text-slate-500 -mt-4 mb-10">Research &amp; Academic Background</p>
+
+<!-- ===== ① 研究專長 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-brain mr-2"></i>研究專長 Research Expertise</h3>
+    <div class="expertise-grid">
+        <div class="expertise-card">
+            <div class="icon">🔐</div>
+            <h4>AI × 資安</h4>
+            <p>LLM-Guard 零信任防禦、惡意程式行為分析、Android 安全架構、威脅情報</p>
+        </div>
+        <div class="expertise-card">
+            <div class="icon">🤖</div>
+            <h4>大型語言模型</h4>
+            <p>地端 LLM 部署、RAG 防幻覺優化、Prompt Engineering、AI Agent 工作流</p>
+        </div>
+        <div class="expertise-card">
+            <div class="icon">🎤</div>
+            <h4>語音處理</h4>
+            <p>ASR 錯誤校正、聲紋識別、語音去噪、全雙工語音 Agent（&lt;300ms）</p>
+        </div>
+        <div class="expertise-card">
+            <div class="icon">📝</div>
+            <h4>自然語言處理</h4>
+            <p>NER 事件擷取、機器閱讀理解（BERT/SQuAD）、文本糾錯與相似度分析</p>
+        </div>
+        <div class="expertise-card">
+            <div class="icon">👁️</div>
+            <h4>電腦視覺</h4>
+            <p>彩色視覺化惡意程式偵測（R2-D2/C-3PO）、少樣本工業 AOI 缺陷檢測</p>
+        </div>
+        <div class="expertise-card">
+            <div class="icon">🏛️</div>
+            <h4>AI 治理</h4>
+            <p>ISO/IEC 42001 落地、企業 AI 導入戰略、Big 4 顧問視野 × FDE 實戰</p>
+        </div>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2 justify-center">
+        <a href="https://scholargps.com/scholars/20316010606475/tonton-hsien-de-huang" target="_blank" class="tag" style="background:#dbeafe;color:#1e40af;">
+            <i class="fas fa-map-marker-alt mr-1"></i> ScholarGPS
+        </a>
+        <a href="https://scholar.google.com.tw/citations?user=bgCj0ykAAAAJ" target="_blank" class="tag" style="background:#dcfce7;color:#166534;">
+            <i class="fas fa-book mr-1"></i> Google Scholar
+        </a>
+    </div>
+</div>
+
+<!-- ===== ② 成大博士 ===== -->
+<div class="bento-box motion-div">
+    <div class="flex items-center gap-4 mb-4">
+        <a href="https://web.ncku.edu.tw/" target="_blank"><img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/ncku.jfif" class="h-16 w-auto rounded-md" alt="NCKU"></a>
+        <a href="https://www.csie.ncku.edu.tw/" target="_blank"><img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/csie.png" class="h-16 w-auto" alt="CSIE"></a>
+    </div>
+    <h3 class="bento-subtitle" style="margin-top:0;">博士 — <a href="https://web.ncku.edu.tw/" target="_blank">國立成功大學</a> <a href="https://www.csie.ncku.edu.tw/" target="_blank">資訊工程學系</a></h3>
+    <div class="meta-info">Ph.D., Dept. Computer Science and Information Engineering, National Cheng Kung University</div>
+    <div class="meta-info">2010/09/15 ~ 2019/01</div>
+    <div class="meta-info">
+        <a href="https://ikmlab.cs.nthu.edu.tw/" target="_blank">The Intelligent Knowledge Management Laboratory (IKMLab)</a>，指導教授：高宏宇博士 (Prof. Hung-Yu Kao)
+    </div>
+    <div class="bento-text">
+        <p><a href="https://hdl.handle.net/11296/m2awfx" target="_blank">論文：基於深度學習的網路威脅異常分析 (Deep learning based anomaly analysis in cyber threats)</a></p>
+        <p><a href="https://blog.twman.org/2013/11/CSIE.NCKU.html" target="_blank">週遊列校_No.09@痛痛的人生 — 國立成功大學</a></p>
+    </div>
+
+    <!-- 學術發表 -->
+    <details class="mt-6 border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm group">
+        <summary class="flex items-center justify-between p-4 font-bold text-slate-700 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors select-none">
+            <div class="flex items-center gap-2">
+                <span class="text-xl text-blue-600"><i class="fas fa-graduation-cap"></i></span>
+                <span>學術發表 (Publications)</span>
+                <span class="ml-2 text-slate-400 transition-transform duration-300 group-open:rotate-180">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </div>
+            <div class="flex gap-3 text-xs font-normal text-slate-500">
+                <a href="https://scholargps.com/scholars/20316010606475/tonton-hsien-de-huang" target="_blank" class="hover:text-blue-600 hover:underline flex items-center gap-1">
+                    <i class="fas fa-map-marker-alt"></i> ScholarGPS
+                </a>
+                <span class="text-slate-300">|</span>
+                <a href="https://scholar.google.com.tw/citations?user=bgCj0ykAAAAJ" target="_blank" class="hover:text-blue-600 hover:underline flex items-center gap-1">
+                    <i class="fas fa-book"></i> Google Scholar
+                </a>
+            </div>
+        </summary>
+
+        <div class="p-4 space-y-5 bg-white">
+
+            <div class="p-4 border border-slate-200 rounded-lg hover:border-green-300 transition-all bg-white shadow-sm">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-2 py-0.5 text-xs font-bold text-white bg-green-600 rounded">2018 IEEE BigData</span>
+                    <span class="font-bold text-slate-800 text-lg"><a href="https://scholar.google.com.tw/scholar?oi=bibs&hl=zh-TW&cites=7688223024037438681" target="_blank">R2-D2: Android Malware Detections</a></span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                    TonTon H.-D. Huang* and Hung-Yu Kao,
+                    "<a href="https://arxiv.org/abs/1705.04448" target="_blank" class="text-green-700 hover:underline font-semibold">R2-D2: Color-inspired Convolutional Neural Network (CNN)-based Android Malware Detections</a>",
+                    <a href="https://ieeexplore.ieee.org/document/8622324" target="_blank" class="text-slate-600 hover:text-green-600 italic">IEEE International Conference on Big Data 2018</a>,
+                    <a href="https://blog.twman.org/2018/12/IEEE-BigData-2018.html" target="_blank" class="text-blue-600 hover:underline">Seattle</a>, WA, USA, Dec 10–13, 2018.
+                </div>
+            </div>
+
+            <div class="p-4 border border-slate-200 rounded-lg hover:border-slate-400 transition-all bg-white shadow-sm">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-2 py-0.5 text-xs font-bold text-slate-600 bg-slate-200 rounded">2018 arXiv</span>
+                    <span class="font-bold text-slate-800 text-lg">Hunting the Ethereum Smart Contract</span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                    TonTon H.-D. Huang,
+                    "<a href="https://arxiv.org/abs/1807.01868" target="_blank" class="text-blue-700 hover:underline font-semibold">Hunting the ethereum smart contract: Color-inspired inspection of potential attacks</a>",
+                    arXiv preprint, arXiv:1807.01868, 2018.
+                </div>
+            </div>
+
+            <div class="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-all bg-white shadow-sm">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-2 py-0.5 text-xs font-bold text-white bg-blue-600 rounded">2019 Soft Computing</span>
+                    <span class="font-bold text-slate-800 text-lg">C-3PO: Click-sequence-aware Recommendation</span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                    TonTon H.-D. Huang* and Hung-Yu Kao,
+                    "<a href="https://arxiv.org/pdf/1803.00458" target="_blank" class="text-blue-700 hover:underline font-semibold">C-3PO: Click-sequence-aware DeeP Neural Network (DNN)-based Pop-uPs RecOmmendation</a>",
+                    <a href="https://link.springer.com/article/10.1007/s00500-018-03730-5" target="_blank" class="text-slate-600 hover:text-blue-600 italic">Soft Computing</a>,
+                    Vol. 23, no. 22, pp. 11793–11799, 2019.
+                    <span class="text-orange-700 font-sans text-xs ml-1">(CiteScore 5.1 / Impact Factor 3.732；Q2)</span>
+                </div>
+            </div>
+
+            <div class="p-4 border border-slate-200 rounded-lg hover:border-slate-400 transition-all bg-white shadow-sm">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-2 py-0.5 text-xs font-bold text-white bg-purple-400 rounded">2014 Soft Computing</span>
+                    <span class="font-bold text-slate-800 text-lg"><a href="https://scholar.google.com.tw/scholar?oi=bibs&hl=zh-TW&cites=9032091689475006471" target="_blank">Type-2 Fuzzy Malware Ontology</a></span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif">
+                    TonTon H.-D. Huang*, C.-S. Lee, M.-H. Wang, and Hung-Yu Kao,
+                    "<a href="https://link.springer.com/article/10.1007/s00500-013-1056-0" target="_blank" class="text-blue-600 hover:underline">IT2FS-based ontology with soft-computing mechanism for malware behavior analysis</a>,"
+                    Soft Computing, vol. 18, no. 2, pp. 267–284, 2014.
+                </div>
+            </div>
+
+            <details class="group/early">
+                <summary class="flex items-center justify-center p-2 text-sm font-medium text-slate-500 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors border border-dashed border-slate-300">
+                    <span class="group-open/early:hidden">顯示更多研究 ▼</span>
+                    <span class="hidden group-open/early:inline">收起 ▲</span>
+                </summary>
+                <div class="mt-4 space-y-3">
+                    <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 text-xs font-bold text-white bg-purple-600 rounded">2017 TAAI</span>
+                            <span class="font-bold text-slate-800">Deceptive Advertising Detection</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                            TonTon H.-D. Huang*, Chia-Mu Yu, and Hung-Yu Kao,
+                            "<a href="https://arxiv.org/abs/1710.05305" target="_blank" class="text-purple-700 hover:underline font-semibold">Data-Driven and Deep Learning Methodology for Deceptive Advertising and Phone Scams Detection</a>",
+                            <a href="https://ieeexplore.ieee.org/document/8356930" target="_blank" class="italic">TAAI 2017</a>,
+                            <a href="https://blog.twman.org/2017/12/TAAI2017.html" target="_blank" class="text-blue-600 hover:underline">Taipei</a>, Dec 1–3, 2017.
+                        </div>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "Malware Behavioral Analysis System: TWMAN,"
+                        <a href="https://ieeexplore.ieee.org/document/5953604" target="_blank" class="italic hover:text-blue-600">IEEE SSCI 2011</a>,
+                        <a href="https://blog.twman.org/2011/04/IEEE-SSCI-2011.html" target="_blank" class="text-blue-600 hover:underline">Paris</a>, Apr. 11–15, 2011.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "Ontology-based intelligent system for malware behavioral analysis,"
+                        <a href="https://ieeexplore.ieee.org/document/5584325" target="_blank" class="italic hover:text-blue-600">WCCI 2010</a>,
+                        <a href="https://blog.twman.org/2010/07/IEEE-WCCI-2010.html" target="_blank" class="text-blue-600 hover:underline">Barcelona</a>, Jul. 18–23, 2010.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "Applying FML and Fuzzy Ontologies to Malware Behavioral Analysis,"
+                        <a href="https://ieeexplore.ieee.org/document/6007716" target="_blank" class="italic hover:text-blue-600">FUZZ-IEEE 2011</a>,
+                        <a href="https://blog.twman.org/2011/06/FUZZ-IEEE-2011.html" target="_blank" class="text-blue-600 hover:underline">Taipei</a>, Jun. 27–30, 2011.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "An IT2FLS-based Malware Analysis Mechanism: MiT,"
+                        <a href="https://ieeexplore.ieee.org/document/6722547" target="_blank" class="italic hover:text-blue-600">IEEE SMC 2013</a>,
+                        <a href="https://blog.twman.org/2013/10/IEEE-SMC-2013.html" target="_blank" class="text-blue-600 hover:underline">Manchester</a>, Oct. 13–16, 2013.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "TWMAN+: A Type-2 Fuzzy Ontology Model for Malware Behavior Analysis,"
+                        <a href="https://ieeexplore.ieee.org/document/6378176" target="_blank" class="italic hover:text-blue-600">IEEE SMC 2012</a>,
+                        <a href="https://blog.twman.org/2012/10/IEEE-SMC-2012.html" target="_blank" class="text-blue-600 hover:underline">Seoul</a>, Oct. 14–17, 2012.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang*, "Poster: Adaptive Data-Driven and Region-Aware Detection for Deceptive Advertising,"
+                        <a href="https://www.ieee-security.org/TC/SP2016/poster-abstracts/8-poster_abstract.pdf" target="_blank" class="text-red-700 hover:underline italic font-semibold">IEEE S&amp;P 2016</a>,
+                        <a href="https://blog.twman.org/2016/05/IEEE-SP-2016.html" target="_blank" class="text-blue-600 hover:underline">San Jose</a>, May 23–25, 2016.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al., "Fuzzy markup language for malware behavioral analysis," in
+                        <a href="https://www.researchgate.net/profile/Ton-Ton-Huang/publication/234036959_Fuzzy_Markup_Language_for_Malware_Behavioral_Analysis/links/0912f50e70c837b80d000000/Fuzzy-Markup-Language-for-Malware-Behavioral-Analysis.pdf" target="_blank" class="text-red-700 hover:underline italic font-semibold">On the Power of Fuzzy Markup Language</a>,
+                        <a href="https://link.springer.com/chapter/10.1007/978-3-642-35488-5_7" target="_blank" class="text-blue-600 hover:underline">Springer-Verlag</a>, 2012, pp. 113–131.
+                    </div>
+                </div>
+            </details>
+        </div>
+    </details>
+</div>
+
+<!-- ===== ③ 演講經歷 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-microphone-alt mr-2"></i>歷年學術與業界專題演講</h3>
+    <details class="modern-details" open>
+        <summary class="modern-summary" style="padding-left:0;">
+            <span>🎤 2006–2022 演講一覽 (30+ 場)</span>
+            <span class="arrow">▼</span>
+        </summary>
+        <div class="modern-details-content modern-link-grid">
+            <span class="modern-link">2022/10/20：國立臺南大學：AI for Cybersecurity &amp; Security of AI</span>
+            <span class="modern-link">2021/11/22：國立台北商業大學：資訊與決策科學研究所 專題演講</span>
+            <span class="modern-link">2021/04/21：國立成功大學：創意產業設計研究所</span>
+            <span class="modern-link">2021/03/30：國立臺灣大學：除了 CV 與 Chatbot 之外的 AI</span>
+            <span class="modern-link">2021/03/13：國立成功大學：看見你的聲音，聽見你的文字</span>
+            <span class="modern-link">2020/12/25：國立雲林科技大學：智慧辨識產業服務研究中心</span>
+            <span class="modern-link">2020/11/12：淡江大學：手把手帶你跳坑 ASR 聲紋識別及 NLP 機器閱讀理解</span>
+            <span class="modern-link">2020/10/19：國立臺南大學：資訊工程學系</span>
+            <span class="modern-link">2020/03/27：國立臺南大學：手把手帶你翻轉菸酒生</span>
+            <span class="modern-link">2017/04/29：國立成功大學：機器學習技術與應用介紹</span>
+            <span class="modern-link">2017/02/20：中華電信學院：深度學習在網路安全的應用</span>
+            <span class="modern-link">2016 HadoopCon：Deep Learning to Defend Against Deceptive Ads &amp; Scams</span>
+            <span class="modern-link">2016 國際資安台灣高峰會：Applying Deep Learning to Defend Against Deceptive Ads</span>
+            <span class="modern-link">2016 RSA USA (Cheetah Mobile Booth)：Data-Driven Mobile Security</span>
+            <span class="modern-link">2015/12/11：元智大學：Talk is cheap, Show me the code.</span>
+            <span class="modern-link">2015/05/28：國立成功大學：Android 逆向工程分析</span>
+            <span class="modern-link">2014 Workshop on Botnets of Taiwan：實體異質惡意行為分析架構</span>
+            <span class="modern-link">2014/11/20：內政部警政署：網路安全與 Linux 教育訓練</span>
+            <span class="modern-link">2013 NSC-Inria International Program：TAO Team, Inria, France</span>
+            <span class="modern-link">2013 NSC-Inria International Program：LIAS Lab. ENSMA, France</span>
+            <span class="modern-link">2012/11/19：國立臺南大學：University of Essex 課程說明會</span>
+            <span class="modern-link">2012/11/07：康寧大學：校友經驗分享</span>
+            <span class="modern-link">2012 Research Collaboration Workshop for Top UK-TW Universities</span>
+            <span class="modern-link">2011/11/22：曼徹斯特大學計算機科學系：Malware Behavioral Analysis</span>
+            <span class="modern-link">2010 憲兵司令部刑事鑑識中心：封閉型惡意程式網路建置之探討</span>
+            <span class="modern-link">2010 國家安全局網路安全訓練：惡意程式收集與行為分析進階課程</span>
+            <span class="modern-link">2010/05/07：國立高雄第一科大：業界師資演講 - 抬丸郎</span>
+            <span class="modern-link">2009/06/17：國立臺南大學：社會新鮮人就業系列講座</span>
+            <span class="modern-link">2009/04/10：立德大學：就業升學講座</span>
+            <span class="modern-link">2006/10/30：立德大學資訊工程系：升學講座</span>
+        </div>
+    </details>
+</div>
+
+<!-- ===== ④ 訪問學者 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-globe mr-2"></i>國際訪問學者 Visiting Scholar</h3>
+    <div class="bento-text">
+        <ul class="bento-list">
+            <li>
+                <b>2012 台法（NSC-Inria）聯合團隊人員交流計畫</b><br>
+                <span class="text-sm text-slate-600">Visiting Scholar, TAO Team, Inria Saclay-IDF, Univ. Paris-Sud | 2013/09</span><br>
+                <a href="https://blog.twman.org/search/label/Paris" target="_blank">流浪到法國</a>
+                <a href="https://www.universite-paris-saclay.fr/en/laboratories/inria-saclay-ile-de-france-inria" target="_blank">
+                    <img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/inria.png" width="150" class="mt-2" alt="Inria">
+                </a>
+            </li>
+            <li>
+                <b>2010 台灣與英國頂尖大學前期合作研究計畫</b><br>
+                <span class="text-sm text-slate-600">Visiting Scholar, University of Essex, School of Computer Science and Electronic Engineering | 2011/09 ~ 2012/05</span><br>
+                <a href="https://blog.twman.org/2013/11/Essex.html" target="_blank">週遊列校_No.10@英國艾賽克斯大學</a> | <a href="https://blog.twman.org/search/label/TW2UK" target="_blank">流浪到英國</a>
+                <a href="https://www.essex.ac.uk/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/essex.png" width="150" class="mt-2" alt="Essex">
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ===== ⑤ 碩士 ===== -->
+<div class="bento-box motion-div">
+    <div class="flex items-center gap-3 mb-4">
+        <a href="https://www.nutn.edu.tw/" target="_blank">
+            <img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/nutn.png" width="80" alt="NUTN">
+        </a>
+        <div>
+            <h3 class="bento-subtitle" style="margin-top:0;">碩士 — <a href="https://www.nutn.edu.tw/" target="_blank">國立臺南大學</a> <a href="https://ilt.nutn.edu.tw/" target="_blank">數位學習科技系</a></h3>
+            <div class="meta-info">Master, Dept. Information and Learning Technology, National University of Tainan | 2006/09 ~ 2008/06</div>
+            <div class="meta-info"><a href="https://sites.google.com/site/nutnoaselab/" target="_blank">OASE Lab.</a>，指導教授：李健興博士 (Prof. Chang-Shing Lee)；共同指導：莊宗嚴博士</div>
+        </div>
+    </div>
+    <div class="bento-text">
+        <a href="https://blog.twman.org/2013/10/ILT.NUTN.html" target="_blank">週遊列校_No.08@痛痛的人生 — 國立臺南大學思誠樓菸酒室</a>
+        <ul class="bento-list mt-3">
+            <li><a href="https://epaper.nutn.edu.tw/newsreport-detail/1711" target="_blank">共創雙贏～本校與哈瑪星團隊赴法國研商國際產學合作交流 (2013.09.11)</a></li>
+            <li><a href="https://epaper.nutn.edu.tw/newsreport-detail/1524" target="_blank">南大姐妹校英國艾塞克斯大學提供學術交流獎學金 (2012.11.22)</a></li>
+            <li><a href="https://epaper.nutn.edu.tw/newsreport-detail/1366" target="_blank">南大與英國 Essex 大學於 Google 平臺舉行國際學術研發會議 (2012.02.24)</a></li>
+            <li><a href="https://epaper.nutn.edu.tw/newsreport-detail/851" target="_blank">社會新鮮人就業系列講座 – 求職 &amp; 面試 (2009.06.22)</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ===== ⑥ 週遊列校 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-map-marked-alt mr-2"></i>週遊列校 Campus Tour</h3>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-2">
+        <a href="https://blog.twman.org/2010/02/tyhs.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-01@左中</a>
+        <a href="https://blog.twman.org/2014/08/kssh.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-02@岡中</a>
+        <a href="https://blog.twman.org/2014/11/whowhat.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-03@復華</a>
+        <a href="https://blog.twman.org/2010/09/072868888.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-04@力行</a>
+        <a href="https://blog.twman.org/2011/09/Accounting.FJU.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-05@輔大</a>
+        <a href="https://blog.twman.org/2012/03/osh.cnu.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-06@嘉藥</a>
+        <a href="https://blog.twman.org/2012/05/CSIE.Leader.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-07@立德</a>
+        <a href="https://blog.twman.org/2013/10/ILT.NUTN.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-08@南大</a>
+        <a href="https://blog.twman.org/2013/11/CSIE.NCKU.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-09@成大</a>
+        <a href="https://blog.twman.org/2013/11/Essex.html" target="_blank" class="text-center px-3 py-3 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 hover:bg-blue-100 transition-all">週遊列校-10@Essex</a>
+    </div>
+    <p class="text-sm text-slate-500 mt-3 text-center">
+        更多詳細工作經歷請見 <a href="experiences.html" class="text-blue-600 hover:underline font-semibold">experiences.html →</a>
+    </p>
+</div>
+
+<div id="include-aishare"></div>
+
+</div><!-- end content-wrapper -->
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const html = await res.text();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(s => document.head.appendChild(s.cloneNode(true)));
+        temp.querySelectorAll('style').forEach(s => s.remove());
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+                newScript.type = oldScript.type || 'text/javascript';
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            Array.from(oldScript.attributes).forEach(attr => {
+                if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value);
+            });
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('includeHTML failed:', url, e); }
+}
+
+includeHTML('../_includes/header.html', 'include-header');
+includeHTML('../_includes/nav-pages.html', 'include-nav-pages');
+includeHTML('../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../_includes/ai-share.html', 'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const { animate, inView } = motion;
+    document.querySelectorAll('.motion-div').forEach(div => {
+        inView(div, () => {
+            animate(div, { opacity: [0, 1], y: [30, 0], scale: [0.98, 1] }, { duration: 0.65, delay: 0.1, ease: "easeOut" });
+        }, { once: true, amount: 0.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

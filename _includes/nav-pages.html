@@ -1,0 +1,118 @@
+<style>
+.page-nav-bar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 8999;
+    box-sizing: border-box;
+    transition: top 0.15s;
+}
+.page-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: center;
+}
+.page-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: rgba(255,255,255,0.78);
+    transition: background 0.15s, color 0.15s;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+.page-nav-link:hover {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+}
+.page-nav-link.active {
+    background: rgba(99,179,237,0.22);
+    color: #90cdf4;
+    border-color: rgba(99,179,237,0.4);
+}
+.page-nav-sep {
+    color: rgba(255,255,255,0.2);
+    user-select: none;
+    font-size: 0.75rem;
+}
+@media (max-width: 600px) {
+    .page-nav-link { font-size: 0.72rem; padding: 0.22rem 0.55rem; }
+}
+</style>
+
+<nav class="page-nav-bar" id="page-nav-bar" aria-label="站點導覽">
+  <div class="page-nav-inner">
+    <a href="/index.html"             class="page-nav-link" data-page="index">🏠 首頁</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/research/index.html"    class="page-nav-link" data-page="research">🎓 Research</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/experiences.html"       class="page-nav-link" data-page="experiences">💼 Experiences</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/ai/AI.html"             class="page-nav-link" data-page="ai">🤖 AI 文章</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/ai/Robots.html"         class="page-nav-link" data-page="robots">🦾 Robots</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/cyber/LLM-Offense.html" class="page-nav-link" data-page="cyber">🔐 LLM-Offense</a>
+    <span class="page-nav-sep">·</span>
+    <a href="/cyber/LLM-Guard.html"   class="page-nav-link" data-page="cyber">🔐 LLM-Guard</a>
+  </div>
+</nav>
+<div id="page-nav-spacer" style="display:block;"></div>
+
+<script>
+(function() {
+    var pageNav = document.getElementById('page-nav-bar');
+    var spacer  = document.getElementById('page-nav-spacer');
+
+    function positionNav() {
+        if (!pageNav) return;
+        var mainNav = document.querySelector('.top-fixed-navbar');
+        var mainH   = mainNav ? Math.round(mainNav.getBoundingClientRect().height) : 0;
+        pageNav.style.top = mainH + 'px';
+        if (spacer) spacer.style.height = (mainH + Math.round(pageNav.getBoundingClientRect().height)) + 'px';
+    }
+
+    // highlight active link
+    var path = window.location.pathname.toLowerCase().replace(/\/index\.html$/, '/');
+    document.querySelectorAll('.page-nav-link[data-page]').forEach(function(a) {
+        var p = a.getAttribute('data-page');
+        if (
+            (p === 'index'       && (path === '/' || path === '')) ||
+            (p === 'research'    && path.startsWith('/research')) ||
+            (p === 'experiences' && path.includes('experiences')) ||
+            (p === 'ai'          && /\/ai\/ai/i.test(path)) ||
+            (p === 'robots'      && path.includes('robots')) ||
+            (p === 'cyber'       && (path.includes('/cyber/') || path.includes('llm-') || path.includes('aixcc')))
+        ) { a.classList.add('active'); }
+    });
+
+    // run immediately (in case header is already there)
+    positionNav();
+
+    // watch for .top-fixed-navbar being injected by header.html async fetch
+    var observer = new MutationObserver(function() {
+        if (document.querySelector('.top-fixed-navbar')) {
+            positionNav();
+            observer.disconnect();
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    window.addEventListener('resize', positionNav);
+    window.addEventListener('load', positionNav);
+})();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
