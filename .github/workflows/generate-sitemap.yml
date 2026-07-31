@@ -26,16 +26,25 @@ jobs:
           persist-credentials: true
           clean: true
 
-      - name: Ensure latest remote is present (force-clean)
+      - name: Ensure latest remote is present (force-clean + remove local sitemap)
         run: |
-          # 取得並同步遠端 main，並強制清理工作目錄（丟棄任何 unstaged/untracked 變更）
-          git fetch origin main --prune
-          git checkout main
+          # 避免任何 unstaged 的 sitemap.xml 阻塞 pull/rebase：先刪掉 local 的 sitemap.xml
+          rm -f sitemap.xml
+
+          # 防護設定：避免自動 pull 時使用 rebase
+          git config --global pull.rebase false
+          git config --global --add safe.directory /github/workspace
+
+          # 取得並同步遠端 main，並強制清理工作目錄（丟棄任何 unstaged/untracked/ignored 變更）
+          git fetch --all --prune
+          git checkout --force main
           git reset --hard origin/main
           git clean -fdx          # remove untracked files, directories, and ignored files
-          git status --porcelain
-          git rev-parse --abbrev-ref HEAD
-          git rev-parse HEAD
+
+          # debug: 列出是否仍有變更（空代表乾淨）
+          git status --porcelain || true
+          git rev-parse --abbrev-ref HEAD || true
+          git rev-parse HEAD || true
 
       - name: Generate sitemap.xml
         uses: cicirello/generate-sitemap@v1
