@@ -17,259 +17,241 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-
-  /* 容器樣式 - 這裡做了置中修改 */
-  .sidebar-container {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow: hidden;
-
-    /* 置中關鍵設定 */
-    margin: 30px auto;      /* 上下30px，左右自動(置中) */
-    max-width: 800px;       /* 限制最大寬度，像是一張卡片 */
-    width: 95%;             /* 手機版左右留一點縫隙 */
-
-    border: 1px solid #eee;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* ── Design Tokens ─────────────────────────────────
+     Background: warm parchment #f5f4f0
+     Card:       soft white    #fafaf9
+     Border:     subtle warm   #e8e4dc
+     Heading:    deep charcoal #1a1a18
+     Body text:  warm dark     #3d3d38
+     Muted:      warm grey     #8a8680
+     Accent:     earthy teal   #2d6a6a
+  ──────────────────────────────────────────────────── */
+  :root {
+    --bg:          #f5f4f0;
+    --card:        #fafaf9;
+    --border:      #e8e4dc;
+    --heading:     #1a1a18;
+    --body:        #3d3d38;
+    --muted:       #8a8680;
+    --accent:      #2d6a6a;
+    --accent-light:#e8f2f2;
+    --radius:      14px;
+    --radius-sm:   8px;
+    --shadow:      0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-hover:0 2px 8px rgba(0,0,0,0.07), 0 8px 32px rgba(0,0,0,0.07);
+    --transition:  all 0.18s ease;
   }
 
-  .sidebar-header {
-    background: #f8f9fa;
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background-color: var(--bg);
+    color: var(--body);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.65;
+  }
+
+  .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2rem 5rem;
+  }
+
+  /* ── Header / Hero ──────────────────────────────── */
+  header {
     text-align: center;
+    padding: 3.5rem 1rem 2rem;
+    margin-bottom: 0 !important;
   }
 
-  .sidebar-header h3 {
-    margin: 0;
-    font-size: 1.1em;
-    color: #333;
+  /* override Tailwind gradient — warm ink instead */
+  header h1 a,
+  header h1 {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    background-clip: unset !important;
+    color: var(--heading) !important;
+    font-size: clamp(2rem, 5vw, 3.2rem) !important;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
 
-  /* 區塊樣式 */
-  .sidebar-section {
-    border-bottom: 1px solid #eee;
-  }
-  
-  .sidebar-section:last-child {
-    border-bottom: none;
+  /* ── Top info box ───────────────────────────────── */
+  .top-info-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
   }
 
-  /* 置頂區塊標題 */
+  /* ── Bento cards ────────────────────────────────── */
+  .bento-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+    transition: var(--transition);
+    transition-property: box-shadow, transform;
+  }
+  .bento-box:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .bento-title-large {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+    color: var(--heading);
+  }
+  .bento-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .bento-text {
+    font-size: 0.9375rem;
+    line-height: 1.78;
+    color: var(--body);
+  }
+  .bento-text strong, .bento-text b {
+    font-weight: 600;
+    color: var(--heading);
+  }
+  .bento-text a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+  .bento-text a:hover { border-bottom-color: var(--accent); }
+  .bento-text p { margin-bottom: 1em; }
+  .bento-text p:last-child { margin-bottom: 0; }
+
+  .bento-list { list-style: none; padding-left: 0.25rem; }
+  .bento-list li { margin-bottom: 0.6rem; padding-left: 1.4rem; position: relative; line-height: 1.65; }
+  .bento-list li::before {
+    content: '';
+    position: absolute; left: 0.2rem; top: 0.62em;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); opacity: 0.55;
+  }
+
+  .icon-large { font-size: 2rem; margin-bottom: 0.75rem; color: var(--accent); }
+
+  .chinese-main-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; color: var(--heading); }
+  .english-subtitle { font-size: 1.2rem; color: var(--muted); font-weight: 400; margin-top: 0.25rem; }
+  .meta-info { color: var(--muted); font-size: 0.875rem; margin-bottom: 0.6rem; line-height: 1.5; }
+
+  .tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 0.2rem 0.65rem;
+    border-radius: 99px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    margin: 0.2rem 0.35rem 0.2rem 0;
+    border: 1px solid rgba(45,106,106,0.18);
+  }
+
+  /* ── Sidebar nav (article list) ─────────────────── */
+  .sidebar-container {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 0 auto 1.5rem;
+    max-width: 100%;
+    font-family: inherit;
+  }
+  .sidebar-header {
+    background: var(--bg);
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-header h3 { margin: 0; font-size: 0.9rem; color: var(--heading); font-weight: 700; }
+
+  .sidebar-section { border-bottom: 1px solid var(--border); }
+  .sidebar-section:last-child { border-bottom: none; }
+
   .section-title {
-    padding: 12px 15px;
-    font-weight: bold;
-    color: #d63384; 
-    background: #fff0f6;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--accent);
+    background: var(--accent-light);
     display: flex;
     align-items: center;
+    letter-spacing: 0.02em;
   }
-  
-  .section-title .icon {
-    margin-right: 8px;
-  }
+  .section-title .icon { margin-right: 7px; }
 
-  /* 折疊區塊標題 */
   .section-summary {
-    padding: 12px 15px;
+    padding: 10px 16px;
     cursor: pointer;
-    font-weight: bold;
-    color: #444;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--heading);
     list-style: none;
     display: flex;
     align-items: center;
-    background: #fff;
-    transition: background 0.2s;
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
   }
-  
-  .section-summary:hover {
-    background: #f8f9fa;
-    color: #007bff;
-  }
-  
-  .section-summary::-webkit-details-marker {
-    display: none;
-  }
+  .section-summary:hover { background: var(--bg); color: var(--accent); }
+  .section-summary::-webkit-details-marker { display: none; }
+  .section-summary .arrow { margin-left: auto; font-size: 0.7em; color: var(--muted); transition: transform 0.2s; }
+  details[open] .arrow { transform: rotate(180deg); }
+  .section-content { padding: 4px 8px 12px; }
 
-  .section-summary .arrow {
-    margin-left: auto;
-    font-size: 0.8em;
-    color: #999;
-    transition: transform 0.2s;
-  }
-
-  details[open] .arrow {
-    transform: rotate(180deg);
-  }
-
-  /* 內容區域 */
-  .section-content {
-    padding: 5px 10px 15px 10px;
-  }
-
-  /* 連結樣式 */
   .sidebar-link {
     display: block;
-    padding: 8px 10px;
+    padding: 7px 10px;
     text-decoration: none;
-    color: #555;
-    border-radius: 6px;
-    font-size: 0.95em;
-    margin-bottom: 4px;
-    transition: all 0.2s;
-    line-height: 1.4;
-    text-align: left; /* 連結內容保持靠左閱讀比較舒服 */
+    color: var(--body);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    margin-bottom: 2px;
+    transition: background 0.15s, color 0.15s;
+    line-height: 1.45;
   }
+  .sidebar-link:hover { background: var(--bg); color: var(--accent); }
 
-  .sidebar-link:hover {
-    background-color: #f1f3f5;
-    color: #007bff;
-    transform: translateX(3px);
-  }
-
-  /* 重點文章樣式 */
   .featured-link {
-    font-weight: 500;
-    color: #222;
-    border-left: 3px solid #d63384;
-    background: #fdfdfd;
-    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--heading);
+    border-left: 3px solid var(--accent);
+    background: var(--accent-light);
   }
-  
-  .featured-link:hover {
-    background: #fff0f6;
-    border-left-color: #a61e4d;
-  }
+  .featured-link:hover { background: #d8edec; }
 
-  /* Badge 樣式 */
   [class^="badge-"] {
     display: inline-block;
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 0.75em;
-    font-weight: bold;
+    font-size: 0.7em;
+    font-weight: 700;
     color: white;
     margin-right: 5px;
     vertical-align: text-bottom;
   }
-
-  .badge-strategy { background-color: #6610f2; }
-  .badge-report { background-color: #0d6efd; }
-  .badge-tech { background-color: #198754; }
-  .badge-warning { background-color: #fd7e14; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystem-Font, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-        }
-        .bento-box {
-            background-color: #ffffff;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 1.5rem;
-        }
-        .bento-title-large {
-            font-size: 2.2rem;
-            line-height: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #1d1d1f;
-        }
-        .bento-subtitle {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #0071e3;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-        .bento-text {
-            font-size: 1rem;
-            line-height: 1.75;
-            color: #333333;
-        }
-        .bento-text strong, .bento-text b {
-            font-weight: 600;
-            color: #1d1d1f;
-        }
-        .bento-text a {
-            color: #0071e3;
-            text-decoration: none;
-        }
-        .bento-text a:hover {
-            text-decoration: underline;
-        }
-        .bento-text p { margin-bottom: 1rem; }
-        .bento-text p:last-child { margin-bottom: 0; }
-        .bento-list {
-            list-style-type: none;
-            padding-left: 0.5rem;
-        }
-        .bento-list li {
-            margin-bottom: 0.75rem;
-            padding-left: 1.75rem;
-            position: relative;
-        }
-        .bento-list li::before {
-            content: "\f111";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            color: #0071e3;
-            font-size: 0.5rem;
-            position: absolute;
-            left: 0.25rem;
-            top: 0.5em;
-        }
-        .icon-large {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #0071e3;
-        }
-        .content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .top-info-box {
-            background-color: #e9e9ed;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-        .chinese-main-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        .english-subtitle {
-            font-size: 1.5rem;
-            color: #555;
-            font-weight: 400;
-            margin-top: 0.25rem;
-            line-height: 1.4;
-        }
-        .meta-info {
-             color: #6b7280; /* text-gray-500 */
-             font-size: 0.9rem;
-             margin-bottom: 0.75rem;
-        }
-        .tag {
-            display: inline-block;
-            background-color: #e0e7ff; /* indigo-100 */
-            color: #3730a3; /* indigo-800 */
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
+  .badge-strategy { background: #5b4fcf; }
+  .badge-report   { background: #2563a8; }
+  .badge-tech     { background: #2d6a6a; }
+  .badge-warning  { background: #c2610c; }
     </style>
 
 <script type="application/ld+json">
@@ -720,110 +702,87 @@
         </div>
 
 <style>
-  /* 現代化精華導航區塊 (專為放在每一頁的頂部設計) */
   .modern-sidebar-container {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #eaeaea; 
-    max-width:9850px;
-    margin: 0 auto 30px auto;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    max-width: 100%;
+    margin: 0 auto 1.75rem auto;
+    font-family: inherit;
+    box-shadow: var(--shadow);
+    overflow: hidden;
   }
-
   .modern-sidebar-header {
-    background: #fafafa;
+    background: var(--bg);
     padding: 12px 20px;
-    border-bottom: 1px solid #eaeaea;
-    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
   }
-  
   .modern-sidebar-header h3 {
     margin: 0;
-    font-size: 1rem;
-    color: #444;
-    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--heading);
+    font-weight: 700;
   }
-
-  /* 雙欄網格顯示連結，節省空間 */
   .modern-link-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 8px;
+    gap: 4px;
+    padding: 4px;
   }
-
-  /* 連結樣式 (極簡無框) */
   .modern-link {
     display: flex;
     align-items: center;
     padding: 8px 12px;
     text-decoration: none !important;
-    color: #555 !important;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
+    color: var(--body) !important;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+    line-height: 1.45;
   }
-
   .modern-link:hover {
-    background: #f4f6f8;
-    color: #007bff !important;
+    background: var(--bg);
+    color: var(--accent) !important;
     transform: translateX(3px);
   }
-
-  /* 柔和的莫蘭迪色系 Badges，避免搶走正文的注意力 */
   [class^="mod-badge-"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 3px 8px;
+    padding: 2px 8px;
     border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-right: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 9px;
     white-space: nowrap;
+    flex-shrink: 0;
   }
-  .mod-badge-strategy { background-color: #f3e8ff; color: #6b21a8; } 
-  .mod-badge-report   { background-color: #dbeafe; color: #1e40af; } 
-  .mod-badge-tech     { background-color: #dcfce7; color: #166534; } 
-  .mod-badge-warning  { background-color: #ffedd5; color: #9a3412; } 
+  .mod-badge-strategy { background: #ede9fa; color: #5b4fcf; }
+  .mod-badge-report   { background: #dbeafe; color: #2563a8; }
+  .mod-badge-tech     { background: #d1f0ee; color: #2d6a6a; }
+  .mod-badge-warning  { background: #fde8d0; color: #c2610c; }
 
-  /* Notion 風格折疊選單 */
-  .modern-details { border-bottom: 1px solid #eaeaea; }
+  .modern-details { border-bottom: 1px solid var(--border); }
   .modern-details:last-child { border-bottom: none; }
-
   .modern-summary {
-    padding: 12px 20px;
+    padding: 11px 20px;
     cursor: pointer;
     font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
+    color: var(--heading);
+    font-size: 0.9rem;
     list-style: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: background 0.2s;
+    transition: background 0.15s, color 0.15s;
   }
-  
-  .modern-summary:hover { background: #fafafa; color: #007bff; }
+  .modern-summary:hover { background: var(--bg); color: var(--accent); }
   .modern-summary::-webkit-details-marker { display: none; }
-
-  .modern-summary .arrow {
-    font-size: 0.75rem;
-    color: #aaa;
-    transition: transform 0.3s ease;
-  }
-
+  .modern-summary .arrow { font-size: 0.7rem; color: var(--muted); transition: transform 0.25s ease; }
   details[open].modern-details .arrow { transform: rotate(180deg); }
-  details[open].modern-details .modern-summary { border-bottom: 1px solid #eaeaea; background: #fafafa; }
-  .modern-details-content { padding: 12px 20px; }
-  @media (prefers-color-scheme: dark) {
-  .modern-sidebar-container { background: #161b22; border-color: #30363d; }
-  .modern-summary { color: #c9d1d9; }
-  .modern-summary:hover { background: #1f2937; color: #58a6ff; }
-  .modern-details { border-bottom-color: #30363d; }
-  details[open].modern-details .modern-summary { background: #1f2937; border-bottom-color: #30363d; }
-  .modern-link { color: #8b949e !important; }
-  .modern-link:hover { background: #1f2937; color: #58a6ff !important; }
-}
+  details[open].modern-details .modern-summary { border-bottom: 1px solid var(--border); background: var(--bg); }
+  .modern-details-content { padding: 8px 16px 12px; }
 </style>
 
 <div class="modern-sidebar-container">
@@ -1793,6 +1752,7 @@ async function includeHTML(url, containerId) {
 }
 includeHTML('_includes/nav-pages.html', 'include-nav-pages');
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
