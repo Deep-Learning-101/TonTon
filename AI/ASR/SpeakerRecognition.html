@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 聲紋辨識 (Speaker Recognition) | x-vector・ECAPA-TDNN・EER | Deep Learning 101</title>
+    <meta name="description" content="中文聲紋辨識 (Speaker Recognition / Verification) 完整指南：i-vector → d-vector → x-vector 技術演進、ECAPA-TDNN、WeSpeaker、SincNet 選型，EER / FRR / FAR 指標詳解。TonTon Huang Ph.D. 實戰 150 天踩坑筆記。">
+    <meta name="keywords" content="聲紋辨識, Speaker Recognition, Speaker Verification, x-vector, ECAPA-TDNN, EER, WeSpeaker, SincNet, VoxCeleb, TonTon Huang">
+    <meta property="og:title" content="聲紋辨識 (Speaker Recognition) — Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-text ul { list-style: none; padding-left: 0; }
+        .bento-text ul li { padding-left: 1.5rem; position: relative; margin-bottom: .5rem; }
+        .bento-text ul li::before { content: "▸"; position: absolute; left: 0; color: #16a34a; font-weight: 700; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; background: #f0fdf4; color: #166534; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .metric-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.1rem 1.25rem; }
+        .metric-card .label { font-size: .8rem; color: #64748b; font-weight: 600; margin-bottom: .25rem; }
+        .metric-card .value { font-size: 1.05rem; font-weight: 700; color: #1d1d1f; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #16a34a; font-size: 1.1rem; flex-shrink: 0; }
+        .paper-row { display: flex; gap: .75rem; align-items: baseline; padding: .55rem 0; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; }
+        .paper-row:last-child { border-bottom: none; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #16a34a, #15803d); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(22,163,74,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(22,163,74,.4); }
+        .update-badge { display: inline-flex; align-items: center; background: linear-gradient(135deg, #dc2626, #f97316); color: #fff; padding: .2rem .65rem; border-radius: 9999px; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.twman.org/AI/ASR/SpeakerRecognition" },
+      "headline": "中文聲紋辨識 (Speaker Recognition) 完整技術指南",
+      "description": "i-vector、d-vector、x-vector 技術演進，ECAPA-TDNN、WeSpeaker 實戰選型，EER/FRR/FAR 評估指標，VoxCeleb/CN-Celeb 資料集指南。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2020-08-01", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500">
+            🔐 聲紋辨識 (Speaker Recognition)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">辨識「是誰說的」· 技術脈絡・實戰選型・踩坑筆記</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：~150 天 (2020/03–2020/08)｜<strong>更新</strong>：2026-07-28</p>
+            <p>聲紋辨識 (Speaker Recognition) 的目標是從語音訊號中提取說話人的生物特徵，判斷「<strong>是誰說的</strong>」——這與 ASR「說了什麼」完全不同。技術核心在於三個面向：<strong>向量抽取</strong>（i-vector / d-vector / x-vector）、<strong>模型架構</strong>（CNN / ResNet / TDNN）、<strong>評分方式</strong>（LDA / PLDA）。</p>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="https://www.twman.org/AI/ASR/SpeakerRecognition" target="_blank" class="cta-btn">
+                <i class="fas fa-external-link-alt"></i> 原始詳細版頁面 →
+            </a>
+            <a href="https://deep-learning-101.github.io/Speech-Processing#speaker-recognition" target="_blank" class="cta-btn" style="background:linear-gradient(135deg,#0369a1,#0284c7);">
+                <i class="fas fa-book-open"></i> 完整論文資源 →
+            </a>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="tag">#聲紋辨識</span>
+            <span class="tag">#x-vector</span>
+            <span class="tag">#ECAPA-TDNN</span>
+            <span class="tag">#WeSpeaker</span>
+            <span class="tag">#EER</span>
+            <span class="tag">#VoxCeleb</span>
+        </div>
+    </div>
+
+    <!-- ② 應用場景 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">應用場景</span>
+        <h2 class="bento-title-large">兩大核心應用場景</h2>
+        <div class="card-grid">
+            <div class="metric-card" style="background:#f0fdf4;border-color:#86efac;">
+                <div class="label">1:1 身份驗證</div>
+                <div class="value" style="color:#166534;">Speaker Verification</div>
+                <p style="font-size:.85rem;color:#555;margin-top:.5rem;">確認「這是不是本人」。適用於電話銀行聲紋登入、企業語音門禁等。需處理<strong>開放集 (Open-set)</strong> 拒絕判定。</p>
+            </div>
+            <div class="metric-card" style="background:#eff6ff;border-color:#93c5fd;">
+                <div class="label">1:N 身份識別</div>
+                <div class="value" style="color:#1e40af;">Speaker Identification</div>
+                <p style="font-size:.85rem;color:#555;margin-top:.5rem;">從資料庫中找出「最像的是誰」。適用於客服中心說話人追蹤、智慧家庭多用戶辨識。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ③ 技術脈絡：向量演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">技術演進</span>
+        <h2 class="bento-title-large">從 i-vector 到深度學習嵌入</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">GMM-UBM<br><small>傳統基礎</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">i-vector<br><small>Dehak 2009</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">d-vector<br><small>Google 2014</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">x-vector<br><small>Snyder 2018</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">ECAPA-TDNN<br><small>2020 SOTA</small></div>
+        </div>
+        <div class="bento-text" style="margin-top:1rem;">
+            <ul>
+                <li><strong>i-vector</strong>：從 GMM super-vector 中萃取「身份向量」，需數十秒音訊，對短音訊效果差。</li>
+                <li><strong>d-vector (Google 2014)</strong>：用 DNN 最後一層的隱藏狀態作為嵌入，多段音訊平均後作為聲紋表示。</li>
+                <li><strong>x-vector (Snyder 2018)</strong>：TDNN 架構 + Statistics Pooling Layer（均值 + 標準差）→ 段層級嵌入；短音訊（~10秒）表現強，搭配 LDA + PLDA 後端。</li>
+                <li><strong>ECAPA-TDNN</strong>：引入 Squeeze-Excitation 與 Multi-Scale Aggregation，目前主流生產級方案，在 VoxCeleb1-O 測試集 EER 可達 0.8% 以下。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ④ 評估指標 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">評估指標</span>
+        <h2 class="bento-title-large">必懂的五大評估指標</h2>
+        <div class="card-grid">
+            <div class="metric-card">
+                <div class="label">FRR (False Rejection Rate)</div>
+                <div class="value">錯誤拒絕率</div>
+                <p style="font-size:.82rem;color:#555;margin-top:.4rem;">同一人被判為不同人 → 「把主人擋在門外」</p>
+            </div>
+            <div class="metric-card">
+                <div class="label">FAR (False Acceptance Rate)</div>
+                <div class="value">錯誤接受率</div>
+                <p style="font-size:.82rem;color:#555;margin-top:.4rem;">不同人被判為同一人 → 「放小偷進門」</p>
+            </div>
+            <div class="metric-card" style="background:#f0fdf4;border-color:#86efac;">
+                <div class="label">EER (Equal Error Rate)</div>
+                <div class="value" style="color:#166534;">等錯誤率 ↓越低越好</div>
+                <p style="font-size:.82rem;color:#555;margin-top:.4rem;">FRR = FAR 時的閾值點。ECAPA-TDNN 在 VoxCeleb1-O 可達 0.8% 以下。</p>
+            </div>
+            <div class="metric-card">
+                <div class="label">RTF (Real Time Factor)</div>
+                <div class="value">實時比</div>
+                <p style="font-size:.82rem;color:#555;margin-top:.4rem;">例：RTF=0.01 代表 1 秒算力可處理 100 秒音訊。</p>
+            </div>
+            <div class="metric-card">
+                <div class="label">ACC (Accuracy)</div>
+                <div class="value">準確率</div>
+                <p style="font-size:.82rem;color:#555;margin-top:.4rem;">ACC = 1 − min(FAR + FRR)，另見 ROC 曲線全面評估。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑤ 開源框架 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">開源框架</span>
+        <h2 class="bento-title-large">主流框架與最新研究</h2>
+        <div>
+            <div class="paper-row">
+                <span class="update-badge">🔥 推薦</span>
+                <div class="bento-text" style="font-size:.9rem;">
+                    <strong><a href="https://github.com/wenet-e2e/wespeaker" target="_blank">WeSpeaker</a></strong>：產業界最受歡迎的生產級聲紋辨識框架，支援 ECAPA-TDNN、ResNet34 等架構，內建資料增廣與分佈式訓練。
+                </div>
+            </div>
+            <div class="paper-row">
+                <span class="update-badge">🔥 推薦</span>
+                <div class="bento-text" style="font-size:.9rem;">
+                    <strong><a href="https://arxiv.org/abs/1808.00158" target="_blank">SincNet</a></strong>：直接處理原始波形的深度學習架構，可解釋性高，適合研究場景。
+                </div>
+            </div>
+            <div class="paper-row">
+                <span class="update-badge">🔥 2026-04</span>
+                <div class="bento-text" style="font-size:.9rem;">
+                    <strong><a href="https://arxiv.org/abs/2604.13605" target="_blank">SpeakerRPL V2</a></strong>：開放集聲紋辨識 SOTA。LogitNorm + RPL 混合損失 + 自適應錨點，在 Vox1-O* 開放集測試中將 EER 從 1.72% → <strong>0.24%</strong>（降幅 93%）。
+                </div>
+            </div>
+            <div class="paper-row">
+                <span class="update-badge">經典</span>
+                <div class="bento-text" style="font-size:.9rem;">
+                    <strong><a href="https://github.com/Snowdar/asv-subtools" target="_blank">ASV-Subtools（廈門大學）</a></strong>：完整的聲紋識別工具鏈，涵蓋 i-vector / x-vector / ECAPA-TDNN。
+                </div>
+            </div>
+            <div class="paper-row">
+                <span class="update-badge">經典</span>
+                <div class="bento-text" style="font-size:.9rem;">
+                    <strong><a href="https://github.com/NVIDIA/NeMo" target="_blank">NVIDIA NeMo</a></strong>：整合 SpeakerNet 的工業級工具包，搭配 QuartzNet ASR 可建立完整的聲紋+辨識管線。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑥ 資料集 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">資料集</span>
+        <h2 class="bento-title-large">常用資料集</h2>
+        <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;white-space:nowrap;">資料集</th>
+                        <th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">說話人數</th>
+                        <th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">語言</th>
+                        <th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">備註</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:.55rem .75rem;font-weight:600;">VoxCeleb 1 &amp; 2</td>
+                        <td style="padding:.55rem .75rem;color:#555;">7,000+</td>
+                        <td style="padding:.55rem .75rem;color:#555;">多語言（英語為主）</td>
+                        <td style="padding:.55rem .75rem;color:#555;">切成 7 部分，下載需時；台灣 IP 可訪問</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f1f5f9;background:#fafafa;">
+                        <td style="padding:.55rem .75rem;font-weight:600;">CN-Celeb 1 &amp; 2</td>
+                        <td style="padding:.55rem .75rem;color:#555;">3,000+</td>
+                        <td style="padding:.55rem .75rem;color:#555;">中文</td>
+                        <td style="padding:.55rem .75rem;color:#555;"><strong>⚠️ 放在百度雲，台灣 IP 被封鎖</strong></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:.55rem .75rem;font-weight:600;">AISHELL-1</td>
+                        <td style="padding:.55rem .75rem;color:#555;">400</td>
+                        <td style="padding:.55rem .75rem;color:#555;">中文（大陸口音）</td>
+                        <td style="padding:.55rem .75rem;color:#555;">下載相對方便</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f1f5f9;background:#fafafa;">
+                        <td style="padding:.55rem .75rem;font-weight:600;">TIMIT</td>
+                        <td style="padding:.55rem .75rem;color:#555;">630</td>
+                        <td style="padding:.55rem .75rem;color:#555;">英語</td>
+                        <td style="padding:.55rem .75rem;color:#555;">phonetically-balanced，小型基準集</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:.55rem .75rem;font-weight:600;">Mozilla Common Voice (zh-TW)</td>
+                        <td style="padding:.55rem .75rem;color:#555;">—</td>
+                        <td style="padding:.55rem .75rem;color:#555;">繁體中文（台灣口音）</td>
+                        <td style="padding:.55rem .75rem;color:#555;">⭐ 台灣口音最佳選擇</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pitfall-box" style="margin-top:1rem;">
+            <strong>⚠️ 數據踩坑：</strong>CN-Celeb 等中文聲紋數據集存放在<strong>百度雲</strong>，台灣 IP 直接封鎖，下載前務必準備好 VPN 或代理。VoxCeleb 被切成 7 份，合併需要額外的時間成本。
+        </div>
+    </div>
+
+    <!-- ⑦ 實戰建議 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">實戰建議</span>
+        <h2 class="bento-title-large">選型與部署建議</h2>
+        <div class="tip-box">
+            <strong>✅ 生產首選：</strong><strong>WeSpeaker + ECAPA-TDNN</strong>，搭配 PLDA 後端評分。SNR 低於 5dB 的極端環境下，EER 仍可維持在 1.5% 以下。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 開放集拒絕：</strong>若需要辨識「這個聲音不在資料庫中」，評估 <strong>SpeakerRPL V2</strong>（LogitNorm + Adaptive Anchors），少樣本微調時穩定性顯著優於傳統方法。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 資料增廣：</strong>真實錄音通常很短；可用程式動態切割、加背景噪音（MUSAN / RIR）做資料增廣，有效提升模型在真實場景的泛化能力。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 為何 DNN 優於 i-vector：</strong>i-vector 的協方差矩陣對資料扭曲（雜訊、頻道差異）非常敏感，而 DNN 透過 Cross-Entropy 訓練天然具備失真不變性，在大規模數據上不會像 i-vector 的 UBM/T 矩陣需要反覆重調。
+        </div>
+    </div>
+
+    <!-- ⑧ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">🔐</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">繼續探索語音處理其他主題</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>ASR 總覽</a>
+            <a href="SpeechEnhancement.html" class="tag" style="background:#fefce8;color:#92400e;font-size:.9rem;"><i class="fas fa-sliders-h mr-1"></i>語音增強</a>
+            <a href="SpeechSeparation.html" class="tag" style="background:#fff1f2;color:#9f1239;font-size:.9rem;"><i class="fas fa-users mr-1"></i>語者分離</a>
+            <a href="https://deep-learning-101.github.io/Speech-Processing#speaker-recognition" target="_blank" class="tag" style="background:#dcfce7;color:#166534;font-size:.9rem;"><i class="fas fa-book-open mr-1"></i>完整資源 →</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch (e) { console.warn('[includeHTML] 無法載入 ' + url + '：', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

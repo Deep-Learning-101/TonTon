@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎧 語音增強去噪 (Speech Enhancement) | DCCRN・Meta Denoiser・9MB 模型 | Deep Learning 101</title>
+    <meta name="description" content="中文語音增強去噪完整指南：DCCRN（Interspeech 2020 冠軍）、Facebook Meta Denoiser、Deep Complex U-Net，以及從圖靈獎大神發文開始的 150 天踩坑實錄，最終煉出 9MB / RTF=0.08 的極致輕量模型。">
+    <meta name="keywords" content="語音增強, Speech Enhancement, 去噪, DCCRN, Meta Denoiser, Deep Complex U-Net, ClearVoice, TonTon Huang, RTF">
+    <meta property="og:title" content="語音增強去噪 (Speech Enhancement) — Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-text ul { list-style: none; padding-left: 0; }
+        .bento-text ul li { padding-left: 1.5rem; position: relative; margin-bottom: .5rem; }
+        .bento-text ul li::before { content: "▸"; position: absolute; left: 0; color: #d97706; font-weight: 700; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; background: #fefce8; color: #92400e; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .model-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #92400e; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #b45309; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .highlight-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; border-radius: 1rem; padding: 1.5rem; text-align: center; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #f59e0b; font-size: 1.1rem; flex-shrink: 0; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #d97706, #b45309); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(217,119,6,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(217,119,6,.4); }
+        .update-badge { display: inline-flex; align-items: center; background: linear-gradient(135deg, #dc2626, #f97316); color: #fff; padding: .2rem .65rem; border-radius: 9999px; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #b45309; }
+        .stat-box .desc { font-size: .78rem; color: #92400e; margin-top: .2rem; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.twman.org/AI/ASR/SpeechEnhancement" },
+      "headline": "中文語音增強去噪 (Speech Enhancement) 完整技術指南",
+      "description": "DCCRN、Facebook Meta Denoiser、Deep Complex U-Net 等模型詳解，加上從 150 天實戰踩坑煉出 9MB / RTF=0.08 輕量模型的完整經驗分享。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2020-08-01", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500">
+            🎧 語音增強 / 去噪 (Speech Enhancement)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">從噪音中提取純淨人聲 · DCCRN・Meta Denoiser・9MB 極致輕量</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：~150 天 (2020/08–2021/01)｜<strong>更新</strong>：2026-07-28</p>
+            <p>語音增強（Speech Enhancement / Denoising）的目標是：從含雜訊的複雜環境音中，<strong>精準提取出純淨的人聲</strong>。這在 ASR 前處理中是決定辨識率成敗的關鍵第一步。概念上類似語者分離——差別在於去噪是把「非人聲」的頻段過濾掉，而不是把多個人聲拆開。</p>
+            <p>💡 起源：這個專案起源是在 Facebook 上看到圖靈獎得主 Yann LeCun 分享 FAIR 的最新研究，腦洞大開就跳坑了！</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">9 MB</div><div class="desc">最終模型大小</div></div>
+            <div class="stat-box"><div class="num">0.08</div><div class="desc">Real Time Factor</div></div>
+            <div class="stat-box"><div class="num">~150 天</div><div class="desc">研發投入</div></div>
+            <div class="stat-box"><div class="num">+20%</div><div class="desc">下游 ASR 辨識率提升</div></div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="https://www.twman.org/AI/ASR/SpeechEnhancement" target="_blank" class="cta-btn">
+                <i class="fas fa-external-link-alt"></i> 原始詳細版頁面 →
+            </a>
+            <a href="https://huggingface.co/spaces/DeepLearning101/Speech-Quality-Inspection_Meta-Denoiser" target="_blank" class="cta-btn" style="background:linear-gradient(135deg,#0369a1,#0284c7);">
+                <i class="fas fa-robot"></i> 線上 DEMO 體驗 →
+            </a>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="tag">#語音增強</span>
+            <span class="tag">#DCCRN</span>
+            <span class="tag">#MetaDenoiser</span>
+            <span class="tag">#ClearVoice</span>
+            <span class="tag">#NovaSR</span>
+            <span class="tag">#PESQ</span>
+        </div>
+    </div>
+
+    <!-- ② 架構演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fef3c7;color:#92400e;">架構演進</span>
+        <h2 class="bento-title-large">TasNet → DEMUCS → Meta Denoiser</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">TasNet<br><small>LSTM Separator</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Conv-TasNet<br><small>TCN 取代 LSTM</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">DEMUCS<br><small>LSTM + U-Net Skip</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Facebook Denoiser<br><small>單聲道即時去噪</small></div>
+        </div>
+        <div class="bento-text" style="margin-top:1rem;">
+            <p>DEMUCS 原本為音樂分離設計，Facebook Denoiser 將其改造為端到端語音增強：雙 U-Net 輸出摺疊為單通道、加入 Linear 層、並以 LSTM 負責長距離依賴。其關鍵特性是<strong>可在 CPU 即時執行</strong>，是最適合邊緣部署的基礎架構。</p>
+        </div>
+    </div>
+
+    <!-- ③ 主流模型 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fef3c7;color:#92400e;">主要模型</span>
+        <h2 class="bento-title-large">六大主流去噪模型</h2>
+
+        <div class="model-card" style="background:#fff7ed;border-color:#fed7aa;">
+            <div class="model-title">🏆 DCCRN (Deep Complex Convolutional Recurrent Network, 2020)</div>
+            <div class="model-meta">Interspeech 2020 Deep Noise Suppression Challenge 🥇 第一名 | <a href="https://arxiv.org/abs/2008.00264" target="_blank">arXiv:2008.00264</a></div>
+            <div class="model-desc">複數值卷積 + LSTM，透過 STFT/iSTFT 處理頻域複數特徵。同時對<strong>幅度與相位</strong>進行聯合估計，是目前工業界最受歡迎的去噪架構之一。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📘 Facebook Meta Denoiser (2020)</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/2006.12847" target="_blank">arXiv:2006.12847</a> | <a href="https://github.com/facebookresearch/denoiser" target="_blank">GitHub</a></div>
+            <div class="model-desc">基於 DEMUCS 的端到端架構，LSTM + U-Net Skip Connection，<strong>CPU 即時執行</strong>。本專案選用的基礎架構，最終煉出 9MB / RTF=0.08 的輕量版。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📗 Phase-aware Deep Complex U-Net (2019)</div>
+            <div class="model-meta">DEMAND PESQ 排行榜 🥇 第一 (large) / 🥉 第三 (base)</div>
+            <div class="model-desc">引入複數特徵表示，使用 weighted-SDR loss 同時優化幅度與相位。首次在 U-Net 架構中系統性處理相位資訊，奠定後續複數域模型基礎。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📙 RHRNET (2019)</div>
+            <div class="model-meta">DEMAND PESQ 🥈 第二名 | <a href="https://arxiv.org/abs/1904.07294" target="_blank">arXiv:1904.07294</a></div>
+            <div class="model-desc">多層 GRU + 殘差設計，用 reshape 取代 upsampling。⚠️ 7 層 GRU 計算量大，且<strong>無開放源碼</strong>，難以直接復現。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📕 RNNoise (Mozilla)</div>
+            <div class="model-meta">輕量混合架構 | <a href="https://github.com/xiph/rnnoise" target="_blank">GitHub</a></div>
+            <div class="model-desc">22 個 Bark 頻帶 + 42 個輸入特徵 + GRU。<strong>非端到端</strong>，結合傳統訊號處理（OMLSA/IMCRA）。優點是極度輕量；缺點是對複雜噪音類型處理能力有限。</div>
+        </div>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title">🆕 ClearVoice (阿里, 2024-12)</div>
+            <div class="model-meta"><a href="https://github.com/modelscope/ClearerVoice-Studio" target="_blank">GitHub</a> | <a href="https://huggingface.co/spaces/alibabasglab/ClearVoice" target="_blank">線上 DEMO</a></div>
+            <div class="model-desc">阿里開源的一站式語音處理工具，同時整合<strong>語音增強與語者分離</strong>，能對付極度棘手的雞尾酒會效應。推薦用於多人視訊會議音訊後處理。</div>
+        </div>
+    </div>
+
+    <!-- ④ 實戰踩坑 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fef3c7;color:#92400e;">實戰踩坑</span>
+        <h2 class="bento-title-large">數據「煉丹」的眉角</h2>
+        <div class="tip-box">
+            <strong>✅ 數據生成簡單：</strong>去噪任務的數據集相對好處理！網路上到處能找到乾淨語音（LibriSpeech、AISHELL）與純噪音（ESC-50、MUSAN），用程式動態 Mix 可無限生成訓練數據。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 中文去噪的陷阱：</strong>如果訓練數據全是英文語音，模型對<strong>中文語音的去噪效果會明顯偏差</strong>。Mix 時必須加入大量中文語料（如 AISHELL 系列）。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 多通道音訊陷阱：</strong>scipy 讀取音訊 shape 是 <code>(length, channels)</code>，而 torchaudio 是 <code>(channels, length)</code>，需要做 transpose；且 PCM 格式不帶通道數 metadata，需手動 reshape。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ SEANet (Google, 2020) 的隱藏限制：</strong>表現優異，但需要額外的<strong>骨導加速度計 (bone conduction accelerometer)</strong> 輸入訊號，一般麥克風部署場景無法直接使用。
+        </div>
+    </div>
+
+    <!-- ⑤ 音訊超解析 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fef3c7;color:#92400e;">2026 新進展</span>
+        <h2 class="bento-title-large">音訊超解析與音質提升</h2>
+        <div class="model-card" style="background:#eff6ff;border-color:#93c5fd;">
+            <div class="model-title">🆕 NovaSR (2026-04)</div>
+            <div class="model-meta"><a href="https://github.com/ysharma3501/NovaSR" target="_blank">GitHub</a> | <a href="https://huggingface.co/spaces/YatharthS/NovaSR" target="_blank">線上 DEMO</a></div>
+            <div class="model-desc">僅 <strong>52KB</strong> 的微型音訊超解析模型，將 16kHz「電話級」音質升頻為 48kHz Hi-Fi 全頻帶。A100 上高達 3600 倍實時速度，手機 CPU 上也幾乎零延遲。適合嵌入 TWS 藍牙耳機晶片或 TTS 輸出後處理。</div>
+        </div>
+    </div>
+
+    <!-- ⑥ 選型建議 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fef3c7;color:#92400e;">選型建議</span>
+        <h2 class="bento-title-large">實戰選型</h2>
+        <div class="tip-box">
+            <strong>✅ 生產推薦管線：</strong><strong>UVR5（人聲/背景音分離）→ DCCRN 或 Meta Denoiser（去噪）→ Whisper / FunASR（ASR）→ pycorrector（文字糾錯）</strong>。一個完美的語音系統從來不是靠一個大模型就能搞定的。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 邊緣部署：</strong>選 <strong>Meta Denoiser（9MB 優化版）</strong>或 <strong>RNNoise</strong>；CPU 即時執行，RTF 0.08 代表 1 秒運算可處理超過 12 秒音訊。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 多人場景：</strong>直接使用 <strong>ClearVoice</strong>，增強與分離一次搞定，免去多模型串聯的複雜度。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 音質升頻需求：</strong>若需要將錄音室以外的電話品質語音提升為高保真，加入 <strong>NovaSR（52KB）</strong>做後處理幾乎零成本。
+        </div>
+    </div>
+
+    <!-- ⑦ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#fffbeb,#fef3c7);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">🎧</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">繼續探索語音處理其他主題</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>ASR 總覽</a>
+            <a href="SpeakerRecognition.html" class="tag" style="background:#f0fdf4;color:#166534;font-size:.9rem;"><i class="fas fa-fingerprint mr-1"></i>聲紋辨識</a>
+            <a href="SpeechSeparation.html" class="tag" style="background:#fff1f2;color:#9f1239;font-size:.9rem;"><i class="fas fa-users mr-1"></i>語者分離</a>
+            <a href="https://deep-learning-101.github.io/Speech-Processing#speech-enhancement" target="_blank" class="tag" style="background:#fef3c7;color:#92400e;font-size:.9rem;"><i class="fas fa-book-open mr-1"></i>完整資源 →</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch (e) { console.warn('[includeHTML] 無法載入 ' + url + '：', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

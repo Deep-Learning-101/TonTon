@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✍️ 文本糾錯 (Text Correction) | MacBERT・pycorrector・ASR 同音字 | Deep Learning 101</title>
+    <meta name="description" content="中文文本糾錯完整指南：pycorrector → ConvSeq2Seq → MacBERT 演進，商場機器人 ASR 同音字修正場景，~100 天踩坑，HuggingFace 線上 DEMO，含 LLM 輔助糾錯新思路。">
+    <meta name="keywords" content="文本糾錯, Text Correction, MacBERT, pycorrector, ConvSeq2Seq, ASR糾錯, 同音字, Jieba, 中文NLP, TonTon Huang">
+    <meta property="og:title" content="文本糾錯 (Text Correction) — MacBERT・pycorrector 完整踩坑 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fef2f2; border: 1px solid #fca5a5; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #dc2626; }
+        .stat-box .desc { font-size: .78rem; color: #b91c1c; margin-top: .2rem; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #ef4444; font-size: 1.1rem; flex-shrink: 0; }
+        .model-card { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #dc2626; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #b91c1c; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .error-demo { background: #f8f8f8; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1rem 1.25rem; font-size: .95rem; font-family: monospace; line-height: 2; }
+        .err-before { color: #dc2626; text-decoration: line-through; background: #fee2e2; border-radius: .25rem; padding: 0 .2rem; }
+        .err-after { color: #16a34a; background: #dcfce7; border-radius: .25rem; padding: 0 .2rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #dc2626, #e11d48); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(220,38,38,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(220,38,38,.4); }
+        .error-type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: .75rem; margin-top: 1rem; }
+        .error-type-card { background: #fef2f2; border: 1px solid #fca5a5; border-radius: .75rem; padding: .85rem 1rem; }
+        .error-type-card .type-title { font-weight: 700; font-size: .9rem; color: #dc2626; margin-bottom: .3rem; }
+        .error-type-card .type-example { font-size: .82rem; color: #555; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "中文文本糾錯 (Text Correction) 完整實戰指南",
+      "description": "pycorrector → ConvSeq2Seq → MacBERT 演進，商場機器人 ASR 同音字修正場景，~100 天踩坑記錄，含 HuggingFace 線上 DEMO。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2019-11-20", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-red-600 via-rose-500 to-pink-500">
+            ✍️ 文本糾錯 (Text Correction)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">ASR 同音字修正 · pycorrector → MacBERT · 商場機器人 · ~100 天踩坑</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2019/11/20–2020/02/29（~100 天）｜<strong>更新</strong>：2026-07-28</p>
+            <p>文本糾錯（Text Correction）要解決的是文字中的各種錯誤：拼音/注音打字的<strong>同音異字</strong>、ASR 語音轉文字的<strong>同音誤識</strong>、手誤造成的<strong>形近字混淆</strong>，以及語法/語意層面的錯誤。</p>
+            <p>這個專案的起源是商場服務機器人：機器人回答客戶問題時，螢幕上顯示的文字有時因 ASR 誤識而出現「頻果」（應為「蘋果」）、「剛果」（應為「剛好」）等錯誤，嚴重影響使用者體驗，因此需要在文字顯示前做一層糾錯。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">~100 天</div><div class="desc">研發投入</div></div>
+            <div class="stat-box"><div class="num">ASR</div><div class="desc">主要應用場景</div></div>
+            <div class="stat-box"><div class="num">MacBERT</div><div class="desc">最終選用模型</div></div>
+            <div class="stat-box"><div class="num">DEMO</div><div class="desc">HuggingFace 線上體驗</div></div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="https://huggingface.co/spaces/DeepLearning101/Corrector101zhTW" target="_blank" class="cta-btn">
+                <i class="fas fa-robot"></i> HuggingFace 線上 DEMO →
+            </a>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="tag" style="background:#fef2f2;color:#dc2626;">#文本糾錯</span>
+            <span class="tag" style="background:#fef2f2;color:#dc2626;">#MacBERT</span>
+            <span class="tag" style="background:#fef2f2;color:#dc2626;">#pycorrector</span>
+            <span class="tag" style="background:#fef2f2;color:#dc2626;">#ASR後處理</span>
+            <span class="tag" style="background:#fef2f2;color:#dc2626;">#同音字</span>
+        </div>
+    </div>
+
+    <!-- ② 錯誤類型 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fca5a5;color:#dc2626;">錯誤類型</span>
+        <h2 class="bento-title-large">中文文本的四大錯誤類型</h2>
+        <div class="error-type-grid">
+            <div class="error-type-card">
+                <div class="type-title">🔊 ASR 同音誤識</div>
+                <div class="type-example">「蘋果」→「頻果」<br>「剛好」→「剛果」<br>語音轉文字最常見</div>
+            </div>
+            <div class="error-type-card">
+                <div class="type-title">⌨️ 拼音/注音同音字</div>
+                <div class="type-example">「再見」→「在見」<br>「繼續」→「機續」<br>注音輸入法的選字錯誤</div>
+            </div>
+            <div class="error-type-card">
+                <div class="type-title">✏️ 形近字混淆</div>
+                <div class="type-example">「已」vs「己」vs「巳」<br>「太」vs「大」<br>手寫或視覺相似字</div>
+            </div>
+            <div class="error-type-card">
+                <div class="type-title">📝 語法/語意錯誤</div>
+                <div class="type-example">詞序錯誤、多餘虛詞<br>「我很的喜歡你」<br>最難自動修正</div>
+            </div>
+        </div>
+        <div class="insight-box" style="margin-top:1.25rem;">
+            <strong>💡 糾錯工具的分工：</strong>不同工具擅長不同類型的錯誤。pycorrector 擅長同音字；MacBERT 能處理多字元上下文；語法錯誤（如詞序）目前最好的選擇反而是 LLM。
+        </div>
+    </div>
+
+    <!-- ③ LLM vs 傳統 -->
+    <div class="bento-box motion-div" style="background:linear-gradient(135deg,#fef2f2,#fff1f2);">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-balance-scale mr-2 text-red-500"></i>文本糾錯：傳統方法 vs LLM</h2>
+        <div class="bento-text">
+            <p>文本糾錯是 NLP 任務中傳統方法和 LLM 各有所長的典型例子：</p>
+        </div>
+        <div class="tip-box">
+            <strong>✅ 傳統方法（MacBERT/pycorrector）更適合的場景：</strong><br>
+            • <strong>ASR 即時後處理</strong>：每秒需處理多筆語音輸出，API 延遲不可接受<br>
+            • <strong>同音字替換</strong>：規則清晰，BERT 的 MLM 能力天然擅長<br>
+            • <strong>資料不外傳</strong>：商業對話內容、醫療語音轉文字<br>
+            • <strong>高頻低成本</strong>：每天處理萬筆以上，Token 費用不划算
+        </div>
+        <div class="insight-box">
+            <strong>💡 LLM 更適合的場景：</strong><br>
+            • <strong>語法/語意錯誤</strong>：句子結構混亂、外國人寫的中文<br>
+            • <strong>長文修改</strong>：作文、報告、郵件等整段修正，需要全文理解<br>
+            • <strong>風格統一</strong>：把多人協作文件的用詞統一化<br>
+            • <strong>低頻高質量</strong>：不在乎費用，追求最高品質的修正
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ LLM 不適合的場景：</strong>讓 LLM 糾正 ASR 輸出時，它很可能「創意」地改寫整句話的意思（不只改錯字），反而更危險。糾錯任務對「最小修改原則」要求高，LLM 傾向過度修改。
+        </div>
+    </div>
+
+    <!-- ④ 技術演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fca5a5;color:#dc2626;">技術演進</span>
+        <h2 class="bento-title-large">pycorrector → ConvSeq2Seq → MacBERT</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">pycorrector<br><small>規則+語言模型</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">ConvSeq2Seq<br><small>CNN Encoder-Decoder</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">BERT MLM<br><small>遮罩語言模型</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step" style="background:#dcfce7;border-color:#86efac;color:#166534;">MacBERT<br><small>中文最佳化</small></div>
+        </div>
+
+        <div class="model-card" style="margin-top:1rem;">
+            <div class="model-title">🔧 pycorrector（起步工具）</div>
+            <div class="model-meta"><a href="https://github.com/shibing624/pycorrector" target="_blank">GitHub</a></div>
+            <div class="model-desc">整合 Kenlm 語言模型 + 同音/形近字詞典的規則糾錯工具。優點：開箱即用，不需要訓練數據；缺點：缺乏上下文理解，容易過度糾錯（把正確的詞改錯）。適合做初步實驗和基線對比。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">🔄 ConvSeq2Seq（序列到序列）</div>
+            <div class="model-meta">CNN-based Encoder-Decoder</div>
+            <div class="model-desc">把糾錯當成翻譯問題：錯誤句子 → 正確句子。CNN 並行計算比 RNN 快，但對長句和多處同時出錯的情況效果不穩定。主要問題是：模型可能「創意翻譯」，改動超出必要範圍。</div>
+        </div>
+
+        <div class="model-card" style="background:#fffbeb;border-color:#fde68a;">
+            <div class="model-title" style="color:#92400e;">🧪 BERT MLM（Masked Language Model）</div>
+            <div class="model-meta">利用 BERT 預訓練的核心能力</div>
+            <div class="model-desc">BERT 的預訓練任務就是「遮罩語言模型」——給定上下文預測被遮罩的詞。文本糾錯可以直接利用這個能力：把疑似錯誤的字遮罩，讓 BERT 根據上下文預測最可能的正確字。缺點是需要先判斷「哪個字是錯的」。</div>
+        </div>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title" style="color:#166534;">🏆 MacBERT（2020，哈工大）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/2004.13922" target="_blank">arXiv:2004.13922</a> | 最終選用</div>
+            <div class="model-desc">MacBERT（MLM as correction BERT）專為中文文本糾錯設計，預訓練時把<strong>相似詞（同音/形近詞）</strong>作為遮罩替換，讓模型天然學會修正這類錯誤。相比標準 BERT，MacBERT 在中文糾錯任務上 F1 提升 3–5%，是目前中文文本糾錯的最佳 BERT 基底模型。</div>
+        </div>
+    </div>
+
+    <!-- ⑤ 糾錯效果展示 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fca5a5;color:#dc2626;">效果展示</span>
+        <h2 class="bento-title-large">ASR 同音字糾錯效果示例</h2>
+        <div class="bento-text">
+            <p>以下是商場機器人場景中的典型 ASR 糾錯案例：</p>
+        </div>
+        <div class="error-demo">
+            ASR 輸出：「請問<span class="err-before">頻果</span>手機在幾樓？」<br>
+            糾錯後：「請問<span class="err-after">蘋果</span>手機在幾樓？」<br>
+            <br>
+            ASR 輸出：「這裡有<span class="err-before">剛果</span>可以試用的<span class="err-before">商圈</span>嗎？」<br>
+            糾錯後：「這裡有<span class="err-after">剛好</span>可以試用的<span class="err-after">商品</span>嗎？」<br>
+            <br>
+            ASR 輸出：「我想找<span class="err-before">腳彩</span>店」<br>
+            糾錯後：「我想找<span class="err-after">角彩（彩妝）</span>店」
+        </div>
+        <div class="pitfall-box" style="margin-top:1rem;">
+            <strong>⚠️ 糾錯的邊界：</strong>「我不喜歡你」如果 ASR 誤識為「我步喜歡你」，糾錯應把「步」改回「不」。但如果誤識為「我不習慣你」，這在語法上完全正確，糾錯模型很難判斷這是 ASR 錯誤還是說話者的本意。<strong>糾錯的上限是人類也無法確定的模糊地帶。</strong>
+        </div>
+    </div>
+
+    <!-- ⑥ 踩坑記錄 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fca5a5;color:#dc2626;">踩坑記錄</span>
+        <h2 class="bento-title-large">~100 天的血與淚</h2>
+        <div class="pitfall-box">
+            <strong>⚠️ 數據標注是最大瓶頸：</strong>糾錯任務需要「錯誤句子–正確句子」配對數據，公開數據集幾乎都是簡體中文。台灣場景需要大量人工聆聽 ASR 輸出、找出錯誤、標注正確版本。這件事非常耗時，卻是提升效果的關鍵。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ Jieba 斷詞的坑（繁中版也逃不掉）：</strong>糾錯的第一步通常要斷詞，但 Jieba 繁中版對新詞（品牌名、店名）斷詞效果差，導致糾錯邊界判斷錯誤。後來加入自定義詞典，效果明顯改善。<code>pkuseg</code> 也試過，整體感覺不如 Jieba 繁中版。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 過度糾錯（Over-correction）：</strong>把「一個比一個強」糾正成「一個比一個牆」——模型過度敏感，把正確的字改錯。需要設定「最小信心閾值」，低於閾值的不糾正。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 不同工具的糾錯目標不一致：</strong>pycorrector 能處理疊字錯誤（「喜喜歡歡」→「喜歡」），MacBERT 擅長單字替換，ConvSeq2Seq 能處理連續錯 3 個字但不可控。選工具前必須先分析你的場景以哪種錯誤類型為主。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 最終成功的關鍵：</strong>用拼音相似度輔助判斷候選糾正詞（「頻果」→「蘋果」的拼音相似）；結合 NER（先識別出品牌名，品牌名不進行糾錯）；最後用 MacBERT MLM 重排序候選字。這個 pipeline 才讓效果達到預期。
+        </div>
+    </div>
+
+    <!-- ⑦ HuggingFace DEMO -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#fef2f2,#fff1f2);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">🤗</div>
+        <h3 style="font-size:1.4rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">立即體驗線上 DEMO</h3>
+        <p class="bento-text" style="color:#555;max-width:480px;margin:0 auto 1.5rem;">輸入含有同音字或常見 ASR 錯誤的中文文本，即時查看糾錯效果。</p>
+        <a href="https://huggingface.co/spaces/DeepLearning101/Corrector101zhTW" target="_blank" class="cta-btn" style="margin:0 auto;">
+            <i class="fas fa-robot"></i> 前往 HuggingFace Space →
+        </a>
+    </div>
+
+    <!-- ⑧ 底部導航 -->
+    <div class="bento-box motion-div text-center">
+        <h3 style="font-size:1.2rem;font-weight:700;color:#1d1d1f;margin-bottom:.75rem;">探索更多 NLP 任務</h3>
+        <div class="flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>NLP 總覽</a>
+            <a href="Classification.html" class="tag" style="background:#eff6ff;color:#1d4ed8;font-size:.9rem;"><i class="fas fa-tags mr-1"></i>文本分類</a>
+            <a href="NER.html" class="tag" style="background:#f3e8ff;color:#7e22ce;font-size:.9rem;"><i class="fas fa-tag mr-1"></i>NER</a>
+            <a href="Similarity.html" class="tag" style="background:#dcfce7;color:#166534;font-size:.9rem;"><i class="fas fa-link mr-1"></i>文本相似度</a>
+            <a href="MRC.html" class="tag" style="background:#fff7ed;color:#c2410c;font-size:.9rem;"><i class="fas fa-book mr-1"></i>機器閱讀理解</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

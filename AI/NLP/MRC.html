@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 機器閱讀理解 (MRC) | BiDAF・QANet・BERT・博物館導覽機器人 | Deep Learning 101</title>
+    <meta name="description" content="中文機器閱讀理解完整指南：BiDAF → QANet → BERT 演進，博物館/展場 Q&A 機器人實戰 120 天，DRCD 台達電數據集，BERT vs RAG vs LLM 選型分析。">
+    <meta name="keywords" content="機器閱讀理解, MRC, BiDAF, QANet, BERT, SQuAD, DRCD, CMRC, RAG, 中文MRC, 博物館機器人, TonTon Huang">
+    <meta property="og:title" content="機器閱讀理解 (MRC) — BiDAF・BERT・RAG 完整選型指南 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fff7ed; border: 1px solid #fed7aa; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #c2410c; }
+        .stat-box .desc { font-size: .78rem; color: #ea580c; margin-top: .2rem; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #f97316; font-size: 1.1rem; flex-shrink: 0; }
+        .model-card { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #c2410c; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #ea580c; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(234,88,12,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(234,88,12,.4); }
+        .dataset-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 1rem; }
+        .dataset-table th { text-align: left; padding: .65rem .85rem; border-bottom: 2px solid #fed7aa; background: #fff7ed; }
+        .dataset-table td { padding: .55rem .85rem; border-bottom: 1px solid #fef3c7; vertical-align: top; }
+        .dataset-table tr:last-child td { border-bottom: none; }
+        .badge-llm { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-classic { display: inline-block; background: #dcfce7; color: #166534; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-hybrid { display: inline-block; background: #fef3c7; color: #92400e; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "中文機器閱讀理解 (MRC) 完整實戰指南",
+      "description": "BiDAF → QANet → BERT 演進，博物館/展場 Q&A 機器人實戰 120 天，DRCD 台達電數據集，BERT vs RAG vs LLM 選型分析。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2018-10-15", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-orange-500 via-red-500 to-rose-500">
+            📖 機器閱讀理解 (MRC)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">BiDAF → BERT → RAG · 博物館導覽機器人 · 120 天踩坑 · BERT vs LLM 選型</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2018/10/15–2019/02/10（~120 天）｜<strong>更新</strong>：2026-07-28</p>
+            <p>機器閱讀理解（MRC）要解決的問題是：「給機器一篇文章和一個問題，讓它找出答案」。比如展場導覽機器人，參觀者問「這件藏品是哪個朝代的？」，機器必須從展品說明書中定位並抽取出「明朝」這個答案。</p>
+            <p>MRC 是 NLP 領域中公認難度最高的任務之一，因為它同時需要<strong>語意理解、跨句推理、段落定位、答案抽取</strong>四種能力。2018 年 BERT 問世後才真正讓 MRC 達到實用水準。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">~120 天</div><div class="desc">研發投入</div></div>
+            <div class="stat-box"><div class="num">SQuAD</div><div class="desc">基礎數據集（機翻）</div></div>
+            <div class="stat-box"><div class="num">DRCD</div><div class="desc">台達電繁中數據集</div></div>
+            <div class="stat-box"><div class="num">RAG</div><div class="desc">2024+ 最佳架構</div></div>
+        </div>
+    </div>
+
+    <!-- ② LLM vs 傳統 -->
+    <div class="bento-box motion-div" style="background:linear-gradient(135deg,#fff7ed,#fef3c7);">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-balance-scale mr-2 text-orange-500"></i>MRC：最需要 LLM 的 NLP 任務，但傳統方法仍有一席之地</h2>
+        <div class="insight-box" style="margin-top:0;">
+            <strong>💡 核心論點：</strong>MRC 是五大 NLP 任務中傳統方法 vs LLM 界線最模糊的一個。固定知識庫（FAQ、產品說明）→ BERT+RAG；開放域問答（需要多步推理、跨文件融合）→ LLM（GPT/Gemini）。
+        </div>
+        <div style="overflow-x:auto; margin-top:.5rem;">
+            <table class="dataset-table">
+                <thead>
+                    <tr>
+                        <th>比較維度</th>
+                        <th>BERT 微調（封閉知識庫）<span class="badge-classic">固定域首選</span></th>
+                        <th>LLM + RAG（開放域）<span class="badge-llm">複雜推理首選</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:600;">知識庫大小</td><td>適合 &lt;10 萬文件，索引後快速檢索</td><td>可接入任意規模知識庫，向量數據庫配合</td></tr>
+                    <tr><td style="font-weight:600;">答案必須在文本內</td><td>是，抽取式 MRC（Extractive）答案是原文片段</td><td>生成式 MRC，可融合多篇文章、生成摘要性答案</td></tr>
+                    <tr><td style="font-weight:600;">多步推理</td><td>困難：需要跨文件的推理依賴</td><td>LLM 天然支援多步推理</td></tr>
+                    <tr><td style="font-weight:600;">幻覺風險</td><td>幾乎無：答案限定在原文內</td><td>有：LLM 可能生成文件中不存在的答案</td></tr>
+                    <tr><td style="font-weight:600;">延遲</td><td>GPU ~50ms，CPU ~500ms</td><td>API round trip 1–5s + 生成時間</td></tr>
+                    <tr><td style="font-weight:600;">成本</td><td>一次微調，邊際成本接近零</td><td>每次問答消耗 Token（含文件 context）</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tip-box" style="margin-top:1rem;">
+            <strong>✅ 2026 黃金組合：Bi-encoder 召回 + BERT reranker + LLM 生成答案</strong><br>
+            BGE Embedding → FAISS 向量搜尋 → 召回 Top-5 文件 → BERT cross-encoder 精排 → GPT-4o 生成最終答案並附上引用來源。既保留效率，又有 LLM 的語言流暢性。
+        </div>
+    </div>
+
+    <!-- ③ 技術演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fed7aa;color:#c2410c;">技術演進</span>
+        <h2 class="bento-title-large">BiDAF → QANet → Transformer-XL → BERT</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">BiDAF<br><small>雙向注意力流</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Ruminating<br><small>多層注意力</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Match-LSTM<br><small>序列匹配</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">QANet<br><small>純 CNN+Transformer</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">BERT<br><small>統一表示</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step" style="background:#fef3c7;border-color:#fcd34d;color:#b45309;">RAG + LLM<br><small>2024+</small></div>
+        </div>
+
+        <div class="model-card" style="margin-top:1rem;">
+            <div class="model-title">🔷 BiDAF（Bidirectional Attention Flow, 2016）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1611.01603" target="_blank">arXiv:1611.01603</a> | 當時 SQuAD 排行榜第一</div>
+            <div class="model-desc">同時計算「文章-問題」和「問題-文章」雙向注意力，讓模型能同時關注問題相關的文章段落。引入 Character Embedding 解決 OOV（未登錄詞）問題。是 2016–2018 年 MRC 的標準基線模型。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">🧮 QANet（2018，Google Brain）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1804.09541" target="_blank">arXiv:1804.09541</a> | 推論速度提升 13x</div>
+            <div class="model-desc">完全拋棄 RNN，改用<strong>純 CNN + Transformer</strong>。資料增強（Data Augmentation）是亮點：用機器翻譯把文章翻成其他語言再翻回來，生成語意相同的多元訓練數據。推論速度比 RNN-based 模型快 13 倍，是 BERT 問世前 SQuAD 最強模型。</div>
+        </div>
+
+        <div class="model-card" style="background:#fffbeb;border-color:#fde68a;">
+            <div class="model-title" style="color:#b45309;">⚡ Transformer-XL（2019，Google Brain）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1901.02860" target="_blank">arXiv:1901.02860</a> | 解決長文本限制</div>
+            <div class="model-desc">引入「循環機制」讓 Transformer 可以記憶前一個片段的狀態，解決固定窗口的長文本問題。對於需要跨段落推理的長篇文章（如百科全書條目）尤為重要。但 BERT 問世後基本退出主流 MRC 競爭。</div>
+        </div>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title" style="color:#166534;">🏆 BERT for MRC（2018，Google）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1810.04805" target="_blank">arXiv:1810.04805</a> | MRC 時代的分水嶺</div>
+            <div class="model-desc">BERT 在 SQuAD 2.0 上直接超越人類水準，徹底改變 MRC 格局。架構上極簡：把問題和文章拼接輸入（[CLS] 問題 [SEP] 文章 [SEP]），輸出兩個 Linear 層分別預測答案的起始和結束位置。只需微調幾個 epoch 即可。</div>
+        </div>
+    </div>
+
+    <!-- ④ 數據集 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fed7aa;color:#c2410c;">數據集</span>
+        <h2 class="bento-title-large">中文 MRC 數據集：從 SQuAD 到 DRCD</h2>
+        <div class="pitfall-box" style="margin-bottom:1rem;">
+            <strong>⚠️ 核心痛點：</strong>2018 年做中文 MRC，幾乎沒有可用的繁體中文數據集。只能把英文 SQuAD 翻譯成中文使用，但翻譯品質影響模型效果，且簡繁轉換問題讓台灣場景更麻煩。
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="dataset-table">
+                <thead>
+                    <tr>
+                        <th>數據集</th>
+                        <th>語言</th>
+                        <th>規模</th>
+                        <th>特點</th>
+                        <th>台灣適用性</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;"><a href="https://rajpurkar.github.io/SQuAD-explorer/" target="_blank">SQuAD 1.0/2.0</a></td>
+                        <td>英文</td>
+                        <td>10 萬+ 問答對</td>
+                        <td>維基百科文章，2.0 含 unanswerable 問題</td>
+                        <td>⚠️ 機翻後可用，但品質有落差</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;"><a href="https://github.com/ymcui/cmrc2018" target="_blank">CMRC 2018</a></td>
+                        <td>簡體中文</td>
+                        <td>1.8 萬+ 問答對</td>
+                        <td>中文維基百科，哈工大/科大訊飛 CodaLab 評測</td>
+                        <td>⚠️ 簡體為主，繁體場景需轉換</td>
+                    </tr>
+                    <tr style="background:#fef9ec;">
+                        <td style="font-weight:600;"><a href="https://github.com/DRCKnowledgeTeam/DRCD" target="_blank">DRCD</a></td>
+                        <td>繁體中文</td>
+                        <td>3 萬+ 問答對</td>
+                        <td>台達電子研究院開發，維基百科為來源</td>
+                        <td>✅ 台灣最佳選擇</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">自建 Wiki 標注</td>
+                        <td>繁體中文</td>
+                        <td>視場景而定</td>
+                        <td>用 ChineseAnnotator 自行標注領域語料</td>
+                        <td>✅ 最適合特定場景</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ⑤ 博物館案例 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fed7aa;color:#c2410c;">實戰案例</span>
+        <h2 class="bento-title-large">博物館/展場導覽機器人 (2018–2019)</h2>
+        <div class="bento-text">
+            <p>這是當時的核心應用場景：博物館展場內的導覽機器人，參觀者對著機器人說「這件青花瓷是哪個朝代的？」，機器人需要：</p>
+        </div>
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:1rem;padding:1.25rem;font-size:.9rem;color:#c2410c;">
+            <ol style="list-style:decimal;padding-left:1.5rem;color:#333;line-height:2;">
+                <li><strong>ASR</strong>：語音轉文字，得到「這件青花瓷是哪個朝代的」</li>
+                <li><strong>文本相似度</strong>：找到最相關的展品說明文件（80/20 法則）</li>
+                <li><strong>MRC</strong>：從說明文件中抽取「明朝（1368–1644）」作為答案</li>
+                <li><strong>TTS</strong>：合成語音播放給參觀者</li>
+            </ol>
+        </div>
+        <div class="pitfall-box" style="margin-top:1rem;">
+            <strong>⚠️ 多文件 MRC 的挑戰：</strong>一個問題可能需要參考多個展品說明才能完整回答（如「館內有哪些宋代文物？」），這是「多文件推理」問題，2019 年的 BERT 處理這種情況效果仍有限。這也是 2024 年 RAG 流行的原因之一。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 繁體中文數據的永恆之痛：</strong>SQuAD 是英文，機翻成繁中後，翻譯品質良莠不齊；CMRC 是簡中，繁簡轉換後詞彙用語不自然。最終需要用 DRCD + 自建標注才能解決台灣場景問題。
+        </div>
+        <div class="tip-box">
+            <strong>✅ QANet 的數據增強技巧：</strong>把展品說明用 Google Translate 翻成英文，再翻回中文，得到語意相同但用詞不同的版本，與原版一起作為訓練數據。有效提升了小數據集的模型泛化能力。
+        </div>
+    </div>
+
+    <!-- ⑥ 2024+ RAG 架構 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#fed7aa;color:#c2410c;">2024+ 進展</span>
+        <h2 class="bento-title-large">RAG（檢索增強生成）：MRC 的現代解法</h2>
+        <div class="bento-text">
+            <p>2023 年後，RAG（Retrieval-Augmented Generation）成為 MRC 問題的主流解決方案：把相關文件檢索出來，餵給 LLM 生成答案，既解決了 LLM 知識截止日期的問題，也減少了幻覺風險。</p>
+        </div>
+        <div class="insight-box">
+            <strong>💡 RAG vs 傳統 MRC 的關鍵差異：</strong><br>
+            <strong>傳統 BERT MRC：</strong>答案必須是原文的片段（Extractive），答案範圍受限，但結果高度可信<br>
+            <strong>RAG + LLM：</strong>答案可以是多文件融合後的摘要（Generative），更自然、更完整，但有幻覺風險，需要引用來源驗證
+        </div>
+        <div class="tip-box">
+            <strong>✅ 何時選傳統 BERT MRC：</strong><br>
+            • 知識庫已建立且更新頻率低（如展品說明、產品規格）<br>
+            • 答案必須是原文的精確片段（法律條文引用、合約條款）<br>
+            • 幻覺風險不可接受（醫療、法律場景）<br>
+            • 部署環境無法連接外部 API
+        </div>
+        <div class="tip-box">
+            <strong>✅ 何時選 RAG + LLM：</strong><br>
+            • 需要跨文件融合信息（如「比較這兩個展品的差異」）<br>
+            • 知識庫持續更新，不方便頻繁微調<br>
+            • 答案需要自然語言解釋，而非原文片段<br>
+            • 已有 GPT/Gemini API 預算且體驗優先
+        </div>
+    </div>
+
+    <!-- ⑦ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#fff7ed,#fef3c7);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">📖</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">探索更多 NLP 任務</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>NLP 總覽</a>
+            <a href="Classification.html" class="tag" style="background:#eff6ff;color:#1d4ed8;font-size:.9rem;"><i class="fas fa-tags mr-1"></i>文本分類</a>
+            <a href="NER.html" class="tag" style="background:#f3e8ff;color:#7e22ce;font-size:.9rem;"><i class="fas fa-tag mr-1"></i>NER</a>
+            <a href="Similarity.html" class="tag" style="background:#dcfce7;color:#166534;font-size:.9rem;"><i class="fas fa-link mr-1"></i>文本相似度</a>
+            <a href="Correction.html" class="tag" style="background:#fef2f2;color:#dc2626;font-size:.9rem;"><i class="fas fa-spell-check mr-1"></i>文本糾錯</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

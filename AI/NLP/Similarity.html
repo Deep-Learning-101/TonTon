@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 文本相似度 (Text Similarity) | Siamese-BERT・ALBERT・80/20 Q&A | Deep Learning 101</title>
+    <meta name="description" content="中文文本相似度完整指南：TF-IDF → Siamese-BERT → ALBERT，聊天機器人 80/20 Q&A 比對法，解決「廁所」vs「洗手間」等中文語意相似場景，含 BGE Embedding 2026 最新選型建議。">
+    <meta name="keywords" content="文本相似度, Text Similarity, Siamese-BERT, ALBERT, BGE, Sentence-BERT, 聊天機器人, 80/20, 語意相似, TonTon Huang">
+    <meta property="og:title" content="文本相似度 (Text Similarity) — Siamese-BERT・ALBERT 完整實戰 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #166534; }
+        .stat-box .desc { font-size: .78rem; color: #15803d; margin-top: .2rem; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #f0fdf4; border: 1px solid #86efac; color: #166534; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #22c55e; font-size: 1.1rem; flex-shrink: 0; }
+        .model-card { background: #f0fdf4; border: 1px solid #86efac; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #166534; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #15803d; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #16a34a, #059669); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(22,163,74,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(22,163,74,.4); }
+        .similarity-demo { background: #f8f8f8; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1rem 1.25rem; font-size: .95rem; }
+        .sim-row { display: flex; align-items: center; gap: .75rem; padding: .4rem 0; flex-wrap: wrap; }
+        .sim-text { background: #fff; border: 1px solid #d1fae5; border-radius: .5rem; padding: .25rem .65rem; font-weight: 500; }
+        .sim-score { font-weight: 700; padding: .2rem .6rem; border-radius: .4rem; font-size: .85rem; }
+        .vs-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 1rem; }
+        .vs-table th { text-align: left; padding: .65rem .85rem; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+        .vs-table td { padding: .55rem .85rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .vs-table tr:last-child td { border-bottom: none; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "中文文本相似度 (Text Similarity) 完整實戰指南",
+      "description": "TF-IDF → Siamese-BERT → ALBERT → BGE Embedding 的演進，聊天機器人 80/20 Q&A 比對法，廁所 vs 洗手間語意相似場景解法。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2019-10-15", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500">
+            🔗 文本相似度 (Text Similarity)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">廁所 = 洗手間 · 80/20 Q&A 比對 · Siamese-BERT → BGE Embedding · ~45 天踩坑</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2019/10/15–2019/11/30（~45 天）｜<strong>更新</strong>：2026-07-28</p>
+            <p>文本相似度的核心問題是：「這兩句話是否表達同一個意思？」聽起來簡單，但中文博大精深，<strong>「廁所在哪裡」</strong>和<strong>「洗手間在那」</strong>，字面上完全不同，語意上完全相同。傳統方法（TF-IDF、詞重疊）處理不了這種情況，這正是 BERT 類方法的突破口。</p>
+            <p>這個專案的應用場景是聊天機器人的「80/20 問題處理法」：80% 的用戶問題其實都是常見問題的變體，先用相似度比對快速匹配已有 Q&A 答案，剩下 20% 才進入關鍵字引擎或閱讀理解系統，大幅降低系統整體延遲與成本。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">~45 天</div><div class="desc">研發投入</div></div>
+            <div class="stat-box"><div class="num">80%</div><div class="desc">問題可被快速比對解決</div></div>
+            <div class="stat-box"><div class="num">ALBERT</div><div class="desc">最終選用基底模型</div></div>
+            <div class="stat-box"><div class="num">BGE</div><div class="desc">2026 首選 Embedding</div></div>
+        </div>
+    </div>
+
+    <!-- ② 語意相似 DEMO -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">直觀理解</span>
+        <h2 class="bento-title-large">文本相似度的真正難題</h2>
+        <div class="bento-text">
+            <p>傳統詞重疊方法（Jaccard / BM25）只看字詞是否相同，完全無法處理以下中文語意相似問題：</p>
+        </div>
+        <div class="similarity-demo">
+            <div class="sim-row">
+                <span class="sim-text">廁所在哪裡</span>
+                <span style="color:#666;">vs</span>
+                <span class="sim-text">洗手間在那</span>
+                <span class="sim-score" style="background:#dcfce7;color:#166534;">語意相同 ✓</span>
+                <span style="font-size:.83rem;color:#666;">詞重疊=0，BERT=高分</span>
+            </div>
+            <div class="sim-row">
+                <span class="sim-text">我不喜歡你</span>
+                <span style="color:#666;">vs</span>
+                <span class="sim-text">你是個好人</span>
+                <span class="sim-score" style="background:#fee2e2;color:#dc2626;">語意相反 ✗</span>
+                <span style="font-size:.83rem;color:#666;">詞重疊=低，需語意理解</span>
+            </div>
+            <div class="sim-row">
+                <span class="sim-text">台北 101 幾樓</span>
+                <span style="color:#666;">vs</span>
+                <span class="sim-text">台北 101 有多少層</span>
+                <span class="sim-score" style="background:#dcfce7;color:#166534;">語意相同 ✓</span>
+                <span style="font-size:.83rem;color:#666;">詞重疊=部分，BERT=高分</span>
+            </div>
+            <div class="sim-row">
+                <span class="sim-text">我要訂明天的票</span>
+                <span style="color:#666;">vs</span>
+                <span class="sim-text">幫我退票</span>
+                <span class="sim-score" style="background:#fef3c7;color:#b45309;">語意不同 ≠</span>
+                <span style="font-size:.83rem;color:#666;">都是票務，但意圖相反</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ③ LLM vs 傳統 -->
+    <div class="bento-box motion-div" style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-balance-scale mr-2 text-green-500"></i>文本相似度：傳統 Embedding vs LLM</h2>
+        <div class="insight-box" style="margin-top:0;">
+            <strong>💡 核心論點：</strong>高頻語意檢索（Q&A 比對、知識庫搜尋）用 BERT-based Embedding 速度快、成本低；需要理解隱語、反諷、跨語言語意時，LLM 作為 reranker 是合理補充。
+        </div>
+        <div style="overflow-x:auto; margin-top:.5rem;">
+            <table class="vs-table">
+                <thead>
+                    <tr>
+                        <th>場景</th>
+                        <th>Sentence-BERT / BGE</th>
+                        <th>LLM 語意比對</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:600;">1 萬筆問題庫搜尋</td><td>ANN 向量搜尋 &lt;10ms</td><td>每次都要 API 呼叫，不可行</td></tr>
+                    <tr><td style="font-weight:600;">字面不同語意相同</td><td>BERT 向量相似度高，準確</td><td>LLM 正確但費用高</td></tr>
+                    <tr><td style="font-weight:600;">反諷/隱喻</td><td>向量相似度可能失準</td><td>LLM 理解能力強</td></tr>
+                    <tr><td style="font-weight:600;">跨語言（中英混）</td><td>需多語言模型（如 multilingual-e5）</td><td>LLM 原生支援多語言</td></tr>
+                    <tr><td style="font-weight:600;">部署成本</td><td>一次訓練，邊際成本極低</td><td>每次都消耗 Token，隨量線性增長</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tip-box" style="margin-top:1rem;">
+            <strong>✅ 2026 最佳實踐：Bi-encoder + Cross-encoder 兩階段</strong><br>
+            Stage 1：BGE / Sentence-BERT 快速召回 Top-K 候選（向量搜尋，&lt;10ms）<br>
+            Stage 2：Cross-encoder reranker（或 LLM）精排，提升最終排序準確度<br>
+            → 兼顧速度與精度，99% 的場景不需要把 LLM 用在 Stage 1。
+        </div>
+    </div>
+
+    <!-- ④ 技術演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">技術演進</span>
+        <h2 class="bento-title-large">TF-IDF → Word Vectors → BERT → BGE</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">TF-IDF / n-gram<br><small>詞頻統計</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Word2Vec<br><small>詞向量相似度</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">ALBERT<br><small>輕量 BERT 微調</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Siamese-BERT<br><small>孿生網路對比學習</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step" style="background:#dcfce7;border-color:#4ade80;color:#166534;">BGE / E5<br><small>2026 SOTA</small></div>
+        </div>
+
+        <div class="model-card" style="margin-top:1rem;">
+            <div class="model-title">📊 TF-IDF + Cosine Similarity</div>
+            <div class="model-meta">最簡單的基線方法</div>
+            <div class="model-desc">把文本轉成詞頻向量，計算餘弦相似度。優點：不需要訓練，計算快；缺點：完全忽略語意，「廁所」和「洗手間」向量距離很遠，相似度為 0。適合作為基線對比，不適合直接用於生產。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">🔤 Word Vectors（Word2Vec / FastText）</div>
+            <div class="model-meta">騰訊 ChineseEmbedding 16GB</div>
+            <div class="model-desc">把每個詞映射為 300 維向量，「廁所」和「洗手間」在向量空間中接近。但詞向量無法解決一詞多義（bank 是銀行還是河岸），且依賴 16GB 騰訊詞典，記憶體消耗極高。</div>
+        </div>
+
+        <div class="model-card" style="background:#fffbeb;border-color:#fde68a;">
+            <div class="model-title" style="color:#92400e;">⚡ ALBERT（2019，Google/CMU）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1909.11942" target="_blank">arXiv:1909.11942</a> | 原始專案選用</div>
+            <div class="model-desc">BERT 的輕量化版本，參數共享讓模型體積縮小 18 倍，但效果幾乎相當。當時選用 ALBERT 是因為記憶體和推論速度優勢。<strong>最終被知識蒸餾（Distillation）方法超越</strong>：把 BERT 蒸餾成小模型，速度更快、效果更好。</div>
+        </div>
+
+        <div class="model-card" style="background:#eff6ff;border-color:#93c5fd;">
+            <div class="model-title" style="color:#1e40af;">🧬 Siamese-BERT（孿生網路）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1908.10084" target="_blank">Sentence-BERT，arXiv:1908.10084</a></div>
+            <div class="model-desc">兩個共享權重的 BERT 分支分別編碼兩句話，用 Contrastive Loss 或 Cosine Similarity Loss 訓練。關鍵優勢：句向量<strong>可以離線預計算</strong>，推論時只需做向量相似度計算（&lt;1ms），無需每次都跑完整 BERT。這讓大規模 Q&A 比對變為可行。</div>
+        </div>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title">🏆 BGE / E5 / nomic-embed（2024–2026 SOTA）</div>
+            <div class="model-meta">BGE: <a href="https://huggingface.co/BAAI/bge-large-zh-v1.5" target="_blank">BAAI/bge-large-zh-v1.5</a> | MTEB Chinese Leaderboard #1</div>
+            <div class="model-desc">北京智源研究院（BAAI）的 BGE（Beijing General Embedding）系列，在 MTEB 中文 Embedding 排行榜長期位居前列。支援繁體中文，1536 維高維 Embedding。搭配 FAISS 可在億級語料庫中做毫秒級向量搜尋。是 2026 年文本相似度的首選基礎模型。</div>
+        </div>
+    </div>
+
+    <!-- ⑤ 80/20 Q&A 架構 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">架構設計</span>
+        <h2 class="bento-title-large">聊天機器人的 80/20 問題處理法</h2>
+        <div class="bento-text">
+            <p>這個 80/20 策略的核心洞見是：<strong>大多數問題都是常見問題的語意變體</strong>。只要能快速識別出這類問題，就可以直接返回預設答案，避免進入昂貴的 NLP pipeline。</p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:1rem;padding:1.25rem;font-size:.9rem;color:#166534;">
+            <div style="font-weight:700;margin-bottom:.75rem;">🔄 問題處理 Pipeline：</div>
+            <div style="display:flex;flex-direction:column;gap:.5rem;">
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="background:#166534;color:#fff;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;">用戶輸入</span>
+                    <span style="color:#16a34a;">→</span>
+                    <span style="background:#fff;border:1px solid #86efac;padding:.2rem .65rem;border-radius:.5rem;flex:1;">ASR / 文字輸入正規化</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="color:#16a34a;padding-left:1.5rem;">↓</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="background:#16a34a;color:#fff;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;">① 相似度比對</span>
+                    <span style="color:#16a34a;">→</span>
+                    <span style="background:#fff;border:1px solid #86efac;padding:.2rem .65rem;border-radius:.5rem;flex:1;">BGE Embedding + FAISS 向量搜尋 → 匹配 Q&A 庫</span>
+                    <span style="background:#dcfce7;color:#166534;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;font-size:.8rem;">相似度 &gt; 0.85 → 直接回答（~80%）</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="color:#16a34a;padding-left:1.5rem;">↓ 相似度 &lt; 0.85</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="background:#ea580c;color:#fff;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;">② 關鍵字/正規表達式</span>
+                    <span style="color:#16a34a;">→</span>
+                    <span style="background:#fff;border:1px solid #86efac;padding:.2rem .65rem;border-radius:.5rem;flex:1;">規則引擎處理常見意圖</span>
+                    <span style="background:#fff3cd;color:#b45309;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;font-size:.8rem;">覆蓋約 15%</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="color:#16a34a;padding-left:1.5rem;">↓ 未匹配</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                    <span style="background:#7e22ce;color:#fff;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;">③ MRC / LLM</span>
+                    <span style="color:#16a34a;">→</span>
+                    <span style="background:#fff;border:1px solid #86efac;padding:.2rem .65rem;border-radius:.5rem;flex:1;">深度理解、開放域問答</span>
+                    <span style="background:#fce7f3;color:#9d174d;padding:.2rem .65rem;border-radius:.5rem;white-space:nowrap;font-size:.8rem;">剩餘約 5%（高成本）</span>
+                </div>
+            </div>
+        </div>
+        <div class="tip-box" style="margin-top:1rem;">
+            <strong>✅ 關鍵收益：</strong>相似度比對的邊際成本幾乎為零（向量計算 &lt;1ms），LLM 只處理最複雜的 5% 問題，整體 Token 費用降低 80–95%。
+        </div>
+    </div>
+
+    <!-- ⑥ 踩坑記錄 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#dcfce7;color:#166534;">踩坑記錄</span>
+        <h2 class="bento-title-large">~45 天的收穫與教訓</h2>
+        <div class="bento-text">
+            <p>那時剛好遇到 ALBERT 剛發布，以為輕量就是更好，做了大量 ALBERT 微調實驗。後來發現——</p>
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ ALBERT 被蒸餾打敗：</strong>把 BERT-base 用知識蒸餾（Knowledge Distillation）壓縮到相似大小後，速度比 ALBERT 更快，且因為蒸餾是在繁體中文語料上做的，領域適配更好。<strong>模型輕量化優先考慮蒸餾，而非直接選參數少的模型。</strong>
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 相似度閾值的魔法數字：</strong>「相似度 &gt; X 才算匹配」的 X 值需要用驗證集仔細調整，不同資料集、不同問題類型，最佳閾值可能從 0.7 到 0.92 都有。設太高漏掉合理匹配，設太低帶入錯誤答案。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 中文語意的特殊陷阱：</strong>「我不喜歡你」和「你是個好人」（就是委婉拒絕的意思），Siamese-BERT 會計算出中等相似度，但語意不同。<strong>語意相似度 ≠ 意圖相似度</strong>，下游需要額外的意圖識別層。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 訓練數據策略：</strong>相似句對（Positive Pairs）可以用文本分類的標注數據生成——同類別的問題互相構成正樣本對，跨類別構成負樣本對。不需要額外從零標注，大幅降低數據成本。
+        </div>
+    </div>
+
+    <!-- ⑦ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">🔗</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">探索更多 NLP 任務</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>NLP 總覽</a>
+            <a href="Classification.html" class="tag" style="background:#eff6ff;color:#1d4ed8;font-size:.9rem;"><i class="fas fa-tags mr-1"></i>文本分類</a>
+            <a href="NER.html" class="tag" style="background:#f3e8ff;color:#7e22ce;font-size:.9rem;"><i class="fas fa-tag mr-1"></i>NER</a>
+            <a href="MRC.html" class="tag" style="background:#fff7ed;color:#c2410c;font-size:.9rem;"><i class="fas fa-book mr-1"></i>機器閱讀理解</a>
+            <a href="Correction.html" class="tag" style="background:#fef2f2;color:#dc2626;font-size:.9rem;"><i class="fas fa-spell-check mr-1"></i>文本糾錯</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

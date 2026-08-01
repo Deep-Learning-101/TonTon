@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👥 語者分離 (Speech Separation) | TasNet・DPRNN・VoiceFilter・雞尾酒會問題 | Deep Learning 101</title>
+    <meta name="description" content="中文語者分離完整指南：解決「雞尾酒會問題」的 TasNet → Conv-TasNet → DPRNN → DPT-Net 架構演進，VoiceFilter 說話人條件分離，MossFormer、TOLD 實戰，完全重疊 vs 部分重疊數據構建，與 150 天踩坑筆記。">
+    <meta name="keywords" content="語者分離, Speech Separation, 雞尾酒會問題, TasNet, DPRNN, VoiceFilter, MossFormer, TOLD, TonTon Huang, Conv-TasNet">
+    <meta property="og:title" content="語者分離 (Speech Separation) — Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-text ul { list-style: none; padding-left: 0; }
+        .bento-text ul li { padding-left: 1.5rem; position: relative; margin-bottom: .5rem; }
+        .bento-text ul li::before { content: "▸"; position: absolute; left: 0; color: #be185d; font-weight: 700; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; background: #fff1f2; color: #9f1239; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .model-card { background: #fff1f2; border: 1px solid #fecdd3; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #9f1239; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #be185d; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .pipeline-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+        .pipeline-step { background: #fff1f2; border: 1px solid #fca5a5; color: #9f1239; font-weight: 600; font-size: .88rem; padding: .5rem 1rem; border-radius: .75rem; }
+        .pipeline-arrow { color: #f43f5e; font-size: 1.1rem; flex-shrink: 0; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #be185d, #9f1239); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(190,24,93,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(190,24,93,.4); }
+        .update-badge { display: inline-flex; align-items: center; background: linear-gradient(135deg, #dc2626, #f97316); color: #fff; padding: .2rem .65rem; border-radius: 9999px; font-size: .75rem; font-weight: 700; flex-shrink: 0; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fff1f2; border: 1px solid #fecdd3; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #9f1239; }
+        .stat-box .desc { font-size: .78rem; color: #be185d; margin-top: .2rem; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.twman.org/AI/ASR/SpeechSeparation" },
+      "headline": "中文語者分離 (Speaker Separation) 完整技術指南",
+      "description": "TasNet、DPRNN、DPT-Net、VoiceFilter 架構解析，完全重疊 vs 部分重疊數據構建，雞尾酒會問題的工業級解決方案。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2020-08-01", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-pink-500 to-red-500">
+            👥 語者分離 (Speech Separation)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">解決「雞尾酒會問題」· TasNet・DPRNN・VoiceFilter・MossFormer</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：~150 天 (2020/08–2021/01)｜<strong>更新</strong>：2026-07-28</p>
+            <p>語者分離 (Speaker Separation) 的目標是從混疊的聲音訊號中<strong>提取出每個說話人獨立的聲軌</strong>，解決經典的「雞尾酒會問題 (Cocktail Party Problem)」——在多人同時說話的場景下，精準拆開每個人的聲音。</p>
+            <p>💡 與語音增強的差異：增強是「去除非人聲雜訊」，分離是「把多個人聲拆開」。同一批 TasNet/DEMUCS 架構可以兩者通用，但訓練目標與數據完全不同。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">~50K</div><div class="desc">完全重疊訓練集（筆）</div></div>
+            <div class="stat-box"><div class="num">~90K</div><div class="desc">部分重疊訓練集（筆）</div></div>
+            <div class="stat-box"><div class="num">~150 天</div><div class="desc">研發投入</div></div>
+            <div class="stat-box"><div class="num">+15dB</div><div class="desc">SIR 改善量（TasNet）</div></div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="https://www.twman.org/AI/ASR/SpeechSeparation" target="_blank" class="cta-btn">
+                <i class="fas fa-external-link-alt"></i> 原始詳細版頁面 →
+            </a>
+            <a href="https://huggingface.co/spaces/DeepLearning101/Speech-Separation" target="_blank" class="cta-btn" style="background:linear-gradient(135deg,#0369a1,#0284c7);">
+                <i class="fas fa-robot"></i> 線上 DEMO 體驗 →
+            </a>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="tag">#語者分離</span>
+            <span class="tag">#TasNet</span>
+            <span class="tag">#DPRNN</span>
+            <span class="tag">#VoiceFilter</span>
+            <span class="tag">#MossFormer</span>
+            <span class="tag">#TOLD</span>
+            <span class="tag">#SpeakerDiarization</span>
+        </div>
+    </div>
+
+    <!-- ② 架構演進 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">架構演進</span>
+        <h2 class="bento-title-large">TasNet 家族架構演進</h2>
+        <div class="pipeline-row">
+            <div class="pipeline-step">TasNet<br><small>LSTM Separator</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">Conv-TasNet<br><small>TCN 取代 LSTM</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">DPRNN<br><small>Dual-Path RNN</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">DPT-Net<br><small>Transformer 版本</small></div>
+            <span class="pipeline-arrow">→</span>
+            <div class="pipeline-step">MossFormer<br><small>2023 SOTA</small></div>
+        </div>
+        <div class="bento-text" style="margin-top:1rem;">
+            <ul>
+                <li><strong>TasNet</strong>：Encoder（1D Conv）→ LSTM Separator（產生 mask）→ Decoder，奠定時域分離範式。</li>
+                <li><strong>Conv-TasNet</strong>：把 LSTM 換成 WaveNet-based TCN，平行化程度更高，速度更快。</li>
+                <li><strong>DPRNN（Dual-Path RNN）</strong>：將長序列切成 chunks，用 intra-RNN 處理局部、inter-RNN 處理全域，解決 LSTM 長序列效率問題。</li>
+                <li><strong>DPT-Net</strong>：把 DPRNN 中的 Feed-Forward 換成 RNN+activation+linear，引入 Transformer 的長距依賴能力，wsj0-2mix 上 SDR=20.6。</li>
+                <li><strong>MossFormer（ICASSP 2023）</strong>：Mamba + Transformer 混合架構，目前效能最強的開源單聲道分離模型之一。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ③ 主流模型 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">主要模型</span>
+        <h2 class="bento-title-large">六大關鍵模型</h2>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title">🏆 ClearVoice (阿里, 2024-12)</div>
+            <div class="model-meta"><a href="https://github.com/modelscope/ClearerVoice-Studio" target="_blank">GitHub</a> | <a href="https://huggingface.co/spaces/alibabasglab/ClearVoice" target="_blank">線上 DEMO</a></div>
+            <div class="model-desc">⭐ <strong>目前最推薦的一站式方案</strong>。整合語音增強與多人分離，能有效對付雞尾酒會效應，不需要手動串聯多個模型。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📘 VoiceFilter (Google, 2018)</div>
+            <div class="model-meta"><a href="https://google.github.io/speaker-id/publications/VoiceFilter/" target="_blank">官方頁面</a> | arXiv:1810.04826</div>
+            <div class="model-desc">以 d-vector（GE2E 訓練）作為說話人條件向量，混合訊號 → CNN → 與 d-vector 拼接 → LSTM → FC → mask → iSTFT，可精準提取「目標說話人」的聲軌。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📗 VoiceFilter-Lite (Google, 2020)</div>
+            <div class="model-meta">arXiv:2009.04323</div>
+            <div class="model-desc">VoiceFilter 的輕量化版本，以提升 ASR 效果為目標（而非感知音質）；引入<strong>非對稱損失函數 (asymmetric loss)</strong> 補償過度抑制問題。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📙 DPRNN (2020)</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/1910.06379" target="_blank">arXiv:1910.06379</a> | <a href="https://github.com/JusperLee/Dual-path-RNN-Pytorch" target="_blank">GitHub</a></div>
+            <div class="model-desc">Dual-Path RNN：將輸入切成 chunks，分別用 intra-chunk（局部）和 inter-chunk（全域）兩個 RNN 處理，高效建模任意長序列，是後續 DPT-Net / MossFormer 的基礎。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📕 TOLD (阿里 DAMO, ICASSP 2023)</div>
+            <div class="model-meta"><a href="https://zhuanlan.zhihu.com/p/650346578" target="_blank">技術解讀</a></div>
+            <div class="model-desc">Speaker Diarization 框架，能直接對<strong>重疊語音建模</strong>，解決傳統日誌系統無法處理多人同時說話的問題。FunASR 生態系一部分。</div>
+        </div>
+
+        <div class="model-card" style="background:#eff6ff;border-color:#93c5fd;">
+            <div class="model-title">🆕 Speaker-Reasoner (2026-04)</div>
+            <div class="model-meta"><a href="https://github.com/ASLP-lab/Speaker-Reasoner" target="_blank">GitHub</a></div>
+            <div class="model-desc">首創「全域摘要 → 局部切片解碼 → 自主決策循環」架構，搭配<strong>說話人感知上下文快取</strong>。在 AISHELL-4、AliMeeting 等複雜多人會議基準上 DER 和轉寫精度強勢超越 Gemini-2.5-Pro。</div>
+        </div>
+    </div>
+
+    <!-- ④ 數據構建 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">數據構建</span>
+        <h2 class="bento-title-large">完全重疊 vs 部分重疊：數據構建的藝術</h2>
+        <div class="compare-grid">
+            <div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:1rem;padding:1.25rem;">
+                <div style="font-weight:700;color:#9f1239;margin-bottom:.75rem;">📊 第一版：完全重疊</div>
+                <ul style="list-style:none;padding:0;font-size:.88rem;color:#555;">
+                    <li style="padding:.3rem 0;border-bottom:1px solid #fce7f3;">Train：~50,000 筆 / 32 小時</li>
+                    <li style="padding:.3rem 0;border-bottom:1px solid #fce7f3;">Val：~10,000 筆 / 10 小時</li>
+                    <li style="padding:.3rem 0;border-bottom:1px solid #fce7f3;">Test：~9,000 筆 / 6 小時</li>
+                    <li style="padding:.5rem 0 0;color:#9f1239;font-size:.82rem;">⚠️ 真實場景大多是部分重疊</li>
+                </ul>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:1rem;padding:1.25rem;">
+                <div style="font-weight:700;color:#166534;margin-bottom:.75rem;">📊 第二版：部分重疊（推薦）</div>
+                <ul style="list-style:none;padding:0;font-size:.88rem;color:#555;">
+                    <li style="padding:.3rem 0;border-bottom:1px solid #bbf7d0;">Train：~90,000 筆 / 112 小時</li>
+                    <li style="padding:.3rem 0;border-bottom:1px solid #bbf7d0;">Val：~20,000 筆 / 26.3 小時</li>
+                    <li style="padding:.3rem 0;border-bottom:1px solid #bbf7d0;">Test：~20,000 筆 / 29.4 小時</li>
+                    <li style="padding:.5rem 0 0;color:#166534;font-size:.82rem;">✅ 更貼近實際部署場景</li>
+                </ul>
+            </div>
+        </div>
+        <div class="pitfall-box" style="margin-top:1rem;">
+            <strong>⚠️ 重疊程度的影響：</strong>「兩兩完全重疊」與「部分重疊」對模型效果有不小的影響！第一批完全重疊數據訓練的模型在真實錄音（說話人有停頓、輪流說話）上效果大打折扣，必須額外構建部分重疊版本。
+        </div>
+    </div>
+
+    <!-- ⑤ 非重疊 vs Mask-based 比較 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">方案比較</span>
+        <h2 class="bento-title-large">非重疊分割 vs Mask-based 分離</h2>
+        <div class="compare-grid">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:1rem;padding:1.25rem;">
+                <div style="font-weight:700;color:#92400e;margin-bottom:.75rem;">🔇 非重疊語音日誌 (Diarization)</div>
+                <div style="font-size:.85rem;color:#555;">
+                    <p style="color:#166534;font-weight:600;margin-bottom:.4rem;">優點</p>
+                    <ul style="list-style:none;padding:0;margin-bottom:.75rem;">
+                        <li>✅ 清晰的說話人輪次時間戳</li>
+                        <li>✅ 不需預設說話人數量</li>
+                    </ul>
+                    <p style="color:#9f1239;font-weight:600;margin-bottom:.4rem;">缺點</p>
+                    <ul style="list-style:none;padding:0;">
+                        <li>❌ 無法處理重疊語音</li>
+                        <li>❌ K-means 聚類效果差</li>
+                        <li>❌ 說話人無停頓時無法切割</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:1rem;padding:1.25rem;">
+                <div style="font-weight:700;color:#166534;margin-bottom:.75rem;">🎭 Mask-based 分離（推薦）</div>
+                <div style="font-size:.85rem;color:#555;">
+                    <p style="color:#166534;font-weight:600;margin-bottom:.4rem;">優點</p>
+                    <ul style="list-style:none;padding:0;margin-bottom:.75rem;">
+                        <li>✅ 可處理重疊語音</li>
+                        <li>✅ 同一模型也能用於去噪</li>
+                        <li>✅ TasNet / VoiceFilter 均適用</li>
+                    </ul>
+                    <p style="color:#9f1239;font-weight:600;margin-bottom:.4rem;">缺點</p>
+                    <ul style="list-style:none;padding:0;">
+                        <li>❌ 多數模型假設僅 2 人</li>
+                        <li>❌ 分離後仍有殘留串擾</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑥ 實戰踩坑 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">實戰踩坑</span>
+        <h2 class="bento-title-large">150 天踩坑筆記</h2>
+        <div class="tip-box">
+            <strong>✅ 數據構建最省事：</strong>直接把乾淨的 AISHELL 語料打散，隨機挑選兩人的音訊做 Mix。若長度不同，<strong>選短者為基準長度</strong>（截斷長者），避免後補靜音造成模型偷懶。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ Loss 崩潰陷阱：</strong>網路架構參數調整時最常踩到「loss 突然壞掉」。根本原因通常是 PIT (Permutation Invariant Training) 的標籤分配不穩定，務必引入合適的標籤排列策略（如 SSL 預訓練穩定法）。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ WaveSplit (Google Brain)</strong>：在多噪音 + 多說話人場景效果出色，但<strong>沒有開放源碼</strong>。發現後期待良久，始終無法直接復現，只能參考論文思路。
+        </div>
+        <div class="tip-box">
+            <strong>✅ CPU 落地是關鍵：</strong>如何在 CPU 上跑得又快又準，才是這個專案真正能落地的挑戰。深入研究 Data Parallel vs. Distributed Data Parallel (DDP) 的差異，並針對 CPU 推理路徑做專門優化。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 李宏毅老師的 SSL 預訓練：</strong>台大電機李宏毅老師的 <a href="https://github.com/SungFeng-Huang/SSL-pretraining-separation" target="_blank">SSL-pretraining-separation</a> 論文，透過自監督預訓練顯著降低了 PIT 的標籤排列不穩定性，是解決這個問題的關鍵。
+        </div>
+    </div>
+
+    <!-- ⑦ 選型建議 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#ffe4e6;color:#9f1239;">選型建議</span>
+        <h2 class="bento-title-large">實戰選型</h2>
+        <div class="tip-box">
+            <strong>✅ 最快開始：</strong>直接評估 <strong>ClearVoice</strong>，增強與分離合一，支援多人場景，有 HuggingFace DEMO 可快速驗證效果。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 目標說話人提取（有參考音訊）：</strong>選 <strong>VoiceFilter / VoiceFilter-Lite</strong>，以 d-vector 為條件精準提取指定說話人聲軌，適合客服中心「只要聽客戶說話」的場景。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 會議自動分段轉寫：</strong>選 <strong>Speaker-Reasoner</strong>（2026 最新），端到端處理複雜多人重疊語音，超越 Gemini-2.5-Pro；或用 <strong>Whisper + CAM++（說話人聚類）</strong>組合降低部署複雜度。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 學術研究基準：</strong>選 <strong>DPRNN / DPT-Net / MossFormer</strong>，在 wsj0-2mix 等標準基準上有完整可復現的結果可對比。
+        </div>
+    </div>
+
+    <!-- ⑧ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#fff1f2,#ffe4e6);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">👥</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">繼續探索語音處理其他主題</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>ASR 總覽</a>
+            <a href="SpeakerRecognition.html" class="tag" style="background:#f0fdf4;color:#166534;font-size:.9rem;"><i class="fas fa-fingerprint mr-1"></i>聲紋辨識</a>
+            <a href="SpeechEnhancement.html" class="tag" style="background:#fefce8;color:#92400e;font-size:.9rem;"><i class="fas fa-sliders-h mr-1"></i>語音增強</a>
+            <a href="https://deep-learning-101.github.io/Speech-Processing#speaker-separation" target="_blank" class="tag" style="background:#fff1f2;color:#9f1239;font-size:.9rem;"><i class="fas fa-book-open mr-1"></i>完整資源 →</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch (e) { console.warn('[includeHTML] 無法載入 ' + url + '：', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

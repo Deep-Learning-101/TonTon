@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏷️ 命名實體識別 (NER) | FLAT・CKIP・PaddleNLP UIE・醫療診斷書 | Deep Learning 101</title>
+    <meta name="description" content="中文命名實體識別完整指南：FLAT、Stanford NER、CKIP（中研院）、PaddleNLP UIE，醫療診斷書實體抽取 2023 實戰，對話 Slot-Filling，含 ChineseAnnotator 標注工具推薦。">
+    <meta name="keywords" content="命名實體識別, NER, FLAT, CKIP, PaddleNLP UIE, Slot-Filling, 中文NER, 醫療NER, TonTon Huang, Deep Learning 101">
+    <meta property="og:title" content="命名實體識別 (NER) — FLAT・CKIP・UIE 實戰 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fdf4ff; border: 1px solid #e9d5ff; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #7e22ce; }
+        .stat-box .desc { font-size: .78rem; color: #6b21a8; margin-top: .2rem; }
+        .model-card { background: #fdf4ff; border: 1px solid #e9d5ff; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #6b21a8; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #7e22ce; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .entity-demo { background: #f8f8f8; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1rem 1.25rem; font-family: monospace; font-size: .9rem; line-height: 2; }
+        .entity-tag { display: inline-block; border-radius: .3rem; padding: 0 .4rem; font-size: .78rem; font-weight: 700; margin: 0 .1rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(124,58,237,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(124,58,237,.4); }
+        .badge-llm { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-classic { display: inline-block; background: #dcfce7; color: #166534; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .vs-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 1rem; }
+        .vs-table th { text-align: left; padding: .65rem .85rem; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+        .vs-table td { padding: .55rem .85rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .vs-table tr:last-child td { border-bottom: none; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "中文命名實體識別 (NER) 完整實戰指南",
+      "description": "FLAT、CKIP、PaddleNLP UIE 對比，醫療診斷書實體抽取 2023 實戰，含 ChineseAnnotator 標注工具推薦。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2019-12-02", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-violet-500 to-fuchsia-500">
+            🏷️ 命名實體識別 (NER)
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">FLAT・CKIP・PaddleNLP UIE · 醫療診斷書・對話 Slot-Filling · ~100 天踩坑</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 概覽 -->
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+            <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2019/12/02–2020/02/29（~100 天）+ 2023 醫療場景再投入｜<strong>更新</strong>：2026-07-28</p>
+            <p>命名實體識別（NER）的核心任務是「從文本中找出<strong>有特定意義的詞</strong>，並標記它屬於哪個類別」。開放域標準類別包括人名、地名、組織名、時間、日期；特定領域如醫療診斷書則延伸到藥名、疾病名、手術名稱等。</p>
+            <p>NER 在實際系統中幾乎無處不在：對話意圖理解、關係抽取、輿情分析、多輪對話 Slot-Filling——只要需要「從語言中提取結構化信息」的場景，NER 就是第一步。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="num">~100 天</div><div class="desc">2019–2020 投入</div></div>
+            <div class="stat-box"><div class="num">2023</div><div class="desc">醫療場景再迭代</div></div>
+            <div class="stat-box"><div class="num">7+ 類</div><div class="desc">開放域實體類型</div></div>
+            <div class="stat-box"><div class="num">UIE</div><div class="desc">2022 最佳開源工具</div></div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#NER</span>
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#FLAT</span>
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#CKIP</span>
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#PaddleNLPUIE</span>
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#醫療NER</span>
+            <span class="tag" style="background:#f3e8ff;color:#7e22ce;">#SlotFilling</span>
+        </div>
+    </div>
+
+    <!-- ② 實體抽取 DEMO -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#f3e8ff;color:#7e22ce;">直觀理解</span>
+        <h2 class="bento-title-large">NER 在做什麼？一個例子說清楚</h2>
+        <div class="bento-text">
+            <p>以電話助理對話為例：</p>
+        </div>
+        <div class="entity-demo">
+            輸入：「你好，我是<span class="entity-tag" style="background:#dbeafe;color:#1d4ed8;">台北富邦銀行<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">ORG</span></span>的<span class="entity-tag" style="background:#dcfce7;color:#166534;">王志明<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">PER</span></span>，想跟您聊聊<span class="entity-tag" style="background:#fef3c7;color:#92400e;">個人信貸<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">PRODUCT</span></span>的事情，您方便嗎？」
+        </div>
+        <div class="bento-text" style="margin-top:1rem;">
+            <p>NER 模型把「台北富邦銀行」標為機構（ORG）、「王志明」標為人名（PER）、「個人信貸」標為產品名（PRODUCT）。有了這些結構化信息，下游系統就能自動分類為「貸款類來電」並決策是否代接。</p>
+        </div>
+        <div class="entity-demo" style="margin-top:1rem;">
+            醫療診斷書範例：「病患於<span class="entity-tag" style="background:#fce7f3;color:#9d174d;">2023/08/15<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">TIME</span></span>接受<span class="entity-tag" style="background:#fef3c7;color:#92400e;">腹腔鏡膽囊切除術<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">SURGERY</span></span>，術後使用<span class="entity-tag" style="background:#dcfce7;color:#166534;">頭孢氨苄 500mg<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">MEDICINE</span></span>預防感染」
+        </div>
+    </div>
+
+    <!-- ③ LLM vs 傳統 -->
+    <div class="bento-box motion-div" style="background:linear-gradient(135deg,#fdf4ff,#f3e8ff);">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-balance-scale mr-2 text-purple-500"></i>NER：傳統方法 vs LLM</h2>
+        <div class="insight-box" style="margin-top:0;">
+            <strong>💡 核心論點：</strong>封閉域 NER（實體類型固定、如醫療藥名）用 BERT+CRF 效果更穩定且成本更低。開放域 NER（實體類型多變、需要常識推斷）LLM 優勢明顯。
+        </div>
+        <div style="overflow-x:auto; margin-top:.5rem;">
+            <table class="vs-table">
+                <thead>
+                    <tr>
+                        <th>比較維度</th>
+                        <th>BERT+CRF / UIE <span class="badge-classic">封閉域推薦</span></th>
+                        <th>LLM（GPT-4o / Gemini）<span class="badge-llm">開放域推薦</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:600;">固定實體類型</td><td>F1 90–95%，穩定</td><td>F1 85–92%，prompt 稍有變化結果就不同</td></tr>
+                    <tr><td style="font-weight:600;">新領域實體</td><td>需重新標注 500+ 筆微調</td><td>描述給 LLM，zero-shot 可到 F1 70–80%</td></tr>
+                    <tr><td style="font-weight:600;">嵌套實體</td><td>FLAT 架構原生支援嵌套</td><td>LLM 理解嵌套，但輸出格式不穩定</td></tr>
+                    <tr><td style="font-weight:600;">批量處理成本</td><td>GPU 1 萬筆/秒，成本極低</td><td>Token 計費，1 萬筆中等長度文本 ~$5–50</td></tr>
+                    <tr><td style="font-weight:600;">資安/隱私</td><td>私有化部署，醫療/金融適用</td><td>文本傳送外部，HIPAA 等法規要求需謹慎</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tip-box" style="margin-top:1rem;">
+            <strong>✅ 2026 最佳策略：UIE（通用信息抽取）</strong> — PaddleNLP UIE 允許你用自然語言<strong>定義實體類型</strong>，少量標注（50–200 筆）即可微調，兼具傳統 NER 的效率與 LLM 的靈活性，是目前中文 NER 的最佳起點。
+        </div>
+    </div>
+
+    <!-- ④ 主流框架 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#f3e8ff;color:#7e22ce;">主流框架</span>
+        <h2 class="bento-title-large">中文 NER 框架大比拼</h2>
+
+        <div class="model-card" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="model-title" style="color:#166534;">🏆 PaddleNLP UIE（通用信息抽取）<span style="font-size:.76rem;color:#4ade80;margin-left:.5rem;">2022 推薦</span></div>
+            <div class="model-meta" style="color:#15803d;"><a href="https://huggingface.co/spaces/DeepLearning101/PaddleNLP-UIE" target="_blank">線上 DEMO</a> | <a href="https://github.com/PaddlePaddle/PaddleNLP/tree/develop/model_zoo/uie" target="_blank">GitHub</a></div>
+            <div class="model-desc">UIE（Universal Information Extraction）最大特點是用<strong>自然語言描述要抽取的實體</strong>，例如輸入 schema=["疾病名稱", "藥物名稱", "手術名稱"] 即可零樣本使用，少量標注（50–200 筆）微調後效果接近領域專用模型。支援實體識別、關係抽取、事件抽取三合一，是 2022 年以後的首選框架。</div>
+        </div>
+
+        <div class="model-card">
+            <div class="model-title">📐 FLAT（Flat-Lattice Transformer，2020）</div>
+            <div class="model-meta"><a href="https://arxiv.org/abs/2004.11795" target="_blank">arXiv:2004.11795</a></div>
+            <div class="model-desc">解決中文 NER 的核心問題：<strong>詞邊界不確定性</strong>（中文沒有空格）。FLAT 把詞典中每個可能的詞都加入 Lattice 圖，用 Transformer 統一處理詞粒度和字粒度，無需對詞語進行硬切分。在嵌套實體（如「台北富邦銀行信貸部門」包含「台北富邦銀行」）場景尤為優異。</div>
+        </div>
+
+        <div class="model-card" style="background:#fffbeb;border-color:#fde68a;">
+            <div class="model-title" style="color:#b45309;">🏫 CKIP Tagger（中研院，Academia Sinica）</div>
+            <div class="model-meta"><a href="https://github.com/ckiplab/ckiptagger" target="_blank">GitHub</a></div>
+            <div class="model-desc">中央研究院詞庫小組開發，針對<strong>繁體中文</strong>優化，整合了詞性標注（POS tagging）和 NER。是台灣場景最「在地化」的選擇，對繁體中文特有詞彙和命名習慣（如台灣地名、政府機構名稱）表現最好。缺點是需要下載 ~2GB 的 BERT 模型。</div>
+        </div>
+
+        <div class="model-card" style="background:#f9fafb;border-color:#d1d5db;">
+            <div class="model-title" style="color:#374151;">🔬 Stanford NER / spaCy</div>
+            <div class="model-meta">英文/多語言支援佳</div>
+            <div class="model-desc">Stanford NER 是 CRF-based 的老牌工具，規則可解釋性強。spaCy 3.x 提供可訓練的中文 pipeline，但預訓練中文模型在繁體中文上的表現遜於 CKIP 與 UIE。適合<strong>英文或多語言</strong>混合場景的 POC 階段。</div>
+        </div>
+
+        <div class="model-card" style="background:#f9fafb;border-color:#d1d5db;">
+            <div class="model-title" style="color:#374151;">⚙️ 哈爾濱工業大學 LTP</div>
+            <div class="model-meta"><a href="https://github.com/HIT-SCIR/ltp" target="_blank">GitHub</a></div>
+            <div class="model-desc">LTP（Language Technology Platform）整合分詞、詞性標注、依存句法分析、語義角色標注、NER，一站式中文 NLP 管線。但以簡體中文為主，台灣繁體場景需額外調整。</div>
+        </div>
+    </div>
+
+    <!-- ⑤ 醫療 NER 案例 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#f3e8ff;color:#7e22ce;">2023 實戰</span>
+        <h2 class="bento-title-large">醫療診斷書 NER：住院/手術/急診觸發詞</h2>
+        <div class="bento-text">
+            <p>2023 年，團隊將 NER 應用於醫療診斷書自動分析：從非結構化的診斷文字中抽取關鍵信息，觸發保險理賠自動審核流程。</p>
+        </div>
+        <div class="tip-box">
+            <strong>✅ 三大觸發詞類別：</strong><br>
+            • <strong>住院觸發詞</strong>：「住院」「入院」「留院觀察」「病房」等 → 觸發住院給付<br>
+            • <strong>手術觸發詞</strong>：「切除術」「縫合術」「攝影術」「內視鏡」等 → 觸發手術給付<br>
+            • <strong>急診觸發詞</strong>：「急診」「急救」「緊急入院」「CPCR」等 → 觸發急診給付
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 醫療 NER 的特殊挑戰：</strong><br>
+            • <strong>縮寫和簡稱</strong>：診斷書常用 "Fx"（骨折）、"DM"（糖尿病）、"HTN"（高血壓），需維護醫學縮寫詞典<br>
+            • <strong>否定表達</strong>：「排除肺炎」≠「確診肺炎」，NER 必須搭配否定偵測（Negation Detection）<br>
+            • <strong>數量詞與實體邊界</strong>：「500mg 頭孢氨苄」是否把「500mg」包入實體邊界，不同應用場景需求不同
+        </div>
+        <div class="insight-box">
+            <strong>💡 LLM 在醫療 NER 的角色：</strong>醫療縮寫詞典維護成本極高，LLM（如 GPT-4）能夠理解醫學縮寫並補全詞典，與傳統 NER 搭配使用：<strong>傳統 NER 處理高頻已知實體，LLM 處理低頻縮寫和新詞</strong>，形成互補。
+        </div>
+    </div>
+
+    <!-- ⑥ 對話 Slot-Filling -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#f3e8ff;color:#7e22ce;">應用延伸</span>
+        <h2 class="bento-title-large">NER 的延伸應用：對話 Slot-Filling</h2>
+        <div class="bento-text">
+            <p>Slot-Filling（槽位填充）是 NER 在對話系統中的直接應用：把用戶說的話裡的關鍵信息填入預定義的欄位（Slot），再觸發後端業務邏輯。</p>
+        </div>
+        <div class="entity-demo">
+            用戶說：「我想預約<span class="entity-tag" style="background:#fce7f3;color:#9d174d;">明天下午三點<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">TIME</span></span>去<span class="entity-tag" style="background:#dcfce7;color:#166534;">台大醫院<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">LOCATION</span></span>的<span class="entity-tag" style="background:#dbeafe;color:#1d4ed8;">心臟科<span style="font-size:.68rem;display:block;text-align:center;margin-top:-2px;">DEPARTMENT</span></span>門診」
+            → Slot: {time: "明天下午三點", hospital: "台大醫院", dept: "心臟科"}
+        </div>
+        <div class="bento-text" style="margin-top:1rem;">
+            <p>電話助理場景中，我們嘗試用拼音、注音幫助識別品牌名（例如用戶說「蘋果」但 ASR 轉錄成「頻果」），並用「改寫」技術修正語句後再做 NER，整個 pipeline 複雜但效果顯著。</p>
+        </div>
+        <div class="tip-box">
+            <strong>✅ ChineseAnnotator 推薦：</strong>標注 NER 數據最痛苦的是格式轉換和標注效率。<a href="https://github.com/deepwel/Chinese-Annotator" target="_blank">ChineseAnnotator</a> 是專為中文設計的標注工具，支援 NER/分類/相似度三種任務，Web 界面友善，是當時找到的最好用選擇。
+        </div>
+    </div>
+
+    <!-- ⑦ 踩坑記錄 -->
+    <div class="bento-box motion-div">
+        <span class="section-label" style="background:#f3e8ff;color:#7e22ce;">踩坑記錄</span>
+        <h2 class="bento-title-large">NER 的萬年大坑</h2>
+        <div class="pitfall-box">
+            <strong>⚠️ 斷詞帶來的邊界問題：</strong>「台灣大學」應該是一個實體（ORG），還是「台灣」（地名）+「大學」（通用名詞）？Jieba 可能把它切成兩個詞，FLAT 則視為一個候選片段。<strong>不同斷詞工具輸出不同，NER 邊界定義必須在標注規範中寫清楚。</strong>
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 品牌名/注音拼音實驗的坑：</strong>為了讓 NER 能識別品牌名（ASR 輸出可能只有注音或拼音），我們做了大量實驗：用注音替換文字、把拼音加入 Embedding。結果：效果有限，且標注成本翻倍。後來改用詞典 lookup + 後處理的方式，反而更簡單有效。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ RASA 整合的坑：</strong>RASA 是對話框架的好選擇，但強行把自訓練的 NER 模型嵌入 RASA pipeline，需要配合其 Featurizer 架構做大量適配工作。除非你的場景 RASA 原生 NER 不夠用，否則不建議硬整合。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 數據是一切：</strong>試了 FLAT、Stanford NER、CKIP、LTP 各種工具，最終 F1 的差異主要來自<strong>數據標注質量</strong>，而非模型選擇。500 筆高品質標注數據 > 5000 筆粗糙標注數據。
+        </div>
+    </div>
+
+    <!-- ⑧ 底部導航 -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#fdf4ff,#f3e8ff);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">🏷️</div>
+        <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">探索更多 NLP 任務</h3>
+        <div class="mt-3 flex flex-wrap gap-2 justify-center">
+            <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;font-size:.9rem;"><i class="fas fa-arrow-left mr-1"></i>NLP 總覽</a>
+            <a href="Classification.html" class="tag" style="background:#eff6ff;color:#1d4ed8;font-size:.9rem;"><i class="fas fa-tags mr-1"></i>文本分類</a>
+            <a href="Similarity.html" class="tag" style="background:#dcfce7;color:#166534;font-size:.9rem;"><i class="fas fa-link mr-1"></i>文本相似度</a>
+            <a href="MRC.html" class="tag" style="background:#fff7ed;color:#c2410c;font-size:.9rem;"><i class="fas fa-book mr-1"></i>機器閱讀理解</a>
+            <a href="Correction.html" class="tag" style="background:#fef2f2;color:#dc2626;font-size:.9rem;"><i class="fas fa-spell-check mr-1"></i>文本糾錯</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

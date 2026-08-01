@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWMAN / MiT: Malware Analysis System | TonTon H.-D. Huang Ph.D. | Deep Learning 101</title>
+    <meta name="description" content="TWMAN (Taiwan Malware Analysis Net / 抬丸郎) 與 MiT — 基於 Type-2 Fuzzy Ontology 的惡意程式行為分析系統，TonTon H.-D. Huang Ph.D. 學術研究成果。">
+    <meta name="keywords" content="TWMAN, MiT, Malware Analysis, Type-2 Fuzzy Ontology, IT2FO, TonTon Huang, Soft Computing, Cybersecurity, Taiwan">
+    <meta property="og:title" content="TWMAN / MiT: Malware Analysis System — TonTon H.-D. Huang Ph.D.">
+    <meta property="og:description" content="Taiwan Malware Analysis Net | IT2FO-based Malware Behavior Analysis | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/TonTon_QQ-202602.png">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .bento-box {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        .bento-title-large { font-size: 2.2rem; line-height: 2.8rem; font-weight: 700; margin-bottom: 1.5rem; color: #1d1d1f; }
+        .bento-subtitle { font-size: 1.25rem; font-weight: 600; color: #0071e3; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-list { list-style-type: none; padding-left: 0.5rem; }
+        .bento-list li { margin-bottom: 0.75rem; padding-left: 1.75rem; position: relative; }
+        .bento-list li::before {
+            content: "\f111"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            color: #0071e3; font-size: 0.5rem; position: absolute; left: 0.25rem; top: 0.5em;
+        }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .meta-info { color: #6b7280; font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .tag {
+            display: inline-block; background-color: #e0e7ff; color: #3730a3;
+            padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem;
+            font-weight: 500; margin-right: 0.5rem; margin-bottom: 0.5rem;
+        }
+        /* pipeline steps */
+        .pipeline-step {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            flex: 1; min-width: 100px;
+        }
+        .pipeline-icon {
+            width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.4rem;
+            margin-bottom: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pipeline-label { font-size: 0.82rem; font-weight: 600; color: #1d1d1f; line-height: 1.3; }
+        .pipeline-arrow { font-size: 1.5rem; color: #cbd5e1; align-self: center; padding: 0 0.25rem; flex-shrink: 0; }
+        /* venue card */
+        .venue-card {
+            border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.25rem;
+            transition: all 0.2s; background: #fff;
+        }
+        .venue-card:hover { border-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.1); transform: translateY(-2px); }
+        /* feature card */
+        .feature-card {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+            padding: 1.25rem; transition: all 0.2s;
+        }
+        .feature-card:hover { border-color: #059669; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(5,150,105,0.1); }
+        /* citation block */
+        .citation-block {
+            background: #f8fafc; border-left: 4px solid #059669;
+            padding: 1rem 1.25rem; border-radius: 0 0.75rem 0.75rem 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 0.93rem; line-height: 1.8; color: #374151;
+        }
+        /* grant row */
+        .grant-row {
+            display: grid; grid-template-columns: auto 1fr auto;
+            gap: 0.75rem; align-items: start;
+            padding: 0.85rem 1rem; border-radius: 0.75rem;
+            background: #f0fdf4; border: 1px solid #bbf7d0;
+            margin-bottom: 0.5rem;
+        }
+        .grant-row:last-child { margin-bottom: 0; }
+        /* institution badge */
+        .inst-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; border-radius: 0.75rem; font-size: 0.82rem; font-weight: 600;
+            background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46;
+            transition: all 0.2s;
+        }
+        .inst-badge:hover { background: #d1fae5; border-color: #34d399; }
+        /* deprecated badge */
+        .deprecated-banner {
+            background: linear-gradient(135deg, #fef9c3, #fef08a);
+            border: 1px solid #fde047; border-radius: 1rem;
+            padding: 0.85rem 1.25rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+    </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "TWMAN — Taiwan Malware Analysis Net",
+  "alternateName": "MiT (Malware in Taiwan)",
+  "author": {
+    "@type": "Person",
+    "name": "TonTon H.-D. Huang",
+    "url": "https://twman.org"
+  },
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "keywords": ["Malware Analysis", "Type-2 Fuzzy Ontology", "Cybersecurity", "IT2FO", "Taiwan"]
+}
+</script>
+</head>
+<body>
+<div id="include-nav-pages"></div>
+
+<div id="app" class="content-wrapper">
+
+<div id="include-profile-hero"></div>
+
+<!-- ===== 頁面標題 ===== -->
+<div class="text-center my-8">
+    <div class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 mb-3">
+        <a href="index.html" class="hover:text-green-600 transition-colors">🎓 Research</a>
+        <span>›</span>
+        <span>TWMAN / MiT</span>
+    </div>
+    <h2 class="bento-title-large">
+        <span class="text-green-600">T</span><span class="text-emerald-500">W</span><span class="text-teal-500">M</span><span class="text-green-400">A</span><span class="text-emerald-600">N</span>
+        <span class="text-slate-300 mx-2">/</span>
+        <span class="text-teal-600">M</span><span class="text-green-500">i</span><span class="text-emerald-400">T</span>
+    </h2>
+    <p class="text-slate-600 text-lg font-medium -mt-2 mb-1">Taiwan Malware Analysis Net <span class="text-slate-400 font-normal">（抬丸郎）</span></p>
+    <p class="text-slate-500 text-sm mb-3">Malware in Taiwan — IT2FO-based Hybrid Malware Behavior Analysis</p>
+    <div class="flex flex-wrap justify-center gap-2 mt-3">
+        <span class="tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-shield-alt mr-1"></i>Cybersecurity</span>
+        <span class="tag" style="background:#d1fae5;color:#065f46;"><i class="fas fa-bug mr-1"></i>Malware Analysis</span>
+        <span class="tag" style="background:#f0fdf4;color:#166534;"><i class="fas fa-brain mr-1"></i>Fuzzy Ontology</span>
+        <span class="tag" style="background:#ecfdf5;color:#047857;"><i class="fab fa-osi mr-1"></i>GPL v3 Open Source</span>
+    </div>
+</div>
+
+<!-- ===== ① 專案簡介 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-info-circle mr-2"></i>專案簡介 Overview</h3>
+
+    <div class="deprecated-banner mb-4">
+        <span class="text-yellow-600 text-xl flex-shrink-0"><i class="fas fa-history"></i></span>
+        <p class="text-sm text-yellow-800"><strong>歷史專案：</strong>TWMAN / MiT 已不再更新，後繼研究為 <a href="R2D2.html" class="font-semibold underline hover:text-yellow-900">R2-D2</a> (IEEE Big Data 2018)，將惡意程式分析技術進化為彩色視覺化 CNN 方法。</p>
+    </div>
+
+    <div class="bento-text">
+        <p><strong>TWMAN</strong>（Taiwan Malware Analysis Net，暱稱「抬丸郎」）是 TonTon Huang 碩士至博士初期開發的惡意程式動態分析平台，衍生自 SecureWorks 的 <strong>Truman 0.1</strong>，以 <strong>GNU GPL v3</strong> 授權開源。其核心創新是導入 <strong>Hierarchical Interval Type-2 Fuzzy Ontology (IT2FO)</strong> 模型，透過模糊邏輯語意表達惡意程式行為的不確定性，實現混合型惡意行為分析。</p>
+        <p><strong>MiT</strong>（Malware in Taiwan）為 TWMAN 的進化版本，實作了 <strong>IT2FLS-based 惡意程式分析機制</strong>，進一步強化模糊本體論的推理能力，並在多個 IEEE 國際會議上發表成果。</p>
+    </div>
+
+    <div class="mt-4 flex flex-wrap gap-2">
+        <a href="https://github.com/Deep-Learning-101" target="_blank" class="tag" style="background:#f1f5f9;color:#334155;">
+            <i class="fab fa-github mr-1"></i> GitHub
+        </a>
+        <a href="https://scholar.google.com.tw/citations?user=bgCj0ykAAAAJ" target="_blank" class="tag" style="background:#dcfce7;color:#166534;">
+            <i class="fas fa-graduation-cap mr-1"></i> Google Scholar
+        </a>
+        <a href="https://scholargps.com/scholars/20316010606475/tonton-hsien-de-huang" target="_blank" class="tag" style="background:#dbeafe;color:#1e40af;">
+            <i class="fas fa-map-marker-alt mr-1"></i> ScholarGPS
+        </a>
+    </div>
+</div>
+
+<!-- ===== ② 系統架構 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-project-diagram mr-2"></i>系統架構 Architecture</h3>
+    <p class="bento-text mb-4">TWMAN / MiT 採用分層式模糊本體論架構進行惡意程式行為的語意化分析：</p>
+    <div class="flex flex-wrap items-start justify-center gap-1 py-2">
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#bbf7d0,#4ade80);">🦠</div>
+            <div class="pipeline-label">惡意程式樣本<br><span class="text-slate-400 text-xs font-normal">動態執行環境</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#bfdbfe,#60a5fa);">📋</div>
+            <div class="pipeline-label">行為紀錄<br><span class="text-slate-400 text-xs font-normal">API 呼叫、系統事件</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#d9f99d,#86efac);">🌳</div>
+            <div class="pipeline-label">IT2FO 語意<br><span class="text-slate-400 text-xs font-normal">Type-2 模糊本體論</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#fde68a,#fbbf24);">🔍</div>
+            <div class="pipeline-label">行為推理<br><span class="text-slate-400 text-xs font-normal">模糊規則推論</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#fecaca,#f87171);">⚠️</div>
+            <div class="pipeline-label">惡意行為分類<br><span class="text-slate-400 text-xs font-normal">家族識別與威脅評估</span></div>
+        </div>
+    </div>
+    <div class="mt-6 grid md:grid-cols-3 gap-4">
+        <div class="feature-card">
+            <div class="text-2xl mb-2">🌐</div>
+            <h4 class="font-bold text-slate-800 mb-1">Truman 衍生</h4>
+            <p class="text-sm text-slate-600">基於 SecureWorks Truman 0.1 動態分析沙箱，GNU GPL v3 授權開源，可供學術界自由使用與擴充。</p>
+        </div>
+        <div class="feature-card">
+            <div class="text-2xl mb-2">🧮</div>
+            <h4 class="font-bold text-slate-800 mb-1">IT2FO 本體論</h4>
+            <p class="text-sm text-slate-600">採用階層式 Interval Type-2 Fuzzy Ontology，以語意方式表達行為不確定性，超越傳統二元分類框架。</p>
+        </div>
+        <div class="feature-card">
+            <div class="text-2xl mb-2">🤝</div>
+            <h4 class="font-bold text-slate-800 mb-1">FML 整合</h4>
+            <p class="text-sm text-slate-600">整合 Fuzzy Markup Language (FML)，實現跨平台的惡意程式行為語意描述與交換標準。</p>
+        </div>
+    </div>
+    <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+        <p class="text-sm text-green-800 font-medium"><i class="fas fa-lightbulb mr-2 text-green-500"></i>演進路徑：TWMAN（2008–2011）→ TWMAN+（2012–2013）→ MiT（2013–2014）→ <a href="R2D2.html" class="underline font-semibold">R2-D2</a>（2017–2018，CNN 彩色視覺化）。</p>
+    </div>
+</div>
+
+<!-- ===== ③ 學術發表 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-graduation-cap mr-2"></i>學術發表 Publications</h3>
+    <div class="space-y-4">
+
+        <!-- Soft Computing 2014 主論文 -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-green-400 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-green-700 rounded">★ 主論文 | Soft Computing 2014</span>
+                <span class="text-xs text-slate-500">CiteScore 5.1 · Springer</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang*, C.-S. Lee, M.-H. Wang, and Hung-Yu Kao,
+                "<a href="https://link.springer.com/article/10.1007/s00500-013-1056-0" target="_blank" class="text-green-700 hover:underline font-semibold">IT2FS-based ontology with soft-computing mechanism for malware behavior analysis</a>",
+                <a href="https://link.springer.com/journal/500" target="_blank" class="italic hover:text-green-600">Soft Computing</a>,
+                vol. 18, no. 2, pp. 267–284, 2014.
+            </div>
+        </div>
+
+        <!-- Springer Book Chapter -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-green-300 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-emerald-600 rounded">Book Chapter | Springer 2012</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang* et al., "Fuzzy markup language for malware behavioral analysis," in
+                <a href="https://www.researchgate.net/profile/Ton-Ton-Huang/publication/234036959_Fuzzy_Markup_Language_for_Malware_Behavioral_Analysis/links/0912f50e70c837b80d000000/Fuzzy-Markup-Language-for-Malware-Behavioral-Analysis.pdf" target="_blank" class="text-red-700 hover:underline font-semibold italic">On the Power of Fuzzy Markup Language</a>,
+                <a href="https://link.springer.com/chapter/10.1007/978-3-642-35488-5_7" target="_blank" class="text-blue-600 hover:underline">Springer-Verlag</a>, 2012, pp. 113–131.
+            </div>
+        </div>
+
+        <!-- IEEE SMC 2013 MiT -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-teal-300 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-teal-600 rounded">IEEE SMC 2013</span>
+                <span class="font-semibold text-slate-700">MiT — IT2FLS-based Malware Analysis Mechanism</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang* et al.,
+                "<a href="https://ieeexplore.ieee.org/document/6722547" target="_blank" class="text-teal-700 hover:underline font-semibold">An IT2FLS-based Malware Analysis Mechanism: MiT</a>",
+                <em>IEEE SMC 2013</em>,
+                <a href="https://blog.twman.org/2013/10/IEEE-SMC-2013.html" target="_blank" class="text-blue-600 hover:underline">Manchester</a>, Oct. 13–16, 2013.
+            </div>
+        </div>
+
+        <!-- IEEE SMC 2012 TWMAN+ -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-teal-300 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-teal-600 rounded">IEEE SMC 2012</span>
+                <span class="font-semibold text-slate-700">TWMAN+ — Type-2 Fuzzy Ontology Model</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang* et al.,
+                "<a href="https://ieeexplore.ieee.org/document/6378176" target="_blank" class="text-teal-700 hover:underline font-semibold">TWMAN+: A Type-2 Fuzzy Ontology Model for Malware Behavior Analysis</a>",
+                <em>IEEE SMC 2012</em>,
+                <a href="https://blog.twman.org/2012/10/IEEE-SMC-2012.html" target="_blank" class="text-blue-600 hover:underline">Seoul</a>, Oct. 14–17, 2012.
+            </div>
+        </div>
+
+        <!-- 顯示更多 -->
+        <details class="group">
+            <summary class="flex items-center justify-center p-2 text-sm font-medium text-slate-500 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 hover:text-slate-700 transition-colors border border-dashed border-slate-300">
+                <span class="group-open:hidden">顯示更多早期研究 ▼</span>
+                <span class="hidden group-open:inline">收起 ▲</span>
+            </summary>
+            <div class="mt-4 space-y-3">
+
+                <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="px-2 py-0.5 text-xs font-bold text-white bg-slate-500 rounded">FUZZ-IEEE 2011</span>
+                        <span class="font-semibold text-slate-700">FML + Fuzzy Ontologies</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al.,
+                        "<a href="https://ieeexplore.ieee.org/document/6007716" target="_blank" class="text-blue-700 hover:underline font-semibold">Applying FML and Fuzzy Ontologies to Malware Behavioral Analysis</a>",
+                        <em>FUZZ-IEEE 2011</em>,
+                        <a href="https://blog.twman.org/2011/06/FUZZ-IEEE-2011.html" target="_blank" class="text-blue-600 hover:underline">Taipei</a>, Jun. 27–30, 2011.
+                    </div>
+                </div>
+
+                <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="px-2 py-0.5 text-xs font-bold text-white bg-slate-500 rounded">IEEE SSCI 2011</span>
+                        <span class="font-semibold text-slate-700">TWMAN — Malware Behavioral Analysis System</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al.,
+                        "<a href="https://ieeexplore.ieee.org/document/5953604" target="_blank" class="text-blue-700 hover:underline font-semibold">Malware Behavioral Analysis System: TWMAN</a>",
+                        <em>IEEE SSCI 2011</em>,
+                        <a href="https://blog.twman.org/2011/04/IEEE-SSCI-2011.html" target="_blank" class="text-blue-600 hover:underline">Paris</a>, Apr. 11–15, 2011.
+                    </div>
+                </div>
+
+                <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="px-2 py-0.5 text-xs font-bold text-white bg-slate-500 rounded">IEEE WCCI 2010</span>
+                        <span class="font-semibold text-slate-700">Ontology-based Intelligent System</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded border border-slate-100 text-sm text-slate-700 font-serif leading-relaxed">
+                        TonTon H.-D. Huang* et al.,
+                        "<a href="https://ieeexplore.ieee.org/document/5584325" target="_blank" class="text-blue-700 hover:underline font-semibold">Ontology-based intelligent system for malware behavioral analysis</a>",
+                        <em>WCCI 2010</em>,
+                        <a href="https://blog.twman.org/2010/07/IEEE-WCCI-2010.html" target="_blank" class="text-blue-600 hover:underline">Barcelona</a>, Jul. 18–23, 2010.
+                    </div>
+                </div>
+
+            </div>
+        </details>
+    </div>
+</div>
+
+<!-- ===== ④ 研究經費 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-coins mr-2"></i>研究經費 Grants & Funding</h3>
+    <p class="bento-text mb-4">TWMAN / MiT 研究獲國科會 (NSC) 多項計畫及產學合作支持：</p>
+
+    <div class="grant-row">
+        <span class="text-green-600 font-mono text-xs font-bold pt-0.5">NSC 99-2911-I-024-004</span>
+        <div>
+            <p class="text-sm font-semibold text-slate-700">台英合作 — Type-2 Fuzzy Ontology for Malware Analysis</p>
+            <p class="text-xs text-slate-500">與英國合作：Type-2 模糊本體論惡意程式行為分析研究</p>
+        </div>
+        <span class="text-xs text-slate-400 whitespace-nowrap">2010/12–2012/04</span>
+    </div>
+
+    <div class="grant-row">
+        <span class="text-green-600 font-mono text-xs font-bold pt-0.5">NSC 98-2221-E-024-009-MY3</span>
+        <div>
+            <p class="text-sm font-semibold text-slate-700">Type-2 Fuzzy Ontology-based Intelligent Agent for Healthcare</p>
+            <p class="text-xs text-slate-500">基於 Type-2 模糊本體論的智慧型代理人系統（三年期計畫）</p>
+        </div>
+        <span class="text-xs text-slate-400 whitespace-nowrap">2009/08–2012/07</span>
+    </div>
+
+    <div class="grant-row">
+        <span class="text-green-600 font-mono text-xs font-bold pt-0.5">NSC 99-2218-E-492-006</span>
+        <div>
+            <p class="text-sm font-semibold text-slate-700">雲端資訊安全與防駭系統建置 (II)</p>
+            <p class="text-xs text-slate-500">Cloud information security & anti-hacker systems</p>
+        </div>
+        <span class="text-xs text-slate-400 whitespace-nowrap">~ 2011/09/28</span>
+    </div>
+
+    <div class="grant-row" style="background:#f0f9ff;border-color:#bae6fd;">
+        <span class="text-blue-600 font-mono text-xs font-bold pt-0.5">產學合作</span>
+        <div>
+            <p class="text-sm font-semibold text-slate-700">NUTN × Acer eDC — 惡意程式分析平台</p>
+            <p class="text-xs text-slate-500">國立臺南大學 × Acer e-Enabling Data Center 產學合作計畫</p>
+        </div>
+        <span class="text-xs text-slate-400 whitespace-nowrap">2012/05–2012/10</span>
+    </div>
+</div>
+
+<!-- ===== ⑤ 支持機構 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-university mr-2"></i>支持機構 Supporting Institutions</h3>
+    <div class="flex flex-wrap gap-3 mt-2">
+        <a href="https://www.nutn.edu.tw/" target="_blank" class="inst-badge">
+            <img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/nutn.png" class="h-5 w-auto" alt="NUTN">
+            國立臺南大學 (NUTN)
+        </a>
+        <a href="https://www.ncku.edu.tw/" target="_blank" class="inst-badge">
+            <img src="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/ncku.jfif" class="h-5 w-auto rounded" alt="NCKU">
+            國立成功大學 (NCKU)
+        </a>
+        <span class="inst-badge">
+            <i class="fas fa-building text-green-600"></i>
+            Acer eDC（宏碁資料中心）
+        </span>
+        <span class="inst-badge">
+            <i class="fas fa-flask text-green-600"></i>
+            國家科學委員會 (NSC)
+        </span>
+        <span class="inst-badge">
+            <i class="fas fa-server text-green-600"></i>
+            NCHC 國家高速網路與計算中心
+        </span>
+    </div>
+    <p class="text-xs text-slate-400 mt-3"><i class="fas fa-info-circle mr-1"></i>NCHC 支援原始 TWMAN 運行期間：2008/11/17 – 2011/09/28</p>
+</div>
+
+<!-- ===== ⑥ 媒體報導 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-newspaper mr-2"></i>媒體報導 Media Coverage</h3>
+    <div class="grid md:grid-cols-2 gap-4">
+        <div class="venue-card">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl flex-shrink-0">📺</div>
+                <div>
+                    <p class="font-bold text-slate-800">BBC</p>
+                    <p class="text-sm text-slate-600 mt-1">"Taiwan's front-line battle against mobile phone fraud" — 引用 TonTon Huang 在詐騙電話與行動惡意程式研究上的長期積累。</p>
+                </div>
+            </div>
+        </div>
+        <div class="venue-card">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl flex-shrink-0">💚</div>
+                <div>
+                    <p class="font-bold text-slate-800">NVIDIA Developer Blog</p>
+                    <p class="text-sm text-slate-600 mt-1">"AI Improves the Frequency and Quality of Mobile App Notifications" — 深度介紹從 TWMAN 到 R2-D2 的 GPU 加速惡意程式分析研究歷程。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ⑦ 引用格式 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-quote-right mr-2"></i>引用格式 Citation</h3>
+    <div class="citation-block">
+        TonTon H.-D. Huang, C.-S. Lee, M.-H. Wang, and Hung-Yu Kao, "IT2FS-based ontology with soft-computing mechanism for malware behavior analysis," <em>Soft Computing</em>, vol. 18, no. 2, pp. 267–284, 2014.
+    </div>
+    <div class="mt-3 p-3 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+        <p class="text-xs font-mono text-slate-600 leading-relaxed">
+            @article&#123;twman2014softcomputing,<br>
+            &nbsp;&nbsp;title=&#123;IT2FS-based ontology with soft-computing mechanism for malware behavior analysis&#125;,<br>
+            &nbsp;&nbsp;author=&#123;Huang, TonTon Hsien-De and Lee, Chang-Shing and Wang, Mei-Hui and Kao, Hung-Yu&#125;,<br>
+            &nbsp;&nbsp;journal=&#123;Soft Computing&#125;,<br>
+            &nbsp;&nbsp;volume=&#123;18&#125;,<br>
+            &nbsp;&nbsp;number=&#123;2&#125;,<br>
+            &nbsp;&nbsp;pages=&#123;267--284&#125;,<br>
+            &nbsp;&nbsp;year=&#123;2014&#125;,<br>
+            &nbsp;&nbsp;publisher=&#123;Springer&#125;<br>
+            &#125;
+        </p>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <a href="https://scholargps.com/scholars/20316010606475/tonton-hsien-de-huang" target="_blank" class="tag" style="background:#dbeafe;color:#1e40af;">
+            <i class="fas fa-map-marker-alt mr-1"></i> ScholarGPS
+        </a>
+        <a href="https://scholar.google.com.tw/citations?user=bgCj0ykAAAAJ" target="_blank" class="tag" style="background:#dcfce7;color:#166534;">
+            <i class="fas fa-book mr-1"></i> Google Scholar
+        </a>
+        <a href="R2D2.html" class="tag" style="background:#fef3c7;color:#92400e;">
+            <i class="fas fa-arrow-right mr-1"></i> 後繼研究 R2-D2
+        </a>
+        <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;">
+            <i class="fas fa-arrow-left mr-1"></i> 返回 Research
+        </a>
+    </div>
+</div>
+
+<div id="include-aishare"></div>
+
+</div><!-- end content-wrapper -->
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const html = await res.text();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(s => document.head.appendChild(s.cloneNode(true)));
+        temp.querySelectorAll('style').forEach(s => s.remove());
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+                newScript.type = oldScript.type || 'text/javascript';
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            Array.from(oldScript.attributes).forEach(attr => {
+                if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value);
+            });
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('includeHTML failed:', url, e); }
+}
+
+includeHTML('../_includes/nav-pages.html', 'include-nav-pages');
+includeHTML('../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../_includes/ai-share.html', 'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const { animate, inView } = motion;
+    document.querySelectorAll('.motion-div').forEach(div => {
+        inView(div, () => {
+            animate(div, { opacity: [0, 1], y: [30, 0], scale: [0.98, 1] }, { duration: 0.65, delay: 0.1, ease: "easeOut" });
+        }, { once: true, amount: 0.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

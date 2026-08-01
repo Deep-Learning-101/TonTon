@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 NLP 自然語言處理 | BERT・傳統算法 vs LLM 選型 | Deep Learning 101</title>
+    <meta name="description" content="2026 NLP 實戰選型指南：文本分類、MRC、NER、相似度、糾錯五大任務的傳統算法 vs LLM 成本效益分析。TonTon Huang Ph.D. 2018–2026 實戰踩坑彙整，含 Token 費用 vs GPU 成本試算。">
+    <meta name="keywords" content="NLP, 自然語言處理, BERT, 文本分類, MRC, NER, 文本相似度, 文本糾錯, LLM, TonTon Huang, Deep Learning 101">
+    <meta property="og:title" content="NLP 自然語言處理 — 傳統算法 vs LLM 選型指南 | Deep Learning 101">
+    <meta property="og:description" content="文本分類、MRC、NER、相似度、糾錯的完整選型框架，附成本效益分析。">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1rem; }
+        .cat-card { border-radius: 1rem; padding: 1.4rem 1.5rem; border: 1px solid; text-decoration: none !important; color: inherit; display: flex; flex-direction: column; transition: all .25s; }
+        .cat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.09); }
+        .cat-card-icon { font-size: 2rem; margin-bottom: .6rem; }
+        .cat-card-title { font-weight: 700; font-size: 1rem; margin-bottom: .35rem; }
+        .cat-card-desc { font-size: .86rem; line-height: 1.6; flex-grow: 1; }
+        .cat-card-meta { font-size: .76rem; margin-top: .6rem; font-weight: 500; }
+        .vs-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 1rem; }
+        .vs-table th { text-align: left; padding: .65rem .85rem; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+        .vs-table td { padding: .55rem .85rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .vs-table tr:last-child td { border-bottom: none; }
+        .badge-llm { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-classic { display: inline-block; background: #dcfce7; color: #166534; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-hybrid { display: inline-block; background: #fef3c7; color: #92400e; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(79,70,229,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(79,70,229,.4); }
+        .timeline-row { display: flex; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; align-items: flex-start; }
+        .timeline-row:last-child { border-bottom: none; }
+        .timeline-year { background: #e0e7ff; color: #3730a3; font-size: .78rem; font-weight: 700; padding: .2rem .65rem; border-radius: 9999px; flex-shrink: 0; white-space: nowrap; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.twman.org/AI/NLP" },
+      "headline": "NLP 自然語言處理：從傳統算法到 LLM 時代的實戰選型指南",
+      "description": "2026 NLP 五大任務（文本分類、MRC、NER、相似度、糾錯）的傳統算法 vs LLM 成本效益分析，含 2018–2026 實戰踩坑彙整。",
+      "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
+      "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
+      "datePublished": "2018-07-15", "dateModified": "2026-07-28"
+    }
+    </script>
+</head>
+<body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+        <h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-violet-500">
+            📝 NLP 自然語言處理
+        </h1>
+        <p class="mt-4 text-lg text-gray-500">傳統算法 vs LLM · 成本效益選型 · 2018–2026 實戰血淚彙整</p>
+    </header>
+
+    <div id="include-aishare"></div>
+
+    <!-- ① 核心立場：傳統 vs LLM 的定位 -->
+    <div class="bento-box motion-div" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;">🎯 先說結論：LLM 很強，但不是唯一答案</h2>
+        <div class="bento-text">
+            <p>ChatGPT、Gemini、Claude 等大型語言模型確實能完成文本分類、NER、問答等幾乎所有 NLP 任務，且效果往往超越傳統模型。<strong>但這不代表傳統 NLP 算法已死。</strong></p>
+            <p>現實是：每呼叫一次 GPT-4o 處理一筆文本，費用約 0.01–0.1 美元；一個日均百萬筆請求的客服系統，光 API Token 費用一個月就燒掉幾十萬台幣。反觀一個微調好的 BERT-base 模型，部署在 CPU 伺服器上，推論一筆僅需 0.1 秒，每月邊際成本趨近於零。</p>
+        </div>
+        <div class="insight-box" style="margin-top:0;">
+            <strong>💡 選型黃金法則：</strong>任務定義清晰、標籤固定、資料量足夠？→ <strong>傳統 BERT 微調</strong>，便宜、快速、可控。需要開放域理解、多步推理、零樣本泛化？→ <strong>LLM（RAG + prompt engineering）</strong>。兩者可以也應該混用。
+        </div>
+    </div>
+
+    <!-- ② 成本效益對照表 -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-balance-scale mr-2 text-indigo-500"></i>傳統 NLP vs LLM 成本效益對照</h2>
+        <div style="overflow-x:auto;">
+            <table class="vs-table">
+                <thead>
+                    <tr>
+                        <th>維度</th>
+                        <th>傳統 NLP（BERT 微調）<span class="badge-classic ml-2">推薦：封閉域任務</span></th>
+                        <th>大型語言模型（GPT/Gemini/Claude）<span class="badge-llm ml-2">推薦：開放域任務</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">推論成本</td>
+                        <td>每千筆 &lt;$0.01（GPU/CPU 自架）</td>
+                        <td>每千筆 $5–100（視 Token 量）</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">延遲</td>
+                        <td>CPU 0.1s / GPU &lt;0.01s</td>
+                        <td>API 0.5–5s（網路+推論）</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">訓練數據量</td>
+                        <td>需 1,000–10,000 筆標注數據</td>
+                        <td>零樣本可用，少量 few-shot 即強</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">可控性</td>
+                        <td>輸出格式穩定，分類 100% 可控</td>
+                        <td>需 prompt engineering，有幻覺風險</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">部署靈活度</td>
+                        <td>可完全私有化部署，無資安外洩疑慮</td>
+                        <td>雲端 API 有資料外洩風險；私有化需要 A100</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">新任務擴充</td>
+                        <td>需重新標注、重新訓練</td>
+                        <td>修改 prompt 即可，幾乎零額外成本</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">適用場景</td>
+                        <td>固定分類、批量處理、即時低延遲、隱私敏感</td>
+                        <td>開放問答、摘要、多步推理、新場景快速驗證</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <span class="badge-hybrid">💡 混用策略</span>
+            <span class="bento-text" style="font-size:.9rem;"> 前端用 BERT 分類/過濾 → 符合條件者才送 LLM 深度處理，可降低 80% 以上的 Token 費用。</span>
+        </div>
+    </div>
+
+    <!-- ③ 五大任務導覽 -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-th-large mr-2 text-purple-500"></i>五大 NLP 任務導覽</h2>
+        <div class="cat-grid">
+
+            <a href="Classification.html" class="cat-card" style="background:#eff6ff;border-color:#93c5fd;">
+                <div class="cat-card-icon">📂</div>
+                <div class="cat-card-title" style="color:#1e40af;">文本分類 Classification</div>
+                <div class="cat-card-desc" style="color:#374151;">判斷「這句話屬於哪一類」。HAN → BiLSTM+Attention → BERT-base-chinese，12 類電話助理場景，F1=83.5%，CPU 0.1s/筆。</div>
+                <div class="cat-card-meta" style="color:#1d4ed8;">✅ 最適合傳統算法的場景 · 成本最低</div>
+            </a>
+
+            <a href="NER.html" class="cat-card" style="background:#fdf4ff;border-color:#e9d5ff;">
+                <div class="cat-card-icon">🏷️</div>
+                <div class="cat-card-title" style="color:#6b21a8;">命名實體識別 NER</div>
+                <div class="cat-card-desc" style="color:#374151;">抽取「誰、在哪、什麼組織」。BERT+CRF 或 PaddleNLP UIE，醫療診斷書與對話槽位填充，含注音/拼音品牌識別實驗。</div>
+                <div class="cat-card-meta" style="color:#7e22ce;">✅ 封閉實體類型：傳統；新類型/複雜語境：LLM</div>
+            </a>
+
+            <a href="Similarity.html" class="cat-card" style="background:#f0fdf4;border-color:#86efac;">
+                <div class="cat-card-icon">🔗</div>
+                <div class="cat-card-title" style="color:#166534;">文本相似度 Similarity</div>
+                <div class="cat-card-desc" style="color:#374151;">比對「這兩句是同一個意思嗎」。Siamese-BERT / ALBERT，80/20 Q&A 比對法，聊天機器人前端快速過濾，解決「廁所」vs「洗手間」場景。</div>
+                <div class="cat-card-meta" style="color:#15803d;">✅ 高頻檢索：傳統 embedding；語意理解：LLM</div>
+            </a>
+
+            <a href="MRC.html" class="cat-card" style="background:#fff7ed;border-color:#fed7aa;">
+                <div class="cat-card-icon">📖</div>
+                <div class="cat-card-title" style="color:#c2410c;">機器閱讀理解 MRC</div>
+                <div class="cat-card-desc" style="color:#374151;">從文件中找答案。BiDAF → QANet → BERT，博物館/展場導覽機器人場景，DRCD + 自建繁中數據集，多文件推理挑戰。</div>
+                <div class="cat-card-meta" style="color:#ea580c;">⚖️ 固定知識庫：BERT；開放問答：LLM+RAG</div>
+            </a>
+
+            <a href="Correction.html" class="cat-card" style="background:#fef2f2;border-color:#fca5a5;">
+                <div class="cat-card-icon">✍️</div>
+                <div class="cat-card-title" style="color:#dc2626;">文本糾錯 Correction</div>
+                <div class="cat-card-desc" style="color:#374151;">修正 ASR 輸出的同音異字。pycorrector → ConvSeq2Seq → MacBERT，商場機器人字幕修正場景，投入 ~100 天，有 HuggingFace DEMO。</div>
+                <div class="cat-card-meta" style="color:#dc2626;">⚖️ 同音字替換：傳統；語法/語意錯誤：LLM</div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ④ 技術演進脈絡 -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-route mr-2 text-indigo-500"></i>NLP 技術演進脈絡 (2018–2026)</h2>
+        <div>
+            <div class="timeline-row">
+                <span class="timeline-year">Pre-2018</span>
+                <div class="bento-text" style="font-size:.9rem;">TF-IDF、SVM、CRF、n-gram、詞向量（word2vec / FastText）；騰訊 ChineseEmbedding 需載入 16GB。規則+統計的時代，能做到的效果有限但成本低。</div>
+            </div>
+            <div class="timeline-row">
+                <span class="timeline-year">2018-11</span>
+                <div class="bento-text" style="font-size:.9rem;"><strong>BERT 橫空出世</strong>（Google），Transformer 雙向預訓練，屌打所有 NLP 下游任務。Hugging Face Transformers 生態讓 BERT 微調變得唾手可得。</div>
+            </div>
+            <div class="timeline-row">
+                <span class="timeline-year">2019–2020</span>
+                <div class="bento-text" style="font-size:.9rem;">ALBERT（輕量化 BERT）、ELECTRA（超越 BERT）、MacBERT（中文優化版），以及 RoBERTa、XLNet。BERT 微調成為 NLP 工程的標配。</div>
+            </div>
+            <div class="timeline-row">
+                <span class="timeline-year">2021–2022</span>
+                <div class="bento-text" style="font-size:.9rem;">GPT-3 展示 few-shot 能力，Instruction Tuning 概念確立。LLM 開始展現通用 NLP 的潛力，但 API 費用極高、部署困難。</div>
+            </div>
+            <div class="timeline-row">
+                <span class="timeline-year">2023–2024</span>
+                <div class="bento-text" style="font-size:.9rem;"><strong>ChatGPT 引爆 LLM 浪潮</strong>，RAG 架構讓 LLM 接入企業知識庫。開源 LLaMA/Qwen/Gemma 系列讓私有化部署可行。傳統 NLP 應用迅速被 LLM 挑戰。</div>
+            </div>
+            <div class="timeline-row">
+                <span class="timeline-year">2025–2026</span>
+                <div class="bento-text" style="font-size:.9rem;"><strong>雙軌並行時代</strong>：高頻、固定任務仍用 BERT 族；創意、推理、多步任務用 LLM。<strong>Embedding 模型</strong>（BGE、E5、nomic-embed）成為 RAG 的核心橋樑，兼具兩者優點。</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑤ 中文 NLP 特殊挑戰 -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-language mr-2 text-purple-500"></i>中文 NLP 特殊挑戰</h2>
+        <div class="pitfall-box">
+            <strong>⚠️ 公開資料集的台灣適用性問題：</strong>幾乎所有中文公開數據集（CMRC、AISHELL、ChineseNLPCorpus）都是<strong>中國大陸用語與簡體中文</strong>。台灣場景需要自行標注繁體中文與在地用語，這是投入時間最多、最容易被低估的成本項目。
+        </div>
+        <div class="pitfall-box">
+            <strong>⚠️ 斷詞的永恆之痛：</strong>中文沒有空格分隔單詞，Jieba（繁中版）是最常用但仍不完美的選擇。pkuseg 稍弱一點；CKIP（中研院）是台灣最佳選擇，但整合門檻較高。新詞、專有名詞（品牌名、藥名）是重災區。
+        </div>
+        <div class="tip-box">
+            <strong>✅ 核心建議：</strong>「<strong>算法模型效果其實都差不多，如果你想將算法落地，請好好處理數據，這是最關鍵的地方。</strong>」——不管選傳統算法還是 LLM，數據品質永遠是瓶頸。
+        </div>
+    </div>
+
+    <!-- ⑥ 各任務快速對照 -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large" style="margin-bottom:.75rem;"><i class="fas fa-compass mr-2 text-indigo-500"></i>各任務選型快速建議</h2>
+        <div style="overflow-x:auto;">
+            <table class="vs-table">
+                <thead>
+                    <tr>
+                        <th>任務</th>
+                        <th>場景描述</th>
+                        <th>優先選擇</th>
+                        <th>備用方案</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">📂 文本分類</td>
+                        <td style="font-size:.88rem;">固定 N 類、批量、即時</td>
+                        <td><span class="badge-classic">BERT 微調</span> F1 83–92%，CPU 0.1s</td>
+                        <td style="font-size:.85rem;">新類別快速驗證用 LLM few-shot</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">🏷️ NER</td>
+                        <td style="font-size:.88rem;">固定實體類型（人名/地名/時間）</td>
+                        <td><span class="badge-classic">BERT+CRF / UIE</span></td>
+                        <td style="font-size:.85rem;">新領域實體（醫療/法律）→ LLM+prompt</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">🔗 文本相似度</td>
+                        <td style="font-size:.88rem;">Q&A 比對、知識庫檢索</td>
+                        <td><span class="badge-classic">Sentence-BERT / BGE Embedding</span></td>
+                        <td style="font-size:.85rem;">語意理解（反諷/隱語）→ LLM reranker</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">📖 MRC</td>
+                        <td style="font-size:.88rem;">固定文件庫問答（FAQ/知識庫）</td>
+                        <td><span class="badge-hybrid">BERT + RAG 混合</span></td>
+                        <td style="font-size:.85rem;">開放域、多步推理 → LLM (GPT/Gemini)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;white-space:nowrap;">✍️ 糾錯</td>
+                        <td style="font-size:.88rem;">ASR 同音字錯誤（即時修正）</td>
+                        <td><span class="badge-classic">MacBERT / pycorrector</span></td>
+                        <td style="font-size:.85rem;">語法/語意錯誤（長文修改）→ LLM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ⑦ 底部 CTA -->
+    <div class="bento-box motion-div text-center" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);">
+        <div style="font-size:3rem;margin-bottom:.75rem;">📝</div>
+        <h3 style="font-size:1.4rem;font-weight:700;color:#1d1d1f;margin-bottom:.5rem;">查看完整論文解析與選型指南</h3>
+        <p class="bento-text" style="color:#555;max-width:560px;margin:0 auto 1.5rem;">包含 Transformer / BERT / LLM 完整技術脈絡、GitHub 論文列表與 HuggingFace 模型資源。</p>
+        <div class="flex flex-wrap gap-3 justify-center">
+            <a href="https://deep-learning-101.github.io/Natural-Language-Processing" target="_blank" class="cta-btn">
+                <i class="fas fa-book-open"></i> 完整版 NLP 資源 →
+            </a>
+            <a href="https://github.com/Deep-Learning-101/Natural-Language-Processing-Paper" target="_blank" class="cta-btn" style="background:linear-gradient(135deg,#1d1d1f,#374151);">
+                <i class="fab fa-github"></i> GitHub ⭐
+            </a>
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2 justify-center">
+            <a href="../index.html" class="tag" style="background:#f1f5f9;color:#475569;"><i class="fas fa-arrow-left mr-1"></i>返回 AI 總覽</a>
+            <a href="Classification.html" class="tag" style="background:#dbeafe;color:#1d4ed8;"><i class="fas fa-tags mr-1"></i>文本分類</a>
+            <a href="NER.html" class="tag" style="background:#f3e8ff;color:#7e22ce;"><i class="fas fa-tag mr-1"></i>NER</a>
+            <a href="Similarity.html" class="tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-link mr-1"></i>相似度</a>
+            <a href="MRC.html" class="tag" style="background:#fff7ed;color:#c2410c;"><i class="fas fa-book mr-1"></i>MRC</a>
+            <a href="Correction.html" class="tag" style="background:#fef2f2;color:#dc2626;"><i class="fas fa-spell-check mr-1"></i>糾錯</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('../../_includes/nav-pages.html',    'include-nav-pages');
+includeHTML('../../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../../_includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

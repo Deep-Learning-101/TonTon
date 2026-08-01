@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R2-D2: Android Malware Detection | TonTon H.-D. Huang Ph.D. | Deep Learning 101</title>
+    <meta name="description" content="R2-D2: ColoR-inspired Convolutional NeuRal Network (CNN)-based AndroiD Malware Detection — IEEE Big Data 2018, TonTon H.-D. Huang Ph.D. 學術研究成果。">
+    <meta name="keywords" content="R2-D2, Android Malware Detection, CNN, Deep Learning, Color Visualization, TonTon Huang, IEEE Big Data 2018, Cybersecurity">
+    <meta property="og:title" content="R2-D2: Android Malware Detection — TonTon H.-D. Huang Ph.D.">
+    <meta property="og:description" content="ColoR-inspired CNN-based Android Malware Detection | IEEE Big Data 2018 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/TonTon_QQ-202602.png">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .bento-box {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        .bento-title-large { font-size: 2.2rem; line-height: 2.8rem; font-weight: 700; margin-bottom: 1.5rem; color: #1d1d1f; }
+        .bento-subtitle { font-size: 1.25rem; font-weight: 600; color: #0071e3; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .bento-list { list-style-type: none; padding-left: 0.5rem; }
+        .bento-list li { margin-bottom: 0.75rem; padding-left: 1.75rem; position: relative; }
+        .bento-list li::before {
+            content: "\f111"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            color: #0071e3; font-size: 0.5rem; position: absolute; left: 0.25rem; top: 0.5em;
+        }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .meta-info { color: #6b7280; font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .tag {
+            display: inline-block; background-color: #e0e7ff; color: #3730a3;
+            padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem;
+            font-weight: 500; margin-right: 0.5rem; margin-bottom: 0.5rem;
+        }
+        /* pipeline steps */
+        .pipeline-step {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            flex: 1; min-width: 100px;
+        }
+        .pipeline-icon {
+            width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.4rem;
+            margin-bottom: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pipeline-label { font-size: 0.82rem; font-weight: 600; color: #1d1d1f; line-height: 1.3; }
+        .pipeline-arrow { font-size: 1.5rem; color: #cbd5e1; align-self: center; padding: 0 0.25rem; flex-shrink: 0; }
+        /* stat cards */
+        .stat-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #bae6fd; border-radius: 1rem; padding: 1.25rem;
+            text-align: center;
+        }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: #0369a1; }
+        .stat-label { font-size: 0.8rem; color: #475569; margin-top: 0.25rem; line-height: 1.4; }
+        /* venue card */
+        .venue-card {
+            border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.25rem;
+            transition: all 0.2s; background: #fff;
+        }
+        .venue-card:hover { border-color: #0071e3; box-shadow: 0 4px 12px rgba(0,113,227,0.1); transform: translateY(-2px); }
+        /* modern-link-grid */
+        .modern-link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
+        .modern-link {
+            display: flex; align-items: center; padding: 8px 12px; text-decoration: none !important;
+            color: #555 !important; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s ease;
+        }
+        .modern-link:hover { background: #f4f6f8; color: #007bff !important; transform: translateX(3px); }
+        /* citation block */
+        .citation-block {
+            background: #f8fafc; border-left: 4px solid #0071e3;
+            padding: 1rem 1.25rem; border-radius: 0 0.75rem 0.75rem 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 0.93rem; line-height: 1.8; color: #374151;
+        }
+    </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "name": "R2-D2: Color-inspired Convolutional Neural Network (CNN)-based Android Malware Detections",
+  "author": {
+    "@type": "Person",
+    "name": "TonTon H.-D. Huang",
+    "url": "https://twman.org"
+  },
+  "datePublished": "2018-12-10",
+  "publisher": {
+    "@type": "Organization",
+    "name": "IEEE"
+  },
+  "url": "https://arxiv.org/abs/1705.04448",
+  "keywords": ["Android Malware", "CNN", "Deep Learning", "Color Visualization", "Cybersecurity"]
+}
+</script>
+</head>
+<body>
+<div id="include-nav-pages"></div>
+
+<div id="app" class="content-wrapper">
+
+<div id="include-profile-hero"></div>
+
+<!-- ===== 頁面標題 ===== -->
+<div class="text-center my-8">
+    <div class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 mb-3">
+        <a href="index.html" class="hover:text-blue-600 transition-colors">🎓 Research</a>
+        <span>›</span>
+        <span>R2-D2</span>
+    </div>
+    <h2 class="bento-title-large">
+        <span class="text-red-500">R</span><span class="text-orange-400">2</span><span class="text-yellow-400">-</span><span class="text-green-500">D</span><span class="text-blue-500">2</span>
+    </h2>
+    <p class="text-slate-600 text-lg font-medium -mt-2 mb-2">ColoR-inspired Convolutional NeuRal Network (CNN)-based AndroiD Malware Detection</p>
+    <div class="flex flex-wrap justify-center gap-2 mt-3">
+        <span class="tag" style="background:#fef3c7;color:#92400e;"><i class="fas fa-award mr-1"></i>IEEE Big Data 2018</span>
+        <span class="tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-shield-alt mr-1"></i>Cybersecurity</span>
+        <span class="tag" style="background:#ede9fe;color:#5b21b6;"><i class="fas fa-brain mr-1"></i>Deep Learning</span>
+        <span class="tag" style="background:#fce7f3;color:#9d174d;"><i class="fas fa-palette mr-1"></i>Color Visualization</span>
+    </div>
+</div>
+
+<!-- ===== ① 論文摘要 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-file-alt mr-2"></i>研究摘要 Abstract</h3>
+    <div class="bento-text">
+        <p>R2-D2 是一套創新的 Android 惡意程式偵測框架，其核心概念是將 APK 的 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono">classes.dex</code> 位元組碼轉換為 <strong>RGB 色彩圖像</strong>，再透過卷積神經網路 (CNN) 進行自動化特徵萃取與分類。此方法完全無需人工定義特徵，實現端對端訓練，大幅降低安全分析師的負擔。</p>
+        <p>同屬「彩色視覺化」系列方法的 R2-D2，後來亦延伸應用於 <strong>以太坊智能合約漏洞偵測</strong> 及 <strong>勒索軟體家族識別</strong>，驗證了「將程式碼視覺化再以電腦視覺分析」的通用性。</p>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <a href="https://arxiv.org/abs/1705.04448" target="_blank" class="tag" style="background:#dbeafe;color:#1e40af;">
+            <i class="fas fa-external-link-alt mr-1"></i> arXiv:1705.04448
+        </a>
+        <a href="https://ieeexplore.ieee.org/document/8622324" target="_blank" class="tag" style="background:#fef3c7;color:#92400e;">
+            <i class="fas fa-book mr-1"></i> IEEE Xplore
+        </a>
+        <a href="https://scholar.google.com.tw/scholar?oi=bibs&hl=zh-TW&cites=7688223024037438681" target="_blank" class="tag" style="background:#dcfce7;color:#166534;">
+            <i class="fas fa-graduation-cap mr-1"></i> Google Scholar
+        </a>
+    </div>
+</div>
+
+<!-- ===== ② 方法論管道 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-project-diagram mr-2"></i>技術方法 Methodology</h3>
+    <p class="bento-text mb-4">五步驟端對端管道，將 Android APK 轉化為可供 CNN 識別的彩色圖像：</p>
+    <div class="flex flex-wrap items-start justify-center gap-1 py-2">
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#fde68a,#fbbf24);">📦</div>
+            <div class="pipeline-label">Android APK<br><span class="text-slate-400 text-xs font-normal">輸入應用程式</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#bfdbfe,#60a5fa);">🔍</div>
+            <div class="pipeline-label">classes.dex<br><span class="text-slate-400 text-xs font-normal">萃取位元組碼</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#d9f99d,#86efac);">🎨</div>
+            <div class="pipeline-label">RGB 色碼<br><span class="text-slate-400 text-xs font-normal">位元組→色彩</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#fecaca,#f87171);">🖼️</div>
+            <div class="pipeline-label">固定尺寸圖像<br><span class="text-slate-400 text-xs font-normal">統一大小</span></div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+            <div class="pipeline-icon" style="background:linear-gradient(135deg,#e9d5ff,#c084fc);">🤖</div>
+            <div class="pipeline-label">CNN 分類<br><span class="text-slate-400 text-xs font-normal">自動特徵萃取</span></div>
+        </div>
+    </div>
+    <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+        <p class="text-sm text-amber-800 font-medium"><i class="fas fa-lightbulb mr-2 text-amber-500"></i>核心洞見：同一惡意程式家族的成員，轉換為圖像後呈現出相似的視覺紋理模式——即使非專業人士也能用肉眼識別。</p>
+    </div>
+</div>
+
+<!-- ===== ③ 實驗規模 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-database mr-2"></i>數據規模 Dataset & Scale</h3>
+    <p class="bento-text mb-4">資料集由 <a href="https://blog.twman.org/2018/12/IEEE-BigData-2018.html" target="_blank">Leopard Mobile Inc.（獵豹移動）</a>提供，涵蓋 2017 年 1 月至 8 月的真實世界數據：</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="stat-card">
+            <div class="stat-number">2M+</div>
+            <div class="stat-label">總樣本數<br>良性 + 惡意應用</div>
+        </div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-color:#e9d5ff;">
+            <div class="stat-number" style="color:#7e22ce;">800K+</div>
+            <div class="stat-label">惡意樣本<br>用於訓練</div>
+        </div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0;">
+            <div class="stat-number" style="color:#166534;">800K+</div>
+            <div class="stat-label">良性樣本<br>用於訓練</div>
+        </div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fed7aa;">
+            <div class="stat-number" style="color:#c2410c;">10K</div>
+            <div class="stat-label">每日新增惡意樣本<br>後端即時偵測</div>
+        </div>
+    </div>
+    <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+        <p class="text-sm text-slate-600"><i class="fas fa-users mr-2 text-slate-400"></i>Leopard Mobile 後端服務擁有 <strong>6,000 萬月活躍用戶</strong>，R2-D2 在此規模下驗證了其工業級可行性。</p>
+    </div>
+</div>
+
+<!-- ===== ④ 學術發表 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-graduation-cap mr-2"></i>學術發表 Publications</h3>
+
+    <div class="space-y-4">
+        <!-- 主論文 -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-green-300 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-green-600 rounded">★ 主論文 | IEEE Big Data 2018</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang* and Hung-Yu Kao,
+                "<a href="https://arxiv.org/abs/1705.04448" target="_blank" class="text-green-700 hover:underline font-semibold">R2-D2: Color-inspired Convolutional Neural Network (CNN)-based Android Malware Detections</a>",
+                <a href="https://ieeexplore.ieee.org/document/8622324" target="_blank" class="italic hover:text-green-600">IEEE International Conference on Big Data 2018</a>,
+                <a href="https://blog.twman.org/2018/12/IEEE-BigData-2018.html" target="_blank" class="text-blue-600 hover:underline">Seattle</a>, WA, USA, Dec 10–13, 2018.
+            </div>
+        </div>
+
+        <!-- Ethereum -->
+        <div class="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-all bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="px-2 py-0.5 text-xs font-bold text-white bg-blue-500 rounded">延伸應用 | arXiv 2018</span>
+                <span class="font-semibold text-slate-700">Hunting the Ethereum Smart Contract</span>
+            </div>
+            <div class="citation-block">
+                TonTon H.-D. Huang,
+                "<a href="https://arxiv.org/abs/1807.01868" target="_blank" class="text-blue-700 hover:underline font-semibold">Hunting the Ethereum Smart Contract: Color-inspired Inspection of Potential Attacks</a>",
+                arXiv preprint, arXiv:1807.01868, 2018.
+            </div>
+            <p class="text-xs text-slate-500 mt-2 ml-1"><i class="fas fa-info-circle mr-1"></i>發表於 DEF CON 26 AI Village，Las Vegas，Aug 2018</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ⑤ 歷年演講 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-microphone-alt mr-2"></i>歷年演講 Presentations</h3>
+    <div class="space-y-4">
+
+        <!-- DEF CON -->
+        <div class="venue-card">
+            <div class="flex flex-wrap items-start gap-3">
+                <div class="flex-shrink-0">
+                    <span class="inline-block px-2 py-1 text-xs font-bold text-white bg-black rounded">DEF CON 26</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-slate-800">AI Village — Hunting the Ethereum Smart Contract: Color-inspired Inspection of Potential Attacks</p>
+                    <p class="text-sm text-slate-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>Las Vegas, NV, USA &nbsp;|&nbsp; <i class="fas fa-calendar mr-1"></i>Aug 9–12, 2018</p>
+                    <p class="text-sm text-slate-600 mt-2">將「彩色視覺化」技術延伸至以太坊 Solidity 位元組碼，透過 CNN 自動識別潛在合約攻擊模式，無需人工定義漏洞特徵。</p>
+                    <a href="https://arxiv.org/pdf/1807.01868" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-blue-600 hover:underline">
+                        <i class="fas fa-file-pdf"></i> arXiv PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RuxCon -->
+        <div class="venue-card">
+            <div class="flex flex-wrap items-start gap-3">
+                <div class="flex-shrink-0">
+                    <span class="inline-block px-2 py-1 text-xs font-bold text-white bg-red-700 rounded">RuxCon 2017</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-slate-800">Look! Ransomware is there: Large Scale Ransomware Detection with Naked Eye</p>
+                    <p class="text-sm text-slate-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>Melbourne, Australia &nbsp;|&nbsp; <i class="fas fa-calendar mr-1"></i>Oct 21–22, 2017</p>
+                    <p class="text-sm text-slate-600 mt-2">示範 R2-D2 如何將勒索軟體編碼為「勒索軟體圖像」，同一家族成員在視覺上高度相似，即使非專業人員也可一眼辨識。背景：WannaCrypt 與 Petya 造成重大危害，Android 勒索軟體威脅持續增長。</p>
+                    <a href="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/Ruxcon.pdf" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-red-600 hover:underline">
+                        <i class="fas fa-file-pdf"></i> 簡報 PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- OWASP -->
+        <div class="venue-card">
+            <div class="flex flex-wrap items-start gap-3">
+                <div class="flex-shrink-0">
+                    <span class="inline-block px-2 py-1 text-xs font-bold text-white bg-purple-700 rounded">OWASP 2017</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-slate-800">R2-D2: Color-inspired CNN-based Android Malware Detections</p>
+                    <p class="text-sm text-slate-500 mt-1"><i class="fas fa-map-marker-alt mr-1"></i>OWASP AppSec USA 2017, Orlando, Florida &nbsp;|&nbsp; <i class="fas fa-calendar mr-1"></i>Sep 19–22, 2017</p>
+                    <a href="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/OWASP.pdf" target="_blank" class="inline-flex items-center gap-1 mt-2 text-xs text-purple-600 hover:underline">
+                        <i class="fas fa-file-pdf"></i> 簡報 PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== ⑥ 專利 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-certificate mr-2"></i>專利 Patent</h3>
+    <div class="p-4 border border-amber-200 rounded-xl bg-amber-50 hover:border-amber-400 transition-all">
+        <div class="flex flex-wrap items-start gap-3">
+            <div class="text-3xl">🏛️</div>
+            <div class="flex-1">
+                <p class="font-bold text-slate-800">基於卷積神經網絡的安卓智能手機惡意軟件識別方法</p>
+                <p class="text-sm text-slate-600 mt-1 italic">CNN-based Android Smartphone Malware Identification Method</p>
+                <div class="flex flex-wrap gap-3 mt-2 text-sm text-slate-600">
+                    <span><i class="fas fa-hashtag mr-1 text-amber-500"></i><strong>CN107665307A</strong></span>
+                    <span><i class="fas fa-calendar mr-1 text-amber-500"></i>公告日：2018-02-06</span>
+                </div>
+                <a href="https://patents.google.com/patent/CN107665307A/" target="_blank"
+                   class="inline-flex items-center gap-2 mt-3 px-4 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium text-sm rounded-lg transition-colors">
+                    <i class="fas fa-external-link-alt"></i> Google Patents
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ⑦ 媒體報導 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-newspaper mr-2"></i>媒體報導 Media Coverage</h3>
+    <div class="grid md:grid-cols-2 gap-4">
+        <div class="venue-card">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl flex-shrink-0">📺</div>
+                <div>
+                    <p class="font-bold text-slate-800">BBC</p>
+                    <p class="text-sm text-slate-600 mt-1">"Taiwan's front-line battle against mobile phone fraud" — 引用 TonTon Huang 就詐騙電話回撥攻擊策略所提出的分析。</p>
+                </div>
+            </div>
+        </div>
+        <div class="venue-card">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl flex-shrink-0">💚</div>
+                <div>
+                    <p class="font-bold text-slate-800">NVIDIA Developer Blog</p>
+                    <p class="text-sm text-slate-600 mt-1">"AI Improves the Frequency and Quality of Mobile App Notifications" — 深度報導 R2-D2 及相關研究的 GPU 加速實踐。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ⑧ 引用格式 ===== -->
+<div class="bento-box motion-div">
+    <h3 class="bento-subtitle" style="margin-top:0;"><i class="fas fa-quote-right mr-2"></i>引用格式 Citation</h3>
+    <div class="citation-block">
+        TonTon H.-D. Huang and Hung-Yu Kao, "R2-D2: Color-inspired Convolutional Neural Network (CNN)-based Android Malware Detections," <em>IEEE International Conference on Big Data 2018 (IEEE Big Data)</em>, Seattle, WA, USA, Dec 10–13, 2018.
+    </div>
+    <div class="mt-3 p-3 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+        <p class="text-xs font-mono text-slate-600 leading-relaxed">
+            @inproceedings&#123;r2d2ieeebd2018,<br>
+            &nbsp;&nbsp;title=&#123;R2-D2: Color-inspired Convolutional Neural Network (CNN)-based Android Malware Detections&#125;,<br>
+            &nbsp;&nbsp;author=&#123;Huang, TonTon Hsien-De and Kao, Hung-Yu&#125;,<br>
+            &nbsp;&nbsp;booktitle=&#123;2018 IEEE International Conference on Big Data (Big Data)&#125;,<br>
+            &nbsp;&nbsp;year=&#123;2018&#125;,<br>
+            &nbsp;&nbsp;pages=&#123;--&#125;,<br>
+            &nbsp;&nbsp;organization=&#123;IEEE&#125;<br>
+            &#125;
+        </p>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <a href="https://scholargps.com/scholars/20316010606475/tonton-hsien-de-huang" target="_blank" class="tag" style="background:#dbeafe;color:#1e40af;">
+            <i class="fas fa-map-marker-alt mr-1"></i> ScholarGPS
+        </a>
+        <a href="https://scholar.google.com.tw/citations?user=bgCj0ykAAAAJ" target="_blank" class="tag" style="background:#dcfce7;color:#166534;">
+            <i class="fas fa-book mr-1"></i> Google Scholar
+        </a>
+        <a href="index.html" class="tag" style="background:#f1f5f9;color:#475569;">
+            <i class="fas fa-arrow-left mr-1"></i> 返回 Research
+        </a>
+    </div>
+</div>
+
+<div id="include-aishare"></div>
+
+</div><!-- end content-wrapper -->
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const html = await res.text();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(s => document.head.appendChild(s.cloneNode(true)));
+        temp.querySelectorAll('style').forEach(s => s.remove());
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+                newScript.type = oldScript.type || 'text/javascript';
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            Array.from(oldScript.attributes).forEach(attr => {
+                if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value);
+            });
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('includeHTML failed:', url, e); }
+}
+
+includeHTML('../_includes/nav-pages.html', 'include-nav-pages');
+includeHTML('../_includes/profile-hero.html', 'include-profile-hero');
+includeHTML('../_includes/ai-share.html', 'include-aishare');
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const { animate, inView } = motion;
+    document.querySelectorAll('.motion-div').forEach(div => {
+        inView(div, () => {
+            animate(div, { opacity: [0, 1], y: [30, 0], scale: [0.98, 1] }, { duration: 0.65, delay: 0.1, ease: "easeOut" });
+        }, { once: true, amount: 0.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>
