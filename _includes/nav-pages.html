@@ -1,8 +1,9 @@
 <style>
+/* ── 主導覽列容器 ── */
 .page-nav-bar {
     background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-    padding: 0.5rem 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35);
     position: fixed;
     top: 0;
     left: 0;
@@ -15,104 +16,325 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    align-items: center;
+    flex-wrap: nowrap;
+    align-items: stretch;
     justify-content: center;
+    padding: 0 0.5rem;
+    gap: 0;
 }
+
+/* ── 每個頂層選單項目（含 dropdown 容器）── */
+.nav-item {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+}
+
+/* ── 頂層連結 ── */
 .page-nav-link {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.28rem 0.8rem;
-    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
     font-size: 0.8rem;
     font-weight: 600;
     text-decoration: none;
-    color: rgba(255,255,255,0.78);
-    transition: background 0.15s, color 0.15s;
-    border: 1px solid transparent;
+    color: rgba(255,255,255,0.82);
     white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    cursor: pointer;
+    user-select: none;
 }
-.page-nav-link:hover {
-    background: rgba(255,255,255,0.14);
+.page-nav-link:hover,
+.nav-item:hover > .page-nav-link,
+.nav-item.open > .page-nav-link {
     color: #fff;
+    background: rgba(255,255,255,0.1);
+    border-bottom-color: #63b3ed;
 }
 .page-nav-link.active {
-    background: rgba(99,179,237,0.22);
     color: #90cdf4;
-    border-color: rgba(99,179,237,0.4);
+    border-bottom-color: #90cdf4;
 }
-.page-nav-sep {
-    color: rgba(255,255,255,0.2);
-    user-select: none;
-    font-size: 0.75rem;
+/* 有子選單的箭頭 */
+.page-nav-link .nav-arrow {
+    font-size: 0.6rem;
+    opacity: 0.6;
+    transition: transform 0.2s;
+    margin-left: 0.1rem;
 }
-@media (max-width: 600px) {
-    .page-nav-link { font-size: 0.72rem; padding: 0.22rem 0.55rem; }
+.nav-item:hover > .page-nav-link .nav-arrow,
+.nav-item.open > .page-nav-link .nav-arrow {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+/* ── Dropdown 面板 ── */
+.nav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 210px;
+    background: #0f172a;
+    border: 1px solid rgba(99,179,237,0.25);
+    border-top: 2px solid #63b3ed;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+    padding: 0.4rem 0;
+    z-index: 9100;
+    animation: navDropIn 0.15s ease;
+}
+@keyframes navDropIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+/* 展開：hover（桌面）或 .open（行動觸控）*/
+.nav-item:hover > .nav-dropdown,
+.nav-item.open > .nav-dropdown {
+    display: block;
+}
+/* 子選單標題區 */
+.nav-dropdown-header {
+    padding: 0.25rem 1rem 0.2rem;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(99,179,237,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 0.25rem;
+}
+/* 子選單連結 */
+.nav-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.38rem 1rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.78);
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+    white-space: nowrap;
+}
+.nav-dropdown a:hover {
+    background: rgba(99,179,237,0.15);
+    color: #fff;
+}
+.nav-dropdown a.active {
+    color: #90cdf4;
+    background: rgba(99,179,237,0.12);
+}
+/* 子選單分隔線 */
+.nav-dropdown hr {
+    margin: 0.3rem 0.8rem;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── 行動選單漢堡 ── */
+.nav-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+/* ── 行動版折疊 ── */
+@media (max-width: 820px) {
+    .nav-mobile-toggle { display: flex; align-items: center; }
+    .page-nav-inner {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .nav-home-link {
+        flex: 1;
+    }
+    /* 預設隱藏除首頁外的全部 */
+    .nav-item:not(.nav-home-item) {
+        display: none;
+        width: 100%;
+    }
+    .page-nav-bar.mobile-open .nav-item:not(.nav-home-item) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .page-nav-bar.mobile-open .page-nav-link {
+        width: 100%;
+        padding: 0.55rem 1rem;
+        border-bottom: none;
+    }
+    /* 行動版 dropdown 靜態展開 */
+    .nav-dropdown {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 2px solid rgba(99,179,237,0.3);
+        border-radius: 0;
+        margin-left: 1rem;
+        background: rgba(255,255,255,0.04);
+        animation: none;
+        padding: 0;
+        display: none;
+    }
+    .nav-item.open > .nav-dropdown {
+        display: block;
+    }
 }
 </style>
 
 <nav class="page-nav-bar" id="page-nav-bar" aria-label="站點導覽">
-  <div class="page-nav-inner">
-    <a href="/index.html"             class="page-nav-link" data-page="index">🏠 首頁</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/research/index.html"    class="page-nav-link" data-page="research">🎓 Research</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/experiences.html"       class="page-nav-link" data-page="experiences">💼 Experiences</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/ai/index.html"             class="page-nav-link" data-page="ai">🤖 AI 導入</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/ai/Robots.html"         class="page-nav-link" data-page="robots">🦾 Robots</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/cyber/LLM-Offense.html" class="page-nav-link" data-page="cyber">🔐 LLM-Offense</a>
-    <span class="page-nav-sep">·</span>
-    <a href="/cyber/LLM-Guard.html"   class="page-nav-link" data-page="cyber">🔐 LLM-Guard</a>
+  <div class="page-nav-inner" id="page-nav-inner">
+
+    <!-- 首頁 -->
+    <div class="nav-item nav-home-item">
+      <a href="/index.html" class="page-nav-link" data-page="index">🏠 首頁</a>
+    </div>
+
+    <!-- Research ▾ -->
+    <div class="nav-item" data-group="research">
+      <span class="page-nav-link" data-page="research">🎓 Research <span class="nav-arrow">▼</span></span>
+      <div class="nav-dropdown">
+        <div class="nav-dropdown-header">Research</div>
+        <a href="/research/index.html"  data-page="research">📚 Research 總覽</a>
+        <hr>
+        <a href="/research/R2D2.html"   data-page="research">🤖 R2-D2 Android Malware</a>
+        <a href="/research/C3PO.html"   data-page="research">🖱️ C-3PO Pop-ups Rec.</a>
+        <a href="/research/TWMAN.html"  data-page="research">🛡️ TWMAN Malware Analysis</a>
+      </div>
+    </div>
+
+    <!-- Experiences -->
+    <div class="nav-item">
+      <a href="/experiences.html" class="page-nav-link" data-page="experiences">💼 Experiences</a>
+    </div>
+
+    <!-- AI ▾ -->
+    <div class="nav-item" data-group="ai">
+      <span class="page-nav-link" data-page="ai">🤖 AI 文章 <span class="nav-arrow">▼</span></span>
+      <div class="nav-dropdown" style="min-width:230px;">
+        <div class="nav-dropdown-header">AI 文章</div>
+        <a href="/AI/index.html"    data-page="ai">🗺️ AI 技術總覽</a>
+        <a href="/AI/CV.html"       data-page="ai">👁️ 電腦視覺 CV</a>
+        <a href="/AI/Finance.html"  data-page="ai">💰 金融 GenAI / LLM</a>
+        <a href="/AI/Robots.html"   data-page="ai">🦾 AI 陪伴機器人</a>
+        <hr>
+        <div class="nav-dropdown-header" style="margin-top:0.1rem;">🎤 語音處理 ASR</div>
+        <a href="/AI/ASR/index.html"              data-page="ai">🎤 語音 AI 總覽</a>
+        <a href="/AI/ASR/SpeakerRecognition.html" data-page="ai">🔐 聲紋辨識</a>
+        <a href="/AI/ASR/SpeechEnhancement.html"  data-page="ai">🎧 語音增強去噪</a>
+        <a href="/AI/ASR/SpeechSeparation.html"   data-page="ai">👥 語者分離</a>
+        <hr>
+        <div class="nav-dropdown-header" style="margin-top:0.1rem;">📝 NLP 自然語言</div>
+        <a href="/AI/NLP/index.html"          data-page="ai">📝 NLP 總覽</a>
+        <a href="/AI/NLP/Classification.html" data-page="ai">📂 文本分類</a>
+        <a href="/AI/NLP/Correction.html"     data-page="ai">✍️ 文本糾錯</a>
+        <a href="/AI/NLP/MRC.html"            data-page="ai">📖 機器閱讀理解</a>
+        <a href="/AI/NLP/NER.html"            data-page="ai">🏷️ 命名實體識別</a>
+        <a href="/AI/NLP/Similarity.html"     data-page="ai">🔗 文本相似度</a>
+      </div>
+    </div>
+
+    <!-- Cyber ▾ -->
+    <div class="nav-item" data-group="cyber">
+      <span class="page-nav-link" data-page="cyber">🔐 Cyber <span class="nav-arrow">▼</span></span>
+      <div class="nav-dropdown">
+        <div class="nav-dropdown-header">Cyber Security</div>
+        <a href="/Cyber/LLM-Offense.html"      data-page="cyber">⚔️ LLM 攻防策略</a>
+        <a href="/Cyber/LLM-Guard.html"         data-page="cyber">🛡️ LLM 安全護欄</a>
+        <hr>
+        <div class="nav-dropdown-header" style="margin-top:0.1rem;">AIxCC 競賽</div>
+        <a href="/Cyber/AIxCC-Atlanta.html"     data-page="cyber">🏆 ATLANTIS 冠軍</a>
+        <a href="/Cyber/AIxCC-Buttercup.html"   data-page="cyber">🌼 Buttercup Agent</a>
+        <a href="/Cyber/AIxCC-shellphish.html"  data-page="cyber">🐚 Shellphish MCP</a>
+      </div>
+    </div>
+
+    <!-- 漢堡按鈕（行動版） -->
+    <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="展開選單">☰</button>
+
   </div>
 </nav>
 <div id="page-nav-spacer" style="display:block;"></div>
 
 <script>
-(function() {
-    var pageNav = document.getElementById('page-nav-bar');
-    var spacer  = document.getElementById('page-nav-spacer');
+(function () {
+    var bar    = document.getElementById('page-nav-bar');
+    var spacer = document.getElementById('page-nav-spacer');
+    var toggle = document.getElementById('nav-mobile-toggle');
 
+    /* ── 定位：疊在 top-fixed-navbar 下方 ── */
     function positionNav() {
-        if (!pageNav) return;
+        if (!bar) return;
         var mainNav = document.querySelector('.top-fixed-navbar');
         var mainH   = mainNav ? Math.round(mainNav.getBoundingClientRect().height) : 0;
-        pageNav.style.top = mainH + 'px';
-        if (spacer) spacer.style.height = (mainH + Math.round(pageNav.getBoundingClientRect().height)) + 'px';
+        bar.style.top = mainH + 'px';
+        if (spacer) spacer.style.height = (mainH + Math.round(bar.getBoundingClientRect().height)) + 'px';
     }
 
-    // highlight active link
+    /* ── Active 高亮 ── */
     var path = window.location.pathname.toLowerCase().replace(/\/index\.html$/, '/');
-    document.querySelectorAll('.page-nav-link[data-page]').forEach(function(a) {
-        var p = a.getAttribute('data-page');
-        if (
-            (p === 'index'       && (path === '/' || path === '')) ||
-            (p === 'research'    && path.startsWith('/research')) ||
-            (p === 'experiences' && path.includes('experiences')) ||
-            (p === 'ai'          && /\/ai\/ai/i.test(path)) ||
-            (p === 'robots'      && path.includes('robots')) ||
-            (p === 'cyber'       && (path.includes('/cyber/') || path.includes('llm-') || path.includes('aixcc')))
-        ) { a.classList.add('active'); }
+    document.querySelectorAll('[data-page]').forEach(function (el) {
+        var p = el.getAttribute('data-page');
+        var match = false;
+        if (p === 'index'       && (path === '/' || path === '' || path === '/index.html')) match = true;
+        if (p === 'research'    && path.startsWith('/research')) match = true;
+        if (p === 'experiences' && path.includes('experiences'))  match = true;
+        if (p === 'ai'          && (path.startsWith('/ai/') || path.startsWith('/ai'))) match = true;
+        if (p === 'cyber'       && path.startsWith('/cyber'))     match = true;
+        if (match) el.classList.add('active');
     });
 
-    // run immediately (in case header is already there)
-    positionNav();
+    /* ── 行動版漢堡 ── */
+    if (toggle) {
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            bar.classList.toggle('mobile-open');
+            toggle.textContent = bar.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+    }
 
-    // watch for .top-fixed-navbar being injected by header.html async fetch
-    var observer = new MutationObserver(function() {
-        if (document.querySelector('.top-fixed-navbar')) {
-            positionNav();
-            observer.disconnect();
+    /* ── 行動版：點擊有 dropdown 的頂層項目展開 ── */
+    document.querySelectorAll('.nav-item[data-group]').forEach(function (item) {
+        var trigger = item.querySelector(':scope > .page-nav-link');
+        if (!trigger) return;
+        trigger.addEventListener('click', function (e) {
+            if (window.innerWidth > 820) return; // 桌面用 hover，不需要
+            e.preventDefault();
+            var wasOpen = item.classList.contains('open');
+            // 關閉所有
+            document.querySelectorAll('.nav-item.open').forEach(function (o) { o.classList.remove('open'); });
+            if (!wasOpen) item.classList.add('open');
+        });
+    });
+
+    /* ── 點擊外部關閉（行動版）── */
+    document.addEventListener('click', function (e) {
+        if (!bar.contains(e.target)) {
+            bar.classList.remove('mobile-open');
+            if (toggle) toggle.textContent = '☰';
+            document.querySelectorAll('.nav-item.open').forEach(function (o) { o.classList.remove('open'); });
         }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
 
+    /* ── 初始定位 + 監聽 ── */
+    positionNav();
+    var obs = new MutationObserver(function () {
+        if (document.querySelector('.top-fixed-navbar')) { positionNav(); obs.disconnect(); }
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
     window.addEventListener('resize', positionNav);
     window.addEventListener('load', positionNav);
 })();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
