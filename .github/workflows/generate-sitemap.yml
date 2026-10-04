@@ -50,6 +50,9 @@ jobs:
         uses: cicirello/generate-sitemap@v1
         with:
           base-url-path: https://www.twman.org
+          exclude-paths: /_includes /_layouts /includes
+          drop-html-extension: true
+
 
       - name: Configure git for actions
         run: |
