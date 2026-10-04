@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-TW">
 <head>
+    <link rel="canonical" href="https://www.twman.org/AI/NLP/NER">
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TMM2YX50Q"></script>
 <script>
@@ -12,8 +13,8 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏷️ 命名實體識別 (NER) | FLAT・CKIP・PaddleNLP UIE・醫療診斷書 | Deep Learning 101</title>
-    <meta name="description" content="中文命名實體識別完整指南：FLAT、Stanford NER、CKIP（中研院）、PaddleNLP UIE，醫療診斷書實體抽取 2023 實戰，對話 Slot-Filling，含 ChineseAnnotator 標注工具推薦。">
+    <title>命名實體識別 NER 完整指南：FLAT、CKIP、UIE 與 LLM 時代新做法 | Deep Learning 101</title>
+    <meta name="description" content="中文命名實體識別完整指南：用 Gemini 做 few-shot 抽取的LangExtract、FLAT、Stanford NER、CKIP（中研院）、PaddleNLP UIE，醫療診斷書實體抽取 2023 實戰，對話 Slot-Filling，含 ChineseAnnotator 標注工具推薦。">
     <meta name="keywords" content="命名實體識別, NER, FLAT, CKIP, PaddleNLP UIE, Slot-Filling, 中文NER, 醫療NER, TonTon Huang, Deep Learning 101">
     <meta property="og:title" content="命名實體識別 (NER) — FLAT・CKIP・UIE 實戰 | Deep Learning 101">
     <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
@@ -87,10 +88,19 @@
 
     <div id="include-aishare"></div>
 
+    <div class="bento-box motion-div">
+        <div class="bento-text">
+    <h2>2026 更新：LLM 時代的 NER 新做法</h2>
+    <p>這篇最早寫於 2019–2020 年，2023 年補過醫療場景。2026 年回頭看，NER 的遊戲規則變了：以前要標注資料、訓練 FLAT 這類專用模型，現在 Google 開源的 <a href="https://github.com/google/langextract">LangExtract</a> 直接用 Gemini 做 few-shot 抽取，給幾個例子就定義好要抽的實體類型，每個結果還對回原文位置，解決 LLM 抽取最常被質疑的幻覺問題。概念上就是把當年我們手工調的 pipeline 變成了 prompt 工程。</p>
+    <p>但傳統 NER 沒死。LangExtract 要打 API（或本地跑 Ollama），有成本跟延遲；地端、離線、高吞吐的場景，FLAT、CKIP 這類小模型還是划算。我的建議：新專案先用 LangExtract 做 POC 驗證 schema，量上來再決定要不要蒸餾回小模型。這跟當年從規則轉深度學習是同一套邏輯，只是這次更快。</p>
+        </div>
+    </div>
+
     <!-- ① 概覽 -->
     <div class="bento-box motion-div">
         <div class="bento-text">
             <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2019/12/02–2020/02/29（~100 天）+ 2023 醫療場景再投入｜<strong>更新</strong>：2026-07-28</p>
+
             <p>命名實體識別（NER）的核心任務是「從文本中找出<strong>有特定意義的詞</strong>，並標記它屬於哪個類別」。開放域標準類別包括人名、地名、組織名、時間、日期；特定領域如醫療診斷書則延伸到藥名、疾病名、手術名稱等。</p>
             <p>NER 在實際系統中幾乎無處不在：對話意圖理解、關係抽取、輿情分析、多輪對話 Slot-Filling——只要需要「從語言中提取結構化信息」的場景，NER 就是第一步。</p>
         </div>
