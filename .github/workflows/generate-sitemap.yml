@@ -49,7 +49,7 @@ jobs:
       - name: Generate sitemap.xml
         uses: cicirello/generate-sitemap@v1
         with:
-          base-url-path: https://twman.org
+          base-url-path: https://www.twman.org
 
       - name: Configure git for actions
         run: |

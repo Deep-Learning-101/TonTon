@@ -1,0 +1,20 @@
+# TonTon H.-D. Huang Ph.D. — 企業 AI 落地顧問
+
+> 四大顧問戰略視野 × FDE 實戰部署。專精：地端 LLM 算力健檢、RAG 知識庫 POC、
+> AI Agent 自動化、ISO/IEC 42001 AI 治理、LLM 資安護欄。
+
+## 服務
+- [地端 LLM 健檢與顧問服務](https://www.twman.org/#ai-consulting)
+- [RAG 知識庫概念驗證 (POC)](https://www.twman.org/#ai-consulting)
+- [AI Agent 自動化導入](https://www.twman.org/#ai-consulting)
+- [ISO 42001 AI 治理](https://www.twman.org/#ai-consulting)
+
+## 代表作
+- [2026 AI 大模型安全護欄綜合報告](https://www.twman.org/Cyber/LLM-Guard.html)
+- [AI 技術全景摘要](https://www.twman.org/AI/)
+- [Deep Learning 101 社群](https://deep-learning-101.github.io/)
+
+## 關於
+- [關於 TonTon](https://www.twman.org/#about)
+- [經歷](https://www.twman.org/experiences.html)
+- [部落格](https://blog.twman.org/)
