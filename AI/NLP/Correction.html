@@ -80,7 +80,7 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
-        {"@type": "Question", "name": "pycorrector 和 MacBERT 糾錯差在哪？我該選哪個？", "acceptedAnswer": {"@type": "Answer", "text": "pycorrector 是輕量規則統計工具，速度快適合常見同音字形近字；MacBERT 是 BERT 深度模型，對語義型錯誤效果更好但需 GPU。實務上可先用 pycorrector 擋常見錯，困難案例再走 MacBERT。"}},
+        {"@type": "Question", "name": "pycorrector 和 MacBERT 糾錯差在哪？我該選哪個？", "acceptedAnswer": {"@type": "Answer", "text": "pycorrector 是輕量規則統計工具，速度快適合常見同音字形近字；MacBERT 是 BERT 深度模型，對語義型錯誤效果更好但需 GPU。常見錯誤先用 pycorrector 快速處理，困難案例再走 MacBERT。。"}},
         {"@type": "Question", "name": "ASR 語音辨識產生的同音字錯誤要怎麼修正？", "acceptedAnswer": {"@type": "Answer", "text": "拿 ASR 的拼音序列做候選，再用語言模型或拼音相似度排序。實測以拼音相似度輔助判斷候選糾正詞是關鍵。"}},
         {"@type": "Question", "name": "為什麼中文文本糾錯比英文困難？", "acceptedAnswer": {"@type": "Answer", "text": "中文無空格斷詞、同音字形近字多、錯誤類型混雜（拼音注音 ASR OCR 各異），且為字級高度依賴上下文；英文主要處理字母級拼寫錯誤。"}},
         {"@type": "Question", "name": "糾錯模型會過度糾錯嗎？如何避免？", "acceptedAnswer": {"@type": "Answer", "text": "會。緩解做法：設信心閾值、用拼音字形相似度約束候選、專有名詞加白名單。"}},
@@ -280,7 +280,7 @@
         <h2 class="bento-title-large">常見問題</h2>
         <div class="bento-text">
             <p><strong>Q1：pycorrector 和 MacBERT 糾錯差在哪？我該選哪個？</strong><br>
-            pycorrector 是規則＋統計方法的輕量工具，速度快、部署零成本，適合處理常見同音字、形近字錯誤；MacBERT 是 BERT 架構的深度糾錯模型，對語義型錯誤（需要上下文判斷的）效果更好，但需要 GPU 推理。本站實測：商場機器人場景先用 pycorrector 擋掉 8 成常見錯，困難案例再走 MacBERT。</p>
+            pycorrector 是規則＋統計方法的輕量工具，速度快、部署零成本，適合處理常見同音字、形近字錯誤；MacBERT 是 BERT 架構的深度糾錯模型，對語義型錯誤（需要上下文判斷的）效果更好，但需要 GPU 推理。常見錯誤先用 pycorrector 快速處理，困難案例再走 MacBERT。</p>
             <p><strong>Q2：ASR 語音辨識產生的同音字錯誤要怎麼修正？</strong><br>
             ASR 錯誤集中在同音字（「頻果」→「蘋果」）和近音字。做法是拿 ASR 的拼音序列做候選，再用語言模型或拼音相似度排序。本站商場機器人專案用「拼音相似度輔助判斷候選糾正詞」解決，是最終成功的關鍵。</p>
             <p><strong>Q3：為什麼中文文本糾錯比英文困難？</strong><br>
