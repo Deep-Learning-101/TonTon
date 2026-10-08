@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文本糾錯 (Text Correction) | MacBERT・pycorrector・ASR 同音字 | Deep Learning 101</title>
-    <meta name="description" content="中文文本糾錯完整指南：pycorrector → ConvSeq2Seq → MacBERT 演進，商場機器人 ASR 同音字修正場景，~100 天踩坑，HuggingFace 線上 DEMO，含 LLM 輔助糾錯新思路。">
+    <meta name="description" content="中文錯字同音字糾錯指南：pycorrector、MacBERT 實測比較，ASR 語音辨識同音字修正、拼音輸入錯字場景，附 HuggingFace 線上 DEMO 與常見問題。">
     <meta name="keywords" content="文本糾錯, Text Correction, MacBERT, pycorrector, ConvSeq2Seq, ASR糾錯, 同音字, Jieba, 中文NLP, TonTon Huang">
     <meta property="og:title" content="文本糾錯 (Text Correction) — MacBERT・pycorrector 完整踩坑 | Deep Learning 101">
     <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
@@ -75,7 +75,20 @@
       "datePublished": "2019-11-20", "dateModified": "2026-07-28"
     }
     </script>
-</head>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "pycorrector 和 MacBERT 糾錯差在哪？我該選哪個？", "acceptedAnswer": {"@type": "Answer", "text": "pycorrector 是輕量規則統計工具，速度快適合常見同音字形近字；MacBERT 是 BERT 深度模型，對語義型錯誤效果更好但需 GPU。實務上可先用 pycorrector 擋常見錯，困難案例再走 MacBERT。"}},
+        {"@type": "Question", "name": "ASR 語音辨識產生的同音字錯誤要怎麼修正？", "acceptedAnswer": {"@type": "Answer", "text": "拿 ASR 的拼音序列做候選，再用語言模型或拼音相似度排序。實測以拼音相似度輔助判斷候選糾正詞是關鍵。"}},
+        {"@type": "Question", "name": "為什麼中文文本糾錯比英文困難？", "acceptedAnswer": {"@type": "Answer", "text": "中文無空格斷詞、同音字形近字多、錯誤類型混雜（拼音注音 ASR OCR 各異），且為字級高度依賴上下文；英文主要處理字母級拼寫錯誤。"}},
+        {"@type": "Question", "name": "糾錯模型會過度糾錯嗎？如何避免？", "acceptedAnswer": {"@type": "Answer", "text": "會。緩解做法：設信心閾值、用拼音字形相似度約束候選、專有名詞加白名單。"}},
+        {"@type": "Question", "name": "有可以線上試玩的中文糾錯 DEMO 嗎？", "acceptedAnswer": {"@type": "Answer", "text": "有，本頁附 HuggingFace Space 可直接輸入測試。"}}
+      ]
+    }
+    </script>
+    </head>
 <body>
 <div id="app" class="content-wrapper">
 
@@ -260,6 +273,23 @@
         <a href="https://huggingface.co/spaces/DeepLearning101/Corrector101zhTW" target="_blank" class="cta-btn" style="margin:0 auto;">
             <i class="fas fa-robot"></i> 前往 HuggingFace Space →
         </a>
+    </div>
+
+    <!-- 常見問題 FAQ -->
+    <div class="bento-box motion-div">
+        <h2 class="bento-title-large">常見問題</h2>
+        <div class="bento-text">
+            <p><strong>Q1：pycorrector 和 MacBERT 糾錯差在哪？我該選哪個？</strong><br>
+            pycorrector 是規則＋統計方法的輕量工具，速度快、部署零成本，適合處理常見同音字、形近字錯誤；MacBERT 是 BERT 架構的深度糾錯模型，對語義型錯誤（需要上下文判斷的）效果更好，但需要 GPU 推理。本站實測：商場機器人場景先用 pycorrector 擋掉 8 成常見錯，困難案例再走 MacBERT。</p>
+            <p><strong>Q2：ASR 語音辨識產生的同音字錯誤要怎麼修正？</strong><br>
+            ASR 錯誤集中在同音字（「頻果」→「蘋果」）和近音字。做法是拿 ASR 的拼音序列做候選，再用語言模型或拼音相似度排序。本站商場機器人專案用「拼音相似度輔助判斷候選糾正詞」解決，是最終成功的關鍵。</p>
+            <p><strong>Q3：為什麼中文文本糾錯比英文困難？</strong><br>
+            中文沒有空格斷詞、同音字極多（一個拼音對應數十個字）、形近字也多，且錯誤類型混雜（拼音輸入、注音輸入、ASR、OCR 各有不同的錯誤分佈）。英文拼寫糾錯主要處理字母級錯誤，中文則是字級且高度依賴上下文。</p>
+            <p><strong>Q4：糾錯模型會「過度糾錯」嗎？如何避免？</strong><br>
+            會。典型如把「一個比一個強」糾成「一個比一個牆」。緩解做法：設信心閾值（低信心不改）、用拼音／字形相似度約束候選範圍、對專有名詞加白名單。</p>
+            <p><strong>Q5：有可以線上試玩的中文糾錯 DEMO 嗎？</strong><br>
+            有。本頁附的 HuggingFace Space 可直接輸入含同音字或常見錯別字的句子，即時看糾錯結果。</p>
+        </div>
     </div>
 
     <!-- ⑧ 底部導航 -->
