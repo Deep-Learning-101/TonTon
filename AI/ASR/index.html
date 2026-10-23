@@ -13,12 +13,27 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎤 語音處理 (Speech AI) 資源總整理 | ASR・TTS・聲紋・增強・分離 | Deep Learning 101</title>
-    <meta name="description" content="2026 語音 AI 開源選型指南：WhisperX・FunASR・LiveKit 全雙工框架・聲紋辨識・語音增強・語者分離。TonTon Huang Ph.D. 實戰踩坑彙整，含 TTS 零樣本克隆完整覆蓋。">
+    <title>語音辨識 ASR 完整指南：Whisper、FunASR 模型比較與語音 AI 選型指南 | Deep Learning 101</title>
+    <meta name="description" content="語音辨識（ASR）開源選型指南：WhisperX、FunASR 實測比較與中文場景踩坑彙整，含 TTS 零樣本克隆、聲紋辨識、語音增強、語者分離與 LiveKit 全雙工框架。TonTon Huang Ph.D. 實戰筆記。">
     <meta name="keywords" content="語音識別, ASR, TTS, 聲紋辨識, 語音增強, 語者分離, Whisper, FunASR, LiveKit, TonTon Huang, Deep Learning 101">
-    <meta property="og:title" content="語音處理 (Speech AI) 資源總整理 — Deep Learning 101">
-    <meta property="og:description" content="2026 ASR・TTS・聲紋・增強・語者分離開源選型指南，附實戰踩坑筆記。">
+    <meta property="og:title" content="語音辨識 ASR 完整指南：Whisper、FunASR 模型比較與語音 AI 選型指南">
+    <meta property="og:description" content="語音辨識（ASR）開源選型指南：WhisperX、FunASR 實測比較，含 TTS、聲紋、增強、分離與實戰踩坑筆記。">
     <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "即時語音 AI 頻繁搶話怎麼解決？", "acceptedAnswer": {"@type": "Answer", "text": "棄用傳統音量 VAD，改用內建「語義輪次檢測」的 LiveKit Agents 框架，可精準區分真實打斷與咳嗽等噪音，解決 90% 搶話問題。"}},
+        {"@type": "Question", "name": "如何降低 Whisper 的顯存消耗並加速？", "acceptedAnswer": {"@type": "Answer", "text": "採用 WhisperX 或 Faster-Whisper 架構進行 INT8 量化，實測可減少 70% VRAM 佔用，並將轉寫速度提升 4 倍以上。"}},
+        {"@type": "Question", "name": "ASR、聲紋辨識、語音增強、語者分離有什麼差別？", "acceptedAnswer": {"@type": "Answer", "text": "ASR 解決「說了什麼」，聲紋解決「是誰說的」，語音增強解決「噪音清除」，語者分離解決「多人同時說話時如何拆開每個人的聲軌」。四者常搭配使用，但技術架構完全不同。"}},
+        {"@type": "Question", "name": "背景噪音大導致 ASR 錯誤怎麼辦？", "acceptedAnswer": {"@type": "Answer", "text": "在 ASR 前加入語音增強模組（如 Meta Denoiser 或 DCCRN）進行預處理，可提升 20% 以上的惡劣環境辨識率。亦可評估 SenseVoice（內建情感與噪音事件偵測）。"}},
+        {"@type": "Question", "name": "少量參考音檔能做到高精度聲音克隆嗎？", "acceptedAnswer": {"@type": "Answer", "text": "可以。使用 CosyVoice 3 或 Fish Audio S2-Pro 等零樣本模型，僅需 3～5 秒清晰參考音頻，即可生成 MOS 分數 >4.2 的高品質語音。"}},
+        {"@type": "Question", "name": "語音辨識是什麼？ASR 有哪些應用？", "acceptedAnswer": {"@type": "Answer", "text": "語音辨識（ASR，Automatic Speech Recognition）是把語音轉成文字的技術，也是語音 AI 的入口：會議與訪談逐字稿、影片字幕、語音助理、客服通話分析都從 ASR 開始。實務上 ASR 通常搭配語者分離區分講者、文本糾錯修正同音字，再交給 LLM 做摘要或資訊抽取。"}},
+        {"@type": "Question", "name": "ASR 和 TTS 有什麼差別？", "acceptedAnswer": {"@type": "Answer", "text": "方向相反：ASR 是「聽懂」，把語音轉成文字；TTS（Text-to-Speech，語音合成）是「開口說」，把文字轉成語音。語音助理與即時字幕以 ASR 為主，有聲書、語音客服與聲音克隆以 TTS 為主；全雙工語音 Agent 則是 ASR＋LLM＋TTS 三段串接。"}}
+      ]
+    }
+    </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com/3.4.3"></script>
@@ -290,6 +305,9 @@
         <div class="tip-box">
             <strong>✅ TTS 零樣本克隆：</strong>中文首選 <strong>GPT-SoVITS</strong>（1 分鐘樣本）、<strong>CosyVoice 3</strong>（3 秒克隆）；即時對話選 <strong>Orpheus TTS</strong>（25ms 延遲）；輕量邊緣選 <strong>Kokoro / Supertonic v3</strong>（CPU 可跑）。
         </div>
+        <div class="tip-box">
+            <strong>✅ 辨識之後的後處理：</strong>ASR 轉出的文字常有同音字錯誤，先用 <a href="/AI/NLP/Correction"><strong>文本糾錯（ASR 同音字修正）</strong></a> 把「頻果」修回「蘋果」；要再從逐字稿抽出人名、地名、組織等關鍵資訊，接 <a href="/AI/NLP/NER"><strong>NER 命名實體識別</strong></a> 做結構化抽取。
+        </div>
         <div class="pitfall-box">
             <strong>⚠️ 常見踩坑：</strong>中文公開語料（aishell / aidatatang）幾乎全是<strong>中國大陸口音</strong>，台灣口音辨識率會明顯偏低；想達到商用級別，訓練數據至少需要 1 萬小時以上。另，百度雲盤直接封鎖台灣 IP，下載中文數據集務必準備 VPN。
         </div>
@@ -318,6 +336,14 @@
             <div class="faq-item">
                 <div class="faq-q">Q5：少量參考音檔能做到高精度聲音克隆嗎？</div>
                 <div class="faq-a">可以。使用 <strong>CosyVoice 3</strong> 或 <strong>Fish Audio S2-Pro</strong> 等零樣本模型，僅需 3～5 秒清晰參考音頻，即可生成 MOS 分數 >4.2 的高品質語音。</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Q6：語音辨識是什麼？ASR 有哪些應用？</div>
+                <div class="faq-a">語音辨識（ASR，Automatic Speech Recognition）是把語音轉成文字的技術，也是語音 AI 的入口：會議與訪談逐字稿、影片字幕、語音助理、客服通話分析都從 ASR 開始。實務上 ASR 通常搭配語者分離區分講者、<a href="/AI/NLP/Correction">文本糾錯</a>修正同音字，再交給 LLM 做摘要或資訊抽取。</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Q7：ASR 和 TTS 有什麼差別？</div>
+                <div class="faq-a">方向相反：ASR 是「聽懂」，把語音轉成文字；TTS（Text-to-Speech，語音合成）是「開口說」，把文字轉成語音。語音助理與即時字幕以 ASR 為主，有聲書、語音客服與聲音克隆以 TTS 為主；全雙工語音 Agent 則是 ASR＋LLM＋TTS 三段串接。</div>
             </div>
         </div>
     </div>
