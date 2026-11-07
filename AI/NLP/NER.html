@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NER 是什麼？命名實體識別完整指南：中文 NER 模型 FLAT、CKIP、UIE 實測比較 | Deep Learning 101</title>
-    <meta name="description" content="NER（命名實體識別）是從文字中抽出人名、地名、組織、金額等關鍵資訊的技術。本頁實測比較 FLAT、CKIP、UIE 與 LLM few-shot 在中文場景的表現，含醫療診斷書實體抽取、對話 Slot-Filling 實戰與標注工具推薦。">
+    <meta name="description" content="NER (命名實體識別) 是從文字中找出人名、地名、組織名等實體並分類的技術；本頁實測比較中文 NER 模型 FLAT、CKIP、UIE，另含醫療診斷書應用。">
     <meta name="keywords" content="命名實體識別, NER, FLAT, CKIP, PaddleNLP UIE, Slot-Filling, 中文NER, 醫療NER, TonTon Huang, Deep Learning 101">
     <meta property="og:title" content="NER 是什麼？命名實體識別完整指南：中文 NER 模型實測比較 | Deep Learning 101">
     <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
@@ -66,7 +66,7 @@
       "@context": "https://schema.org",
       "@type": "TechArticle",
       "headline": "中文命名實體識別 (NER) 完整實戰指南",
-      "description": "FLAT、CKIP、PaddleNLP UIE 對比，醫療診斷書實體抽取 2023 實戰，含 ChineseAnnotator 標注工具推薦。",
+      "description": "NER (命名實體識別) 是從文字中找出人名、地名、組織名等實體並分類的技術；本頁實測比較中文 NER 模型 FLAT、CKIP、UIE，另含醫療診斷書應用。",
       "author": { "@type": "Person", "name": "TonTon Huang Ph.D.", "url": "https://twman.org/" },
       "publisher": { "@type": "Organization", "name": "Deep Learning 101, Taiwan" },
       "datePublished": "2019-12-02", "dateModified": "2026-07-28"
@@ -84,6 +84,7 @@
             🏷️ 命名實體識別 (NER)
         </h1>
         <p class="mt-4 text-lg text-gray-500">FLAT・CKIP・PaddleNLP UIE · 醫療診斷書・對話 Slot-Filling · ~100 天踩坑</p>
+        <p class="mt-6 text-lg leading-relaxed text-gray-600 max-w-3xl mx-auto">命名實體識別 (NER) 的核心任務是「從文本中找出<strong>有特定意義的詞</strong>，並標記它屬於哪個類別」。開放域標準類別包括人名、地名、組織名、時間、日期；特定領域如醫療診斷書則延伸到藥名、疾病名、手術名稱等。</p>
     </header>
 
     <div id="include-aishare"></div>
@@ -101,7 +102,6 @@
         <div class="bento-text">
             <p><strong>作者</strong>：<a href="https://www.twman.org/" target="_blank">TonTon Huang Ph.D.</a>｜<strong>投入時間</strong>：2019/12/02–2020/02/29（~100 天）+ 2023 醫療場景再投入｜<strong>更新</strong>：2026-07-28</p>
 
-            <p>命名實體識別（NER）的核心任務是「從文本中找出<strong>有特定意義的詞</strong>，並標記它屬於哪個類別」。開放域標準類別包括人名、地名、組織名、時間、日期；特定領域如醫療診斷書則延伸到藥名、疾病名、手術名稱等。</p>
             <p>NER 在實際系統中幾乎無處不在：對話意圖理解、關係抽取、輿情分析、多輪對話 Slot-Filling——只要需要「從語言中提取結構化信息」的場景，NER 就是第一步。</p>
         </div>
         <div class="stat-row">
