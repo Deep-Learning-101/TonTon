@@ -4,10 +4,11 @@
     <link rel="canonical" href="https://www.twman.org/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>痛痛 TonTon H.-D. Huang Ph.D. | AI × Cyber-Security | 企業 AI 落地顧問與架構師</title>
 
-    <meta name="description" content="四大 (Big 4) 顧問戰略視野 ✕ FDE 硬核部署 ✕ AI 資安防禦。TonTon Huang Ph.D. 專為企業提供地端 LLM 算力健檢、RAG 知識庫概念驗證 (POC)、AI Agent 自動化與 ISO 42001 AI 治理落地服務。Expert in GenAI, LLM, RAG, Cybersecurity.">
-    <meta name="keywords" content="TonTon Huang, 企業 AI 顧問, RAG 落地 POC, 地端 LLM 部署, AI 資安, LLM-Guard, FDE, AI 總架構師, Deep Learning 101, GenAI, Cybersecurity, Ph.D.">
+    <title>痛痛 TonTon H.-D. Huang Ph.D. | AI × Cyber-Security </title>
+
+    <meta name="description" content="TonTon (痛痛) Huang，國立成功大學資訊工程博士，資深 AI 架構師與技術負責人，現任 Deloitte 協理 (科技與轉型，網路安全)。15 年以上 AI 與資安研發經驗：大語言模型與 AI Agent、語音、自然語言處理、電腦視覺、惡意程式偵測，研究發表於 DEF CON、RuxCon、OWASP AppSec，論文引用 230 次以上，Deep Learning 101 社群創辦人。">
+    <meta name="keywords" content="TonTon Huang, 黃獻德, 痛痛, Senior AI Architect, AI 架構師, 大語言模型, AI Agent, 語音辨識, 自然語言處理, 電腦視覺, 惡意程式偵測, AI 資安, Deep Learning 101, GenAI, Cybersecurity, Ph.D.">
     <meta property="og:title" content="TonTon H.-D. Huang Ph.D. - AI Expert">
     <meta property="og:description" content="Specializing in GenAI, Deep Learning, and AI Security.">
     <meta property="og:image" content="https://www.twman.org/img/TonTon_QQ-202602_QRCODE.png">
@@ -262,10 +263,10 @@
   "name": "TonTon H.-D. Huang Ph.D.",
   "alternateName": ["TonTon", "痛痛"],
   "url": "https://www.twman.org",
-  "jobTitle": "Enterprise AI Architect & Consultant (企業 AI 總架構師與顧問)",
+  "jobTitle": "Senior AI Architect and Tech Lead",
   "affiliation": {
     "@type": "Organization",
-    "name": "Big 4 Consulting Firm" 
+    "name": "Deloitte Touche Tohmatsu Ltd." 
   },
   "alumniOf": [
     {
@@ -276,7 +277,6 @@
   ],
   "knowsAbout": [
     "Enterprise AI Strategy (企業 AI 導入戰略)",
-    "Forward Deployed Engineering (FDE)",
     "Retrieval-Augmented Generation (RAG) Architecture",
     "Large Language Models (LLM) Deployment",
     "AI Cybersecurity & LLM-Guard", 
@@ -286,61 +286,13 @@
     "Natural Language Processing (NLP)", 
     "Computer Vision (CV)"
   ],
-  "description": "TonTon H.-D. Huang Ph.D. is an Enterprise AI Architect bridging Big 4 strategic consulting and FDE hardcore engineering. Specializing in secure LLM deployment, RAG POC, and AI cybersecurity for digital transformation. (具備前四大顧問戰略視野與 FDE 實戰經驗，專精於企業級 AI 落地、RAG 知識庫建置與大模型資訊安全防禦)",
+  "description": "TonTon H.-D. Huang Ph.D. is a Senior AI Architect and Tech Lead with 15+ years of R&D experience in AI and cybersecurity, currently a Senior Manager at Deloitte (Technology & Transformation, Cyber). His research on image-based malware detection has been cited over 230 times and presented at DEF CON, RuxCon, and OWASP AppSec. Founder of the Deep Learning 101 community. (資深 AI 架構師與技術負責人，15 年以上 AI 與資安研發經驗，現任 Deloitte 協理，Deep Learning 101 社群創辦人)",
   "sameAs": [
     "https://deep-learning-101.github.io/TonTon.html",
     "https://deep-learning-101.github.io/",
     "https://www.linkedin.com/in/tontonhuang/",
     "https://blog.twman.org/",
     "https://www.twman.org/"
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "企業導入 RAG 知識庫，如何避免機密資料外洩？",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "必須採用「100% 地端部署 (On-Premise)」搭配開源模型。並於檢索層導入 LLM-Guard 零信任邊界防禦與 PII 去識別化技術，確保資料絕對不出內網。"
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "地端部署大型語言模型 (LLM) 該如何估算 GPU VRAM 規格？",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "VRAM 需求取決於「模型參數大小」、「併發人數」與「推論框架 (如 vLLM/SGLang)」。一般 8B 模型搭配 vLLM PagedAttention，單張 24GB 顯卡即可滿足中小型企業基礎併發。"
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "生成式 AI 的幻覺 (Hallucination) 問題能解決嗎？",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "無法 100% 根除，但透過高精度的 RAG 檢索增強生成、Chunking 策略優化與 Prompt 護欄，實務上可將企業客服或智庫的 AI 幻覺率壓低至商用標準的 5% 以下。"
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "傳統工業視覺 AOI 產線檢測過殺率過高，如何透過 AI 優化？",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "可導入少樣本 (Few-shot) 學習技術與多模態分析，在產線異常樣本極少的情況下進行精準訓練，突破傳統 AOI 的光影瓶頸，有效大幅降低過殺率並提升良率。"
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "企業如何建置極低延遲的全雙工語音對話 Agent？",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "必須整合高效能的語音辨識 (ASR)、地端大模型推論與擬真語音合成 (TTS)。透過優化 WebRTC 或 LiveKit 傳輸架構，實務上可將端到端語音交互延遲穩定控制在 300ms 以內，達到真人流暢對話體驗。"
-      }
-    }
   ]
 }
 </script>
@@ -473,7 +425,7 @@
   </div>
 </div>
 
-<div id="ai-consulting" class="bento-box motion-div">
+<!-- <div id="ai-consulting" class="bento-box motion-div">
     <div class="flex items-center gap-3 mb-5">
         <i class="fas fa-layer-group text-3xl text-blue-600"></i>
         <h2 class="text-2xl md:text-3xl font-bold text-slate-800">
@@ -596,8 +548,9 @@
             </div>
         </div>
     </details>
+</div> -->
 
-
+<section id="about" class="bento-box motion-div p-6 md:p-10 bg-white rounded-3xl shadow-sm border border-slate-100">
     <details class="group bg-white border border-slate-200 rounded-lg cursor-pointer">
         <summary class="font-bold text-slate-700 px-4 py-3 hover:text-blue-600 transition-colors list-none flex justify-between items-center">
             <span class="flex items-center gap-2"><i class="fas fa-images text-blue-600"></i> 查看完整 Case Studies、前瞻研究與實績簡報</span>
@@ -610,10 +563,6 @@
             <img src="./img/TonTon-004.JPG" alt="案例研究" class="w-full h-auto rounded-lg shadow-sm border border-slate-200">
         </div>
     </details>
-</div>
-
-<section id="about" class="bento-box motion-div p-6 md:p-10 bg-white rounded-3xl shadow-sm border border-slate-100">
-
   <div class="flex items-center gap-3 mb-8">
     <i class="fas fa-user-circle text-3xl text-blue-600"></i>
     <h2 class="text-2xl md:text-3xl font-bold text-slate-800">
@@ -627,44 +576,47 @@
 
 <div class="space-y-6">
   <p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased">
-    TonTon is a Senior AI Architect and Tech Lead with <b class="text-slate-800">10+ years of R&D experience</b>, holding a<a href="https://web.ncku.edu.tw/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"> Ph.D. </a>in <a href="https://www.csie.ncku.edu.tw/zh-hant/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Computer Science</a> with a focus on Deep Learning and Cyber Threats. He specializes in taking AI systems from ground zero to production spanning <b class="text-slate-800">Natural Language Processing, speech processing, computer vision, cybersecurity and Intelligent Service Robots</b> with a consistent focus on real-world impact over research novelty.
+    TonTon is a Senior AI Architect and Tech Lead with <b class="text-slate-800">15+ years of R&D experience</b>, holding a<a href="https://web.ncku.edu.tw/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"> Ph.D. </a>in <a href="https://www.csie.ncku.edu.tw/zh-hant/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Computer Science</a> with a focus on Deep Learning and Cyber Threats. He specializes in taking AI systems from ground zero to production spanning <b class="text-slate-800">Large Language Models and AI Agents, Natural Language Processing, speech processing, computer vision, cybersecurity and Intelligent Service Robots</b> with a consistent focus on real-world impact over research novelty.
+  </p>
+<p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased">
+  On the AI side, he has built end-to-end systems integrating <b class="text-slate-800">speech enhancement, ASR/TTS, speaker recognition, and semantic understanding</b> for telecommunications (Taiwan Mobile) and financial services (Cathay Financial Holdings). His work includes applying speaker recognition as part of <a href="https://www.nchc.org.tw/Message/MessageView/3731?mid=43" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Taiwan's COVID-19 pandemic response</a>, developing production-grade fraud detection models that identify phone scams and deceptive advertising, and being recognized by the <a href="https://developer.nvidia.com/blog/ai-improves-the-frequency-and-quality-of-mobile-app-notifications/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">NVIDIA Developer Program</a> for applying AI to optimize mobile systems. He was also named one of Career Magazine's <a href="https://4.bp.blogspot.com/-1_SvTnBf95w/WijaARgJq8I/AAAAAAAB2Xs/mpiqL4yT_gQZEuXzZzV8yngqN-XwGGVvwCLcBGAs/s1600/000.jpg" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Top 10 In-Demand Talents</a>. Earlier, at Leopard Mobile (Cheetah Mobile Taiwan Agency), he led the development of speech, natural language processing, and computer vision products, including intelligent service robots.
+</p>
+  <p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased"> On the cyber security side, he pioneered a technique that transforms <a href="https://scholar.google.com.tw/citations?view_op=view_citation&hl=zh-TW&user=bgCj0ykAAAAJ&citation_for_view=bgCj0ykAAAAJ:blknAaTinKkC" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"><b class="text-slate-800">program bytecode into visual representations</b></a>, enabling CNNs to detect Android malware, ransomware, and smart contract vulnerabilities. This work has received over 230 citations. He has built hybrid analysis frameworks combining semantic static analysis and dynamic execution to defeat modern evasion techniques, and developed open-source tooling for digital forensics and anti-VM behavior analysis (<a href="https://www.twman.org/research/TWMAN" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">TWMAN</a>). His research has been presented at <a href="https://blog.twman.org/2018/08/Defcon26.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">DEF CON</a>, <a href="https://blog.twman.org/2017/10/RuxCon.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">RuxCon</a>, <a href="https://blog.twman.org/2017/09/Hollywood-Studios.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">OWASP AppSec</a>, and HITCON (<a href="https://blog.twman.org/2015/09/hitcon2015.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2015 Keynote</a>, <a href="https://blog.twman.org/2014/08/HITCONX.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2014</a>), and his expertise in mobile fraud prevention was featured by <a href="https://www.bbc.com/news/business-63075729" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">BBC News</a>.
   </p>
   <p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased">
-    On the AI side, he has built end-to-end systems integrating <b class="text-slate-800">speech enhancement, ASR/TTS, speaker recognition, and semantic understanding</b> for telecommunications and financial sectors. His work includes applying speaker recognition as part of <a href="https://www.nchc.org.tw/Message/MessageView/3731?mid=43" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Taiwan's COVID-19 pandemic response</a>, developing production-grade fraud detection models that identify phone scams and deceptive advertising, and being recognized by the <a href="https://developer.nvidia.com/blog/ai-improves-the-frequency-and-quality-of-mobile-app-notifications/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">NVIDIA Developer Program</a> for applying AI to optimize mobile systems. He was also named one of Career Magazine's <a href="https://4.bp.blogspot.com/-1_SvTnBf95w/WijaARgJq8I/AAAAAAAB2Xs/mpiqL4yT_gQZEuXzZzV8yngqN-XwGGVvwCLcBGAs/s1600/000.jpg" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Top 10 In-Demand Talents</a>.
-  </p>
-  <p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased"> On the cyber security side, he pioneered a technique that transforms <a href="https://scholar.google.com.tw/citations?view_op=view_citation&hl=zh-TW&user=bgCj0ykAAAAJ&citation_for_view=bgCj0ykAAAAJ:blknAaTinKkC" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"><b class="text-slate-800">program bytecode into visual representations</b></a>, enabling CNNs to detect Android malware, ransomware, and smart contract vulnerabilities, this pioneering work has received over 230 citations. He has built hybrid analysis frameworks combining semantic static analysis and dynamic execution to defeat modern evasion techniques, and developed open-source tooling for digital forensics and anti-VM behavior analysis (<a href="https://www.twman.org/research/TWMAN" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">TWMAN</a>). His research has been presented at <a href="https://blog.twman.org/2018/08/Defcon26.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">DEF CON</a>, <a href="https://blog.twman.org/2017/10/RuxCon.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">RuxCon</a>, <a href="https://blog.twman.org/2017/09/Hollywood-Studios.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">OWASP AppSec</a>, and HITCON (<a href="https://blog.twman.org/2015/09/hitcon2015.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2015 Keynote</a>, <a href="https://blog.twman.org/2014/08/HITCONX.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2014</a>), and his expertise in mobile fraud prevention was featured by <a href="https://www.bbc.com/news/business-63075729" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">BBC News</a>.
-  </p>
-  <p class="text-slate-600 text-[15px] md:text-[16px] leading-relaxed text-justify antialiased">
-    His foundational insights were shaped by international research at Inria (France) and the University of Essex (UK). He currently architects end-to-end <b class="text-slate-800">"Enterprise Sovereign AI"</b> & <b class="text-slate-800">"AI Governance"</b> solutions, embedding rigorous logic defenses to ensure compliance in highly regulated environments. As the founder of the <a href="https://deep-learning-101.github.io/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Deep Learning 101</a> community, he actively mentors engineering talent and advances industry standards.
+    His foundational insights were shaped by international research at Inria (France) and the University of Essex (UK). He is currently a Senior Manager at Deloitte (Technology & Transformation, Cyber), working on enterprise AI and Agentic AI security for clients in highly regulated industries. As the founder of the <a href="https://deep-learning-101.github.io/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Deep Learning 101</a> community, he actively mentors engineering talent and advances industry standards.
   </p>
 </div>
+
+
 
 <div class="space-y-6">
   <p class="text-slate-700 text-[16px] md:text-[17px] leading-[1.8] text-justify tracking-wide">
-    TonTon (痛痛) 是一位資深 AI 架構師與技術負責人，擁有<b class="text-slate-900">逾 15 年的研發經驗</b>，以及 <a href="https://web.ncku.edu.tw/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">國立成功大學</a> <a href="https://www.csie.ncku.edu.tw/zh-hant/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">資訊工程</a> 博士學位，專攻深度學習與網路威脅。他專精於將 AI 系統從零推進至生產環境，技術領域橫跨<b class="text-slate-900">自然語言處理（NLP）、語音處理、電腦視覺與資安以及智慧服務型機器人</b>，以真實的落地成效為核心，而非停留研究面。
+    TonTon (痛痛) 是一位資深 AI 架構師與技術負責人，擁有<b class="text-slate-900">逾 15 年的人工智慧與資安領域的研發與跨域整合經驗</b>，以及 <a href="https://web.ncku.edu.tw/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">國立成功大學</a> <a href="https://www.csie.ncku.edu.tw/zh-hant/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">資訊工程</a> 博士學位，專攻深度學習與網路威脅。他專精於將 AI 系統從零推進至生產環境，技術領域涵蓋<b class="text-slate-900">大語言模型與 AI Agent、自然語言處理（NLP）、語音處理、電腦視覺、智慧服務型機器人以及 x86/Android 惡意程式分析</b>。
   </p>
   <p class="text-slate-700 text-[16px] md:text-[17px] leading-[1.8] text-justify tracking-wide">
-    在 AI 應用上，他建構整合<b class="text-slate-900">語音增強、ASR/TTS、聲紋辨識與語意理解</b>的端到端系統。代表性成果包括：將聲紋辨識技術應用於<a href="https://www.nchc.org.tw/Message/MessageView/3731?mid=43" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">臺灣 COVID-19 疫情防控</a>、開發可主動識別電話詐騙與不實廣告的生產級詐騙偵測模型，並於 <a href="https://developer.nvidia.com/blog/ai-improves-the-frequency-and-quality-of-mobile-app-notifications/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">NVIDIA 開發者計畫</a>，以及《Career 雜誌》<a href="https://4.bp.blogspot.com/-1_SvTnBf95w/WijaARgJq8I/AAAAAAAB2Xs/mpiqL4yT_gQZEuXzZzV8yngqN-XwGGVvwCLcBGAs/s1600/000.jpg" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">十大熱門人才</a>被報導。
-  </p></br></br></br>
+    職涯從開發自動化惡意程式分析開源工具 (TWMAN) 起步，歷任台灣大哥大資料分析技術處部經理、國泰金控數數發資深 AI 技術架構師與台灣雪豹科技(獵豹移動台灣總代理)資深技術專家，現任 Deloitte 協理 (科技與轉型服務，網路安全)，為高監管產業客戶提供企業 AI 與 Agentic AI 安全顧問服務。
+  </p>
   <p class="text-slate-700 text-[16px] md:text-[17px] leading-[1.8] text-justify tracking-wide">
-    在資安研究上，他開創了將<a href="https://scholar.google.com.tw/citations?view_op=view_citation&hl=zh-TW&user=bgCj0ykAAAAJ&citation_for_view=bgCj0ykAAAAJ:blknAaTinKkC" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"><b class="text-slate-900">程式位元組碼轉換為視覺化表示</b></a>的技術，以卷積神經網路（CNN）偵測 Android 惡意程式、勒索軟體與智能合約漏洞；已累積 230 餘次引用。他建構了結合語意靜態分析與動態執行的混合分析框架，有效對抗現代規避技術，並曾開發了數位鑑識與反虛擬機行為分析的開源工具 (TWMAN)。相關研究成果曾發表於 <a href="https://blog.twman.org/2018/08/Defcon26.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">DEF CON</a>、<a href="https://blog.twman.org/2017/10/RuxCon.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">RuxCon</a>、<a href="https://blog.twman.org/2017/09/Hollywood-Studios.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">OWASP AppSec</a> 及 HITCON（<a href="https://blog.twman.org/2015/09/hitcon2015.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2015 Keynote</a>、<a href="https://blog.twman.org/2014/08/HITCONX.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2014</a>），其行動裝置詐騙防治專業亦於 <a href="https://www.bbc.com/news/business-63075729" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">BBC News</a> 被報導。
-  </p></br>
+    在 AI 應用上，他建構整合<b class="text-slate-900">語音增強、ASR/TTS、聲紋辨識與語意理解</b>的端到端系統。代表性成果包括：將聲紋辨識技術應用於<a href="https://www.nchc.org.tw/Message/MessageView/3731?mid=43" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">臺灣 COVID-19 疫情防控</a>、開發可主動識別電話詐騙與不實廣告的生產級詐騙偵測模型，並獲 <a href="https://developer.nvidia.com/blog/ai-improves-the-frequency-and-quality-of-mobile-app-notifications/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">NVIDIA 開發者計畫</a>報導，以及《Career 雜誌》<a href="https://4.bp.blogspot.com/-1_SvTnBf95w/WijaARgJq8I/AAAAAAAB2Xs/mpiqL4yT_gQZEuXzZzV8yngqN-XwGGVvwCLcBGAs/s1600/000.jpg" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">十大熱門人才</a>。
+  </p>
   <p class="text-slate-700 text-[16px] md:text-[17px] leading-[1.8] text-justify tracking-wide">
-    他的技術洞見奠基於法國 Inria 與英國艾塞克斯大學的國際研究經歷。目前他致力於架構端到端「<a href="https://deep-learning-101.github.io/SHIELD/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">企業主權 AI 以及 AI 治理</a>」解決方案，透過嵌入嚴謹的邏輯防禦，確保 AI 應用能在高監管環境中符合嚴格的合規標準。作為「<a href="https://deep-learning-101.github.io/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Deep Learning 101</a>」社群的發起人，他積極持續推動產業知識分享與技術推廣。
+    在資安研究上，他開創了將<a href="https://scholar.google.com.tw/citations?view_op=view_citation&hl=zh-TW&user=bgCj0ykAAAAJ&citation_for_view=bgCj0ykAAAAJ:blknAaTinKkC" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4"><b class="text-slate-900">程式位元組碼轉換為視覺化表示</b></a>的技術，以卷積神經網路（CNN）偵測 Android 惡意程式、勒索軟體與智能合約漏洞；已累積 230 餘次引用。他建構了結合語意靜態分析與動態執行的混合分析框架，有效對抗現代規避技術。相關研究成果曾發表於 <a href="https://blog.twman.org/2018/08/Defcon26.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">DEF CON</a>、<a href="https://blog.twman.org/2017/10/RuxCon.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">RuxCon</a>、<a href="https://blog.twman.org/2017/09/Hollywood-Studios.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">OWASP AppSec</a> 及 HITCON（<a href="https://blog.twman.org/2015/09/hitcon2015.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2015 Keynote</a>、<a href="https://blog.twman.org/2014/08/HITCONX.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">2014</a>），其行動裝置詐騙防治專業亦於 <a href="https://www.bbc.com/news/business-63075729" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">BBC News</a> 被報導。
+  </p>
+  <p class="text-slate-700 text-[16px] md:text-[17px] leading-[1.8] text-justify tracking-wide">
+    他的技術洞見奠基於法國 Inria 與英國艾塞克斯大學的國際交換訪問研究經歷。作為「<a href="https://deep-learning-101.github.io/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold underline underline-offset-4">Deep Learning 101</a>」社群的發起人，他積極持續推動產業知識分享與技術推廣。
   </p>
 </div>
-
 </section>
 
 
-        <h2 class="bento-title-large text-center my-12"> 工作經歷 &  學術/教育背景 </h2>
-        <h2 class="bento-title-large text-center my-12">Work Experience & Acacemic / Education </h2>
+        <h2 class="bento-title-large text-center my-12">工作經歷 & 學術/教育背景 <span class="text-slate-400 font-light mx-2">|</span> <span class="text-xl md:text-2xl text-slate-500 font-medium">Work Experience & Academic / Education</span></h2>
 
 <div class="max-w-4xl mx-auto my-6 px-4">
     <div class="bg-slate-50 border-l-4 border-blue-600 p-4 rounded-r-lg shadow-sm">
         <p class="text-sm text-slate-700 leading-relaxed">
             <strong class="text-blue-600 font-bold">📌 技術速覽：</strong>
-            <strong>TonTon Huang Ph.D.</strong> 兼具四大 (Big 4) 顧問公司資安策略視野與前進部署工程師 (FDE) 硬核實戰力。作為全台社群 <strong>Deep Learning 101</strong> 發起人，專精於 100% 地端私有雲 LLM 架構部署、RAG 知識庫防幻覺優化、全雙工語音 Agent 與 LLM-Guard AI 資安防禦，協助企業以最低試錯成本完成 AI 轉型。
+            <strong>TonTon Huang Ph.D.</strong>，資深 AI 架構師與技術負責人，<strong>Deep Learning 101</strong> 社群發起人。研究與實務橫跨 AI 系統建置與資安防禦：大語言模型與 AI Agent、語音與自然語言處理、電腦視覺、惡意程式偵測；論文發表於 DEF CON、RuxCon、OWASP AppSec 等國際會議，累積引用 230 次以上。
         </p>
     </div>
 </div>
@@ -681,7 +633,7 @@
                 </ul>
             </div> -->
             <div class="mt-4">
-                <span class="tag">LLM/GenAI</span> <span class="tag">Cyber</span> <span class="tag">AI-Read-Team</span> <span class="tag">Deep Learning</span>
+                <span class="tag">LLM/GenAI</span> <span class="tag">Cyber</span> <span class="tag">AI Red Team</span> <span class="tag">Deep Learning</span>
             </div>
         </div>
 
