@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <link rel="canonical" href="https://www.twman.org/Cyber/LLM-Guard-Selection">
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7TMM2YX50Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7TMM2YX50Q');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Guard 選型比較：10 款 AI 資料護欄工具實測對照與場景建議（金融／客服／Copilot） | Deep Learning 101</title>
+    <meta name="description" content="LLM Guard 怎麼選？本頁以實測對照 10 款 AI 資料護欄工具的地端部署、PII 偵測、遮罩、阻擋與 Agent 動作管控，給金融、客服、內部 Copilot 三種場景的選型結論，並揭露台灣個資（身分證、手機、中文姓名）的實測支援現況。">
+    <meta name="keywords" content="LLM Guard, AI 資料護欄, guardrail 選型, Presidio, NeMo Guardrails, PII 偵測, 個資遮罩, Agent 安全">
+    <meta property="og:title" content="LLM Guard 選型比較：10 款 AI 資料護欄工具實測對照與場景建議 | Deep Learning 101">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Deep-Learning-101/TonTon/refs/heads/main/_includes/DL101-Logo.jpg">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4046615879480582" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.18.0/framer-motion.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .bento-box { background: #ffffff; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .bento-title-large { font-size: 2rem; font-weight: 700; margin-bottom: 1.25rem; color: #1d1d1f; }
+        .bento-text { font-size: 1rem; line-height: 1.75; color: #333; }
+        .bento-text a { color: #0071e3; text-decoration: none; }
+        .bento-text a:hover { text-decoration: underline; }
+        .bento-text p { margin-bottom: 1rem; }
+        .bento-text p:last-child { margin-bottom: 0; }
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .chinese-main-title { font-size: 2.8rem; font-weight: 700; line-height: 1.2; }
+        .tag { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .8rem; font-weight: 500; margin-right: .5rem; margin-bottom: .5rem; }
+        .tip-box { border-left: 4px solid #30d158; background: #f0faf4; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box { border-left: 4px solid #ff9f0a; background: #fff9f0; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .pitfall-box strong { color: #b45309; }
+        .insight-box { border-left: 4px solid #0071e3; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; margin: 1rem 0; font-size: .95rem; color: #333; }
+        .section-label { display: inline-block; font-size: .8rem; font-weight: 700; padding: .2rem .7rem; border-radius: 9999px; margin-bottom: .75rem; letter-spacing: .05em; }
+        .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .stat-box { background: #fdf4ff; border: 1px solid #e9d5ff; border-radius: .75rem; padding: .85rem 1.2rem; text-align: center; flex: 1; min-width: 110px; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #7e22ce; }
+        .stat-box .desc { font-size: .78rem; color: #6b21a8; margin-top: .2rem; }
+        .model-card { background: #fdf4ff; border: 1px solid #e9d5ff; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; }
+        .model-card .model-title { font-weight: 700; font-size: 1rem; color: #6b21a8; margin-bottom: .4rem; }
+        .model-card .model-meta { font-size: .82rem; color: #7e22ce; margin-bottom: .5rem; }
+        .model-card .model-desc { font-size: .9rem; color: #555; line-height: 1.6; }
+        .entity-demo { background: #f8f8f8; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1rem 1.25rem; font-family: monospace; font-size: .9rem; line-height: 2; }
+        .entity-tag { display: inline-block; border-radius: .3rem; padding: 0 .4rem; font-size: .78rem; font-weight: 700; margin: 0 .1rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff !important; font-weight: 700; font-size: 1rem; padding: .85rem 2rem; border-radius: 9999px; text-decoration: none !important; transition: all .2s; box-shadow: 0 4px 14px rgba(124,58,237,.3); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(124,58,237,.4); }
+        .badge-llm { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .badge-classic { display: inline-block; background: #dcfce7; color: #166534; font-size: .72rem; font-weight: 700; padding: .1rem .5rem; border-radius: .4rem; }
+        .vs-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 1rem; }
+        .vs-table th { text-align: left; padding: .65rem .85rem; border-bottom: 2px solid #e2e8f0; background: #f8fafc; }
+        .vs-table td { padding: .55rem .85rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .vs-table tr:last-child td { border-bottom: none; }
+    </style>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "LLM Guard 選型比較：10 款 AI 資料護欄工具實測對照與場景建議",
+  "description": "LLM Guard 怎麼選？本頁以實測對照 10 款 AI 資料護欄工具的地端部署、PII 偵測、遮罩、阻擋與 Agent 動作管控，給金融、客服、內部 Copilot 三種場景的選型結論，並揭露台灣個資（身分證、手機、中文姓名）的實測支援現況。",
+  "author": {
+    "@type": "Person",
+    "name": "TonTon Huang Ph.D.",
+    "url": "https://twman.org/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Deep Learning 101, Taiwan"
+  },
+  "datePublished": "2026-11-28",
+  "dateModified": "2026-11-28"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "開源工具能做到商用水準嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "偵測引擎可以，Presidio 就是商用產品也在用的開源引擎；但偵測、遮罩、阻擋、Agent 動作管控四件套全部原生到位、又有地端斷網版的，目前只有商用平台。開源靠組合（gateway＋Presidio＋政策框架）做得到，代價是整合與維運成本由自己承擔。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "中文姓名所有工具都辨識不了，怎麼辦？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "三條路：加中文 NER 引擎（如 CKIP、HanLP）作為偵測層、導入有中文模型的商用 DLP、或從系統設計分流，把姓名等欄位結構化，不要讓它出現在自由文字裡。實務上第三條最可靠，前兩條是補強。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "純 SaaS 護欄有什麼風險？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "以 Pangea 為例，功能完整但資料必須送到雲端處理，受個資法或金融監管的場景要先確認資料離境是否合規；另外 2025 至 2026 年此領域併購密集，簽約前應確認併購後的產品路線與支援承諾。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "只防提示詞注入就夠了嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不夠。注入防禦與資料護欄（PII 偵測與遮罩）是兩件事：前者擋攻擊意圖，後者擋資料外洩。而且目前沒有工具能真正理解外洩語意，只能掃描敏感字串，這個邊界要在架構設計時先認清。"
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<div id="app" class="content-wrapper">
+
+    <div id="include-nav-pages"></div>
+    <div id="include-profile-hero" class="max-w-7xl mx-auto px-4 md:px-6 mt-6"></div>
+
+    <header class="text-center my-12">
+<h1 class="chinese-main-title bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-violet-500 to-fuchsia-500">🛡️ LLM Guard 選型比較</h1>
+<p class="mt-4 text-lg text-gray-500">10 款資料護欄工具實測對照 · 金融／客服／內部 Copilot 場景建議 · 台灣個資支援現況</p>
+<p class="mt-6 text-lg leading-relaxed text-gray-600 max-w-3xl mx-auto">工具總覽頁回答「有哪些」，本頁回答「選哪個」。判準是四件事：能不能地端部署、能不能偵測個資、能不能遮罩與阻擋、能不能管到 Agent 的工具呼叫；再對照本站以台灣資料（身分證、手機、中文姓名）做的實測結果。</p>
+</header>
+
+
+    <div id="include-aishare"></div>
+
+    <div class="bento-box motion-div">
+<div class="bento-text">
+<h2>🎯 先說結論：先決定「資料能不能離開地端」，再挑工具</h2>
+<p>十款工具看完，選型其實只有三個分岔。第一，資料能不能離開地端：不能離開的，名單直接砍到剩地端或斷網版能跑的那幾款。第二，要攔的是「個資」還是「注入攻擊」：這是兩種完全不同的工具，市面上很少有一款同時做到位。第三，預算與維運人力：四件套（偵測、遮罩、阻擋、Agent 動作管控）全部原生到位的目前只有商用平台；開源路線做得到，但要靠組合，自己扛維運。</p>
+<p><strong>場景快選：</strong>金融、保險等高度監管產業，先看 Prompt Security 與 F5 AI Guardrails（地端斷網、全原生）；想自建開源，用 NeMo Guardrails 當政策層、Presidio 當偵測引擎。客服與對話場景要遮罩後還能還原，選 Enkrypt AI（可逆遮罩）；能接受 SaaS 再看 Pangea AI Guard（50+ 類型），但資料離境要先過法遵。內部 Copilot 與 Agent 應用要管到工具執行層，選 Enkrypt AI 或 NeMo Guardrails；如果只想防提示詞注入，LlamaFirewall 免費，但它完全不管個資，必須另配 Presidio。</p>
+<p style="font-size:.88rem;color:#6b7280;">證據標示：本頁比較表與「實測」結論來自本站 2026 年 9 月的實機驗證（10 款中 8 款實測、2 款為文件規格比較）；判斷層託管服務（Jev）尚未實測，該節僅為文件規格比較，不寫未驗證的效能宣稱。工具總覽與技術架構見 <a href="https://www.twman.org/Cyber/LLM-Guard">LLM Guard 工具總覽</a>，本頁只做選型決策。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>📊 10 款資料護欄工具對照表</h2>
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+<thead>
+<tr style="background:#f8fafc;">
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">工具</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">類型</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">開源／商用</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">地端</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">PII 偵測</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">遮罩</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">阻擋</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">Agent 管控</th>
+<th style="text-align:left;padding:.6rem .75rem;border-bottom:2px solid #e2e8f0;">適配度判讀</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">LiteLLM Proxy ＋ Presidio</td><td style="padding:.55rem .75rem;">AI Gateway</td><td style="padding:.55rem .75rem;">混合（OSS MIT＋Enterprise）</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">🔌 Presidio sidecar</td><td style="padding:.55rem .75rem;">🔌</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">◐ 僅 pre_mcp_call</td><td style="padding:.55rem .75rem;">高：實測 input 遮罩、信用卡阻擋、output 遮罩皆可用</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Microsoft Presidio</td><td style="padding:.55rem .75rem;">PII 偵測／去識別引擎</td><td style="padding:.55rem .75rem;">開源 MIT</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">❌</td><td style="padding:.55rem .75rem;">❌</td><td style="padding:.55rem .75rem;">引擎級最高：它是元件不是護欄，需搭配 gateway 才能阻擋</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">NVIDIA NeMo Guardrails</td><td style="padding:.55rem .75rem;">可程式化護欄框架（Colang）</td><td style="padding:.55rem .75rem;">開源 Apache-2.0</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">🔌 外掛 Presidio</td><td style="padding:.55rem .75rem;">🔌</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅ Execution／IORails</td><td style="padding:.55rem .75rem;">高：攔截點位最齊，適合 Agent runtime 政策層</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Guardrails AI</td><td style="padding:.55rem .75rem;">I／O 驗證框架</td><td style="padding:.55rem .75rem;">開源 Apache-2.0</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅ Presidio＋GLiNER</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">❌</td><td style="padding:.55rem .75rem;">中：I／O 層完整，但管不到 Agent 工具鏈</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Meta LlamaFirewall</td><td style="padding:.55rem .75rem;">Agent 安全掃描框架</td><td style="padding:.55rem .75rem;">開源 MIT</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">❌ 僅 regex 自訂</td><td style="padding:.55rem .75rem;">❌</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">◐ 審計無阻擋政策</td><td style="padding:.55rem .75rem;">低（以資料護欄論）：純 injection／jailbreak 防禦，無 PII 能力</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Enkrypt AI（2026-08 起 Anaconda）</td><td style="padding:.55rem .75rem;">Agentic AI 安全平台</td><td style="padding:.55rem .75rem;">商用＋開源 MCP Gateway</td><td style="padding:.55rem .75rem;">◐</td><td style="padding:.55rem .75rem;">✅ 30+ 類別</td><td style="padding:.55rem .75rem;">✅ 可逆 redaction</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">最高：四項全原生且深入 tool 執行層；唯一做到可逆遮罩</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Prompt Security（SentinelOne）</td><td style="padding:.55rem .75rem;">AI 防火牆／runtime 安全</td><td style="padding:.55rem .75rem;">商用</td><td style="padding:.55rem .75rem;">✅ air-gapped</td><td style="padding:.55rem .75rem;">✅ Contextual DLP</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅ MCP 層</td><td style="padding:.55rem .75rem;">最高：四件套全原生，加上地端斷網版</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">F5 AI Guardrails（前 CalypsoAI）</td><td style="padding:.55rem .75rem;">企業 AI 防火牆</td><td style="padding:.55rem .75rem;">商用</td><td style="padding:.55rem .75rem;">✅ air-gapped</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">高：地端支援最完整，僅能走 F5 通路</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Pangea AI Guard（CrowdStrike）</td><td style="padding:.55rem .75rem;">API-first 護欄平台</td><td style="padding:.55rem .75rem;">商用 SaaS</td><td style="padding:.55rem .75rem;">❌</td><td style="padding:.55rem .75rem;">✅ 50+ 類型</td><td style="padding:.55rem .75rem;">✅ 含 FPE</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">◐</td><td style="padding:.55rem .75rem;">高：四件套全原生，但純 SaaS、資料須離境</td></tr>
+<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:.55rem .75rem;font-weight:600;">Portkey AI Gateway</td><td style="padding:.55rem .75rem;">AI Gateway</td><td style="padding:.55rem .75rem;">混合（OSS MIT）</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">🔌 OSS 需外呼第三方 API</td><td style="padding:.55rem .75rem;">🔌</td><td style="padding:.55rem .75rem;">✅</td><td style="padding:.55rem .75rem;">◐</td><td style="padding:.55rem .75rem;">中低：有殼無芯，PII 偵測須先解決（無憑證時靜默 fail 是地雷）</td></tr>
+</tbody>
+</table>
+</div>
+<p style="font-size:.88rem;color:#6b7280;">圖例：✅ 原生支援；🔌 需外掛或組合；◐ 部分支援；❌ 不支援。完整技術架構與各工具介紹見 <a href="https://www.twman.org/Cyber/LLM-Guard">LLM Guard 工具總覽</a>。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>🇹🇼 台灣資料實測：沒有任何工具開箱支援（實測）</h2>
+<p>這是選型時最容易漏掉、卻最先踩到的坑。我們以台灣常見個資型態實測後，三個結論：</p>
+<p><strong>身分證字號與手機號碼：</strong>可靠，但要自己動手。用自訂 regex／recognizer 加上檢查碼驗證，可以穩定辨識並降低誤判，Presidio 與 LiteLLM＋Presidio 實測通過。注意一個細節：中文字緊貼識別碼時（例如「身分證A123456789」），regex 的 \b 邊界可能失效，規則要針對中文語境調整。</p>
+<p><strong>中文姓名：</strong>全部工具實測皆未能辨識，包括 Presidio、Guardrails AI、NeMo、LlamaFirewall、Portkey 等。解法只有三條：加中文 NER（如 CKIP、HanLP）當偵測引擎、買商用 DLP、或從系統設計下手，把姓名放進結構化欄位，從源頭分流，不要讓它混在自由文字裡。</p>
+<p><strong>外洩語意：</strong>沒有工具真正理解「把剛才看到的客戶電話寄出去」這類外洩意圖，多數只能掃描文字裡的敏感資料字串。語意層的判斷要靠下一節的判斷層模型，或接受這是目前的能力邊界。</p>
+<p>所以評估時務必把兩件事分開：Gateway／框架解決「在哪裡攔」，偵測引擎解決「能不能辨識」。只買框架不補引擎，台灣個資就是漏的。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>⚖️ 判斷層（System One）：護欄的新選項（文件規格比較，未實測）</h2>
+<p>2026 年 9 月出現的新典範：不生成文字，只對有界問題輸出帶機率的結構化判斷，適合把護欄政策轉成一次前向傳播的高速判斷。代表是 TypeSafe AI 的 Jev（商用託管，官方有 guardrail cookbook、雙向篩查，政策由呼叫端程式碼持有），開源替代有 Stanford 與 NVIDIA 的 CLM-8B（TypeSafe 相容 API，可直接替換 Jev 後端）、多語言設計的 Laya（100+ 語言，中文場景最有潛力），與極輕量的 Kev。</p>
+<p>定位要先講清楚：它們是「判斷層」，不是 PII 偵測器，跟 Presidio 類引擎是互補關係，不是替代關係。本站尚未實測 Jev 託管核心，本節數字皆為官方文件規格，實際導入前請以自己的政策集做 PoC 驗證。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>🏢 場景選型建議</h2>
+<p><strong>金融、保險等高度監管產業：</strong>資料不能離境、地端斷網是硬條件，先看 Prompt Security 與 F5 AI Guardrails，兩者都是四件套全原生且有 air-gapped 版本；F5 僅能走既有通路，已是 F5 客戶最順。預算或主權考量要自建，就用 NeMo Guardrails（政策層）＋Presidio（偵測引擎）的組合，並把中文姓名的缺口用 CKIP 類 NER 補上。</p>
+<p><strong>客服與對話應用：</strong>重點是遮罩後還能不能用。可逆遮罩（redaction 後可還原）是 Enkrypt AI 的獨門，後端系統要拿回原值時不用另建對照表。若能接受 SaaS，Pangea 的 50+ 類型與 FPE 格式保留加密很完整，但資料離境必須先過法遵與個資法評估。</p>
+<p><strong>內部 Copilot 與 Agent 應用：</strong>風險不在輸入文字，而在工具呼叫。選管控點位到工具執行層的 Enkrypt AI 或 NeMo Guardrails；若威脅模型只有提示詞注入與越獄，LlamaFirewall 免費可用，但它對個資是零能力，務必與 Presidio 併用，不要單獨上線。</p>
+<p><strong>預算有限、先求有再求好：</strong>LiteLLM Proxy＋Presidio 是實測可用的起步組合，先把 gateway 攔截點站好、信用卡與常見 PII 擋住，之後再依場景往上換引擎或加判斷層。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>⚠️ 商用導入風險：先確認併購後的產品路線</h2>
+<p>AI 安全工具在 2025 至 2026 年出現密集併購：Prompt Security 被 SentinelOne 收購、CalypsoAI 被 F5 收購（品牌已退役，產品改名 F5 AI Guardrails）、Pangea 被 CrowdStrike 收購、Lakera 被 Check Point 收購、Enkrypt AI 被 Anaconda 收購。工具本身再好，簽約前也要確認併購後的產品路線、支援承諾與授權條件是否延續，這是本頁工具名稱都標註母公司的原因。</p>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<h2 class="bento-title-large" style="margin-bottom:.75rem;">常見問題 FAQ</h2>
+<div>
+<div class="faq-item"><div class="faq-q">Q1：開源工具能做到商用水準嗎？</div><div class="faq-a">偵測引擎可以，Presidio 就是商用產品也在用的開源引擎；但「偵測、遮罩、阻擋、Agent 動作管控」四件套全部原生到位、又有地端斷網版的，目前只有商用平台。開源靠組合（gateway＋Presidio＋政策框架）做得到，代價是整合與維運成本由自己承擔。</div></div>
+<div class="faq-item"><div class="faq-q">Q2：中文姓名所有工具都辨識不了，怎麼辦？</div><div class="faq-a">三條路：加中文 NER 引擎（如 CKIP、HanLP）作為偵測層、導入有中文模型的商用 DLP、或從系統設計分流，把姓名等欄位結構化，不要讓它出現在自由文字裡。實務上第三條最可靠，前兩條是補強。</div></div>
+<div class="faq-item"><div class="faq-q">Q3：純 SaaS 護欄有什麼風險？</div><div class="faq-a">以 Pangea 為例，功能完整但資料必須送到雲端處理，受個資法或金融監管的場景要先確認資料離境是否合規；另外 2025 至 2026 年此領域併購密集，簽約前應確認併購後的產品路線與支援承諾。</div></div>
+<div class="faq-item"><div class="faq-q">Q4：只防提示詞注入就夠了嗎？</div><div class="faq-a">不夠。注入防禦（LlamaFirewall 這類）與資料護欄（PII 偵測與遮罩）是兩件事：前者擋攻擊意圖，後者擋資料外洩。而且目前沒有工具能真正理解外洩語意，只能掃描敏感字串，這個邊界要在架構設計時先認清。</div></div>
+</div>
+</div>
+
+<div class="bento-box motion-div">
+<div class="bento-text">
+<h2>🔗 延伸閱讀</h2>
+<p><a href="https://www.twman.org/Cyber/LLM-Guard">LLM Guard 工具總覽</a>：10 款工具的技術架構、演進與完整對照。<br>
+<a href="https://www.twman.org/Cyber/LLM-Offense">LLM Offense 紅隊工具</a>：防禦之前，先知道攻擊長什麼樣子。<br>
+<a href="https://deep-learning-101.github.io/Cyber/LLM-Guard">Deep Learning 101 知識庫版</a>：同一份研究的知識庫條目版。</p>
+</div>
+</div>
+
+</div>
+
+<script>
+async function includeHTML(url, containerId) {
+    try {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var html = await res.text();
+        var temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.querySelectorAll('style').forEach(function(s) { document.head.appendChild(s.cloneNode(true)); });
+        temp.querySelectorAll('style').forEach(function(s) { s.remove(); });
+        var container = document.getElementById(containerId);
+        container.innerHTML = temp.innerHTML;
+        container.querySelectorAll('script').forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(function(attr) { newScript.setAttribute(attr.name, attr.value); });
+            if (!oldScript.src) newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+        });
+    } catch(e) { console.warn('[includeHTML]', e.message); }
+}
+includeHTML('/includes/nav-pages.html',    'include-nav-pages');
+includeHTML('/includes/profile-hero.html', 'include-profile-hero');
+includeHTML('/includes/ai-share.html',     'include-aishare');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var motionLib = typeof motion !== 'undefined' ? motion : null;
+    if (!motionLib) return;
+    var animate = motionLib.animate, inView = motionLib.inView;
+    inView('header', function() { animate('header h1', { opacity:[0,1], y:[-20,0] }, { duration:.6, ease:'easeOut', delay:.2 }); });
+    document.querySelectorAll('.motion-div').forEach(function(div) {
+        inView(div, function() { animate(div, { opacity:[0,1], y:[30,0], scale:[.98,1] }, { duration:.65, delay:.1, ease:'easeOut' }); }, { once:true, amount:.1 });
+    });
+});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"fc0f4e2f76d3450bbcf5ca8c7c562e9b","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>
